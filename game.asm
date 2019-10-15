@@ -77,7 +77,21 @@ DrawMap:
 ;--Routine for intializing player          
 ;--------------------------------------------------------
 PlayerInit:
+.JOY_UP = %00001
+.JOY_DN = %00010
+.JOY_LT = %00100
+.JOY_RT = %01000
+.JOY_FR = %10000
 
+.CHECK_LT = %0100
+.CHECK_RT = %1000
+.CHECK_UP = %0001
+.CHECK_DN = %0010
+
+.COLLISION_SOLID =      %00010000
+.COLLISION_POINTS1 =    %00100000
+.COLLISION_POINTS2 =    %01000000
+    
     lda #$43
     sta SPRITE_POINTERS + 0
     lda ENABLE_SPRITES
@@ -94,19 +108,12 @@ PlayerInit:
     lda #$18
     sta X_OFFSET
 
-   rts
+    rts
 
 ;--------------------------------------------------------
 ;--Player controll and display routines 
 ;--------------------------------------------------------
 PlayerUpdate:
-
-.JOY_UP = %00001
-.JOY_DN = %00010
-.JOY_LT = %00100
-.JOY_RT = %01000
-.JOY_FR = %10000
-
 
     jsr ReadJoystick 
 
@@ -121,7 +128,7 @@ GoUp:
     jsr CheckMoveUp
     lda PlayerUpCollision
     and #.COLLISION_SOLID
-    bne GoDown
+    bne CheckSide0 
 
     dec .PlayerY
     lda PL_TURBO
@@ -129,6 +136,19 @@ GoUp:
     bne GoDown
    
     dec .PlayerY
+    jmp End
+
+CheckSide0:
+    jsr CheckSideLeft
+    bne +
+    lda .MV_LT
+    sta PL_DIR
++
+    jsr CheckSideRight
+    bne +
+    lda .MV_RT
+    sta PL_DIR
++   
 
 GoDown:
     lda PL_DIR
@@ -141,7 +161,7 @@ GoDown:
     jsr CheckMoveDown
     lda PlayerDownCollision
     and #.COLLISION_SOLID
-    bne GoLeft
+    bne CheckSide1 
 
     inc .PlayerY
     lda PL_TURBO
@@ -149,6 +169,20 @@ GoDown:
     bne GoLeft 
     
     inc .PlayerY
+    jmp End
+
+CheckSide1:
+    jsr CheckSideLeft
+    bne +
+    lda .MV_LT
+    sta PL_DIR
++
+    jsr CheckSideRight
+    bne +
+    lda .MV_RT
+    sta PL_DIR
++   
+    jmp End
 
 GoLeft:    
     lda PL_DIR
@@ -161,7 +195,8 @@ GoLeft:
     jsr CheckMoveLeft
     lda PlayerLeftCollision
     and #.COLLISION_SOLID
-    bne GoRight
+    bne CheckSide2
+    
     clc
     lda PL_TURBO
     cmp .Turbo 
@@ -179,15 +214,29 @@ NoTurbo0:
     sec
     sbc #$01
     sta .PlayerX
-    bcs GoRight
+    bcs End 
 
 SetMSB0:
     lda #%00000001
     eor #%11111111
     and .PlayerX + 1
     sta SPRITE_MSB
+    
+    jmp End 
 
-  
+CheckSide2:
+    jsr CheckSideUp
+    bne +
+    lda .MV_UP
+    sta PL_DIR
++
+    jsr CheckSideDown
+    bne +
+    lda .MV_DN
+    sta PL_DIR
++
+    jmp End
+
 GoRight: 
     lda PL_DIR
     cmp .MV_RT
@@ -199,7 +248,7 @@ GoRight:
     jsr CheckMoveRight
     lda PlayerRightCollision 
     and #.COLLISION_SOLID
-    bne End
+    bne CheckSide3 
     
     clc
     lda PL_TURBO
@@ -223,7 +272,20 @@ SetMSB1:
     ora .PlayerX + 1
     sta .PlayerX + 1
     sta SPRITE_MSB
-     
+    jmp End 
+
+CheckSide3:
+    jsr CheckSideUp
+    bne +
+    lda .MV_UP
+    sta PL_DIR
++
+    jsr CheckSideDown
+    bne +
+    lda .MV_DN
+    sta PL_DIR
++
+
 End:
     lda .PlayerX
     sta PL_X 
@@ -424,12 +486,175 @@ CheckMoveDown:
     
     rts
 
+CheckSideUp:
+    lda X_BORDER_OFFSET
+    sec 
+    sbc #7
+    sta X_OFFSET
+    
+    lda Y_BORDER_OFFSET
+    clc
+    adc #1
+    sta Y_OFFSET
+    
+    jsr GetCollisionPoint 
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    sta TEMP3
+    
+    lda X_BORDER_OFFSET
+    sta X_OFFSET
+    
+    lda Y_BORDER_OFFSET
+    clc
+    adc #1
+    sta Y_OFFSET
+
+    jsr GetCollisionPoint
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    ora TEMP3
+    and #$f0
+    and #.COLLISION_SOLID
+    bne +
+    rts
++
+    lda .CHECK_UP
+    ;sta PlayerUpSide
+    
+    rts
+
+CheckSideDown:
+    lda X_BORDER_OFFSET
+    sec
+    sbc #7
+    sta X_OFFSET
+    
+    lda Y_BORDER_OFFSET
+    sec
+    sbc #8
+    sta Y_OFFSET
+    
+    jsr GetCollisionPoint 
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    sta TEMP3
+    
+    lda X_BORDER_OFFSET
+    sta X_OFFSET
+    
+    lda Y_BORDER_OFFSET
+    sec
+    sbc #8
+    sta Y_OFFSET
+
+    jsr GetCollisionPoint
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    ora TEMP3
+    and #$f0
+    and #.COLLISION_SOLID
+    bne +
+    rts
++
+    lda .CHECK_DN
+    ;sta PlayerDownSide
+    
+    rts
+
+CheckSideLeft:
+    lda X_BORDER_OFFSET
+    clc
+    adc #1
+    sta X_OFFSET
+    
+    lda Y_BORDER_OFFSET
+    sta Y_OFFSET
+
+    jsr GetCollisionPoint 
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    sta TEMP3
+   
+    lda X_BORDER_OFFSET
+    clc
+    adc #1
+    sta X_OFFSET
+    
+    lda Y_BORDER_OFFSET
+    sec
+    sbc #7
+    sta Y_OFFSET
+
+    jsr GetCollisionPoint
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    ora TEMP3
+    and #$f0
+    and #.COLLISION_SOLID
+    bne +
+    rts
++
+    lda .CHECK_LT
+    ;sta PlayerDownSide
+    
+    rts
+
+CheckSideRight:
+    lda X_BORDER_OFFSET
+    sec
+    sbc #8
+    sta X_OFFSET
+    
+    lda Y_BORDER_OFFSET
+    sta Y_OFFSET
+
+    jsr GetCollisionPoint 
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    sta TEMP3
+ 
+    lda X_BORDER_OFFSET
+    sec
+    sbc #8
+    sta X_OFFSET
+    
+    lda Y_BORDER_OFFSET
+    sec
+    sbc #7
+    sta Y_OFFSET
+
+    jsr GetCollisionPoint
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    ora TEMP3
+    and #$f0
+    and #.COLLISION_SOLID
+    bne +
+    rts
++
+    lda .CHECK_RT
+    ;sta PlayerDownSide
+    
+    rts
+
+
+
+
+
 ;--------------------------------------------------------
 ;--Read character at player position              
 ;--------------------------------------------------------
 GetCharacter:
 .COLLISION_LOOKUP = TEMP1
-.COLLISION_SOLID = %00010000
     ; X register - character X position
     ; Y register - character Y position
 

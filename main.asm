@@ -24,11 +24,11 @@
     jsr PlayerInit 
 loop:
     +GetRaster($ff)
-    inc $D020 
+    ;inc $D020 
       
     jsr PlayerUpdate
    
-    dec $d020
+    ;dec $d020
     +GetRaster($82)
     
     jmp loop
@@ -38,6 +38,13 @@ PlayerRightCollision    !byte $00
 PlayerLeftCollision     !byte $00
 PlayerUpCollision       !byte $00
 PlayerDownCollision     !byte $00
+
+PlayerRightSide         !byte $00
+PlayerLeftSide          !byte $00
+PlayerUpSide            !byte $00
+PlayerDownSide          !byte $00
+
+PlayerSideCollisions    !byte $00
 
 X_BORDER_OFFSET:        !byte $18
 Y_BORDER_OFFSET:        !byte $32
