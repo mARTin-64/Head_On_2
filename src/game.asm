@@ -172,9 +172,9 @@ GoDown:
 
 C_DN:
     lda .PlayerY 
-	and #$f8
-	ora #$02
-	sta .PlayerY 
+    and #$f8
+    ora #$02
+    sta .PlayerY 
 
     jsr CheckMoveLeft
     bne +
