@@ -6,7 +6,7 @@
 ;   Code was written by Martin Živica.
 ;   Date: October, 2019.
 
-!TO "head_on_2.prg", CBM    ; This line of code tells the compiler output file name and type
+!TO "../head_on_2.prg", CBM    ; This line of code tells the compiler output file name and type
 
 ;----------LOAD FILES----------;
 
@@ -19,9 +19,10 @@
     * = $0810       ; Set program memory addres
     
     +Init6502
-    jsr ClearScreen1    ; Call to macro for clearing screen
+    jsr ClearScreen    ; Call to macro for clearing screen
     jsr DrawMap
     jsr PlayerInit 
+
 loop:
     +GetRaster($ff)
     ;inc $D020 
@@ -33,18 +34,6 @@ loop:
     
     jmp loop
 ;----------LOAD ASSETS----------;
-
-PlayerRightCollision    !byte $00
-PlayerLeftCollision     !byte $00
-PlayerUpCollision       !byte $00
-PlayerDownCollision     !byte $00
-
-PlayerRightSide         !byte $00
-PlayerLeftSide          !byte $00
-PlayerUpSide            !byte $00
-PlayerDownSide          !byte $00
-
-PlayerSideCollisions    !byte $00
 
 X_BORDER_OFFSET:        !byte $18
 Y_BORDER_OFFSET:        !byte $32

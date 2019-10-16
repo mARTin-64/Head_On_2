@@ -11,7 +11,6 @@
 }
 
 !macro Init6502 {    ; Main graphics chip initialization
-    
     lda #$00            ;\Set border color to black
     sta BORDER_COLOR    ;/
     
@@ -35,30 +34,10 @@
     sta MEMORY_REGISTER ; Set screen and character location. See "labels.asm"
     
 }
+
 !macro GetRaster .line {
-    
     lda #.line
     cmp RASTER_Y
     bne *-3
 
 }   
-
-!macro EnemyInit {
-    
-    lda #$40 
-    sta SPRITE_POINTERS + 1
-
-    lda ENABLE_SPRITES
-    ora #%00000011
-    sta ENABLE_SPRITES
-
-    lda #$40
-    sta EN0_X
-    lda #$50
-    sta EN0_Y
-    
-}
-
-!macro GetCollision {
-
-}

@@ -7,7 +7,7 @@
 ;--------------------------------------------------------
 ;--Clear the visible screen routine     
 ;--------------------------------------------------------
-ClearScreen1:
+ClearScreen:
 
     lda #$07
     ldx #250
@@ -82,11 +82,6 @@ PlayerInit:
 .JOY_LT = %00100
 .JOY_RT = %01000
 .JOY_FR = %10000
-
-.CHECK_LT = %0100
-.CHECK_RT = %1000
-.CHECK_UP = %0001
-.CHECK_DN = %0010
 
 .COLLISION_SOLID =      %00010000
 .COLLISION_POINTS1 =    %00100000
