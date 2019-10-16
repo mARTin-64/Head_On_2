@@ -135,7 +135,7 @@ GoUp:
 C_UP:
     lda .PlayerY 
     and #$f8
-	ora #$02
+    ora #$02
     sta .PlayerY
 	
     jsr CheckMoveLeft
