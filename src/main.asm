@@ -25,11 +25,11 @@
 
 loop:
     +GetRaster($ff)
-    ;inc $D020 
+    inc $D020 
       
     jsr PlayerUpdate
    
-    ;dec $d020
+    dec $d020
     +GetRaster($82)
     
     jmp loop

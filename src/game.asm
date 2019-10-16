@@ -98,8 +98,9 @@ PlayerInit:
     lda #234
     sta .PlayerY
     
-    ;lda .MV_RT
-    ;sta PL_DIR
+    lda .MV_RT
+    sta PL_DIR
+    
     lda #$18
     sta X_OFFSET
 
@@ -121,17 +122,22 @@ GoUp:
     sta SPRITE_POINTERS + 0
     
     jsr CheckMoveUp
-    bne CheckSide0 
+    bne C_UP 
 
     dec .PlayerY
     lda PL_TURBO
     cmp .Turbo 
     bne GoDown
-   
+     
     dec .PlayerY
     jmp End
 
-CheckSide0:
+C_UP:
+    lda .PlayerY 
+    and #$f8
+	ora #$02
+    sta .PlayerY
+	
     jsr CheckMoveLeft
     bne +
     lda .MV_LT
@@ -154,7 +160,7 @@ GoDown:
     sta SPRITE_POINTERS + 0
     
     jsr CheckMoveDown
-    bne CheckSide1 
+    bne C_DN 
 
     inc .PlayerY
     lda PL_TURBO
@@ -164,7 +170,12 @@ GoDown:
     inc .PlayerY
     jmp End
 
-CheckSide1:
+C_DN:
+    lda .PlayerY 
+	and #$f8
+	ora #$02
+	sta .PlayerY 
+
     jsr CheckMoveLeft
     bne +
     lda .MV_LT
@@ -188,8 +199,8 @@ GoLeft:
     sta SPRITE_POINTERS + 0
     
     jsr CheckMoveLeft
-    bne CheckSide2
-    
+    bne C_LT
+
     clc
     lda PL_TURBO
     cmp .Turbo 
@@ -217,7 +228,15 @@ SetMSB0:
     
     jmp End 
 
-CheckSide2:
+C_LT:
+    lda .PlayerX
+    sec
+    sbc #$02
+    and #$f8
+    clc
+    adc #$08
+    sta .PlayerX
+    
     jsr CheckMoveUp
     bne +
     lda .MV_UP
@@ -241,7 +260,7 @@ GoRight:
     sta SPRITE_POINTERS + 0
     
     jsr CheckMoveRight
-    bne CheckSide3 
+    bne C_RT 
     
     clc
     lda PL_TURBO
@@ -267,7 +286,15 @@ SetMSB1:
     sta SPRITE_MSB
     jmp End 
 
-CheckSide3:
+C_RT:
+    lda .PlayerX 
+    sec
+    sbc #$02
+    and #$f8
+    clc
+    adc #$08
+    sta .PlayerX
+    
     jsr CheckMoveUp
     bne +
     lda .MV_UP
@@ -300,29 +327,59 @@ Up:
     lda JOY_ZP
     and #.JOY_UP
     bne Down
-    lda .MV_UP
-    sta PL_DIR
+    jsr CheckMoveUp
+    bne Turbo
+    dec .PlayerY
 
 Down:
     lda JOY_ZP
     and #.JOY_DN
     bne Left
-    lda .MV_DN
-    sta PL_DIR
+    jsr CheckMoveDown
+    bne Turbo
+    inc .PlayerY
 
 Left:
     lda JOY_ZP
     and #.JOY_LT
     bne Right
-    lda .MV_LT
-    sta PL_DIR
+    jsr CheckMoveLeft
+    bne Turbo
+    
+    lda .PlayerX
+    sec
+    sbc #01
+    sta .PlayerX
+    bcs Right
+    
+    lda #%00000001
+    eor #%11111111
+    and .PlayerX + 1
+    sta SPRITE_MSB
+ 
+    ;lda .MV_LT
+    ;sta PL_DIR
 
 Right:
     lda JOY_ZP
     and #.JOY_RT
     bne Turbo
-    lda .MV_RT
-    sta PL_DIR
+    jsr CheckMoveRight
+    bne Turbo
+  
+    lda .PlayerX
+    clc
+    adc #$01
+    sta .PlayerX
+    bcc Turbo 
+
+    lda #%00000001
+    ora .PlayerX + 1
+    sta .PlayerX + 1
+    sta SPRITE_MSB
+    
+    ;lda .MV_RT
+    ;sta PL_DIR
 
 Turbo:    
     lda JOY_P_2
