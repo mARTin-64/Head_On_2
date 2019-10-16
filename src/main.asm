@@ -49,8 +49,8 @@ PlayerSideCollisions    !byte $00
 X_BORDER_OFFSET:        !byte $18
 Y_BORDER_OFFSET:        !byte $32
 
-!src "game.asm"
-!src "tables.asm"
-!src "assets.asm"   ; Load assets with Sprite and Map data
+!source "game.asm"
+!source "tables.asm"
+!source "assets.asm"   ; Load assets with Sprite and Map data
 
 

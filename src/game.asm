@@ -126,8 +126,6 @@ GoUp:
     sta SPRITE_POINTERS + 0
     
     jsr CheckMoveUp
-    lda PlayerUpCollision
-    and #.COLLISION_SOLID
     bne CheckSide0 
 
     dec .PlayerY
@@ -139,15 +137,17 @@ GoUp:
     jmp End
 
 CheckSide0:
-    jsr CheckSideLeft
+    jsr CheckMoveLeft
     bne +
     lda .MV_LT
     sta PL_DIR
+    jmp GoLeft
 +
-    jsr CheckSideRight
+    jsr CheckMoveRight
     bne +
     lda .MV_RT
     sta PL_DIR
+    jmp GoRight
 +   
 
 GoDown:
@@ -159,8 +159,6 @@ GoDown:
     sta SPRITE_POINTERS + 0
     
     jsr CheckMoveDown
-    lda PlayerDownCollision
-    and #.COLLISION_SOLID
     bne CheckSide1 
 
     inc .PlayerY
@@ -172,15 +170,17 @@ GoDown:
     jmp End
 
 CheckSide1:
-    jsr CheckSideLeft
+    jsr CheckMoveLeft
     bne +
     lda .MV_LT
     sta PL_DIR
+    jmp GoLeft
 +
-    jsr CheckSideRight
+    jsr CheckMoveRight
     bne +
     lda .MV_RT
     sta PL_DIR
+    jmp GoRight
 +   
     jmp End
 
@@ -193,8 +193,6 @@ GoLeft:
     sta SPRITE_POINTERS + 0
     
     jsr CheckMoveLeft
-    lda PlayerLeftCollision
-    and #.COLLISION_SOLID
     bne CheckSide2
     
     clc
@@ -214,7 +212,7 @@ NoTurbo0:
     sec
     sbc #$01
     sta .PlayerX
-    bcs End 
+    bcs GoRight 
 
 SetMSB0:
     lda #%00000001
@@ -225,15 +223,17 @@ SetMSB0:
     jmp End 
 
 CheckSide2:
-    jsr CheckSideUp
+    jsr CheckMoveUp
     bne +
     lda .MV_UP
     sta PL_DIR
+    jmp GoUp
 +
-    jsr CheckSideDown
+    jsr CheckMoveDown
     bne +
     lda .MV_DN
     sta PL_DIR
+    jmp GoDown
 +
     jmp End
 
@@ -246,8 +246,6 @@ GoRight:
     sta SPRITE_POINTERS + 0
     
     jsr CheckMoveRight
-    lda PlayerRightCollision 
-    and #.COLLISION_SOLID
     bne CheckSide3 
     
     clc
@@ -275,15 +273,17 @@ SetMSB1:
     jmp End 
 
 CheckSide3:
-    jsr CheckSideUp
+    jsr CheckMoveUp
     bne +
     lda .MV_UP
     sta PL_DIR
+    jmp GoUp
 +
-    jsr CheckSideDown
+    jsr CheckMoveDown
     bne +
     lda .MV_DN
     sta PL_DIR
+    jmp GoDown
 +
 
 End:
@@ -346,76 +346,6 @@ TurboOff:
 ;--------------------------------------------------------
 ;--Check forward collision for each direction
 ;--------------------------------------------------------
-CheckMoveRight:
-    lda X_BORDER_OFFSET
-    sec
-    sbc #8
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sta Y_OFFSET
-    
-    jsr GetCollisionPoint
-    jsr GetCharacter
-    tax
-    lda CHAR_COLORS, x
-    sta PlayerRightCollision
-    
-    lda X_BORDER_OFFSET
-    sec
-    sbc #8
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sec
-    sbc #7
-    sta Y_OFFSET
-
-    jsr GetCollisionPoint 
-    jsr GetCharacter
-    tax
-    lda CHAR_COLORS, x
-    ora PlayerRightCollision
-    and #$f0
-    sta PlayerRightCollision
-
-    rts
-
-CheckMoveLeft:
-    lda X_BORDER_OFFSET
-    clc
-    adc #1
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sta Y_OFFSET
-    
-    jsr GetCollisionPoint 
-    jsr GetCharacter
-    tax
-    lda CHAR_COLORS, x
-    sta PlayerLeftCollision
-    
-    lda X_BORDER_OFFSET
-    clc
-    adc #1
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sec
-    sbc #7
-    sta Y_OFFSET
-
-    jsr GetCollisionPoint
-    jsr GetCharacter
-    tax
-    lda CHAR_COLORS, x
-    ora PlayerLeftCollision
-    and #$f0
-    sta PlayerLeftCollision
-
-    rts
-
 CheckMoveUp:
     lda X_BORDER_OFFSET
     sec 
@@ -431,7 +361,7 @@ CheckMoveUp:
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
-    sta PlayerUpCollision
+    sta TEMP4
     
     lda X_BORDER_OFFSET
     sta X_OFFSET
@@ -445,9 +375,9 @@ CheckMoveUp:
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
-    ora PlayerUpCollision
+    ora TEMP4
     and #$f0
-    sta PlayerUpCollision
+    and #.COLLISION_SOLID
 
     rts
 
@@ -466,7 +396,7 @@ CheckMoveDown:
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
-    sta PlayerDownCollision
+    sta TEMP4 
     
     lda X_BORDER_OFFSET
     sta X_OFFSET
@@ -480,93 +410,13 @@ CheckMoveDown:
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
-    ora PlayerDownCollision
+    ora TEMP4
     and #$f0
-    sta PlayerDownCollision
+    and #.COLLISION_SOLID 
     
     rts
 
-CheckSideUp:
-    lda X_BORDER_OFFSET
-    sec 
-    sbc #7
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    clc
-    adc #1
-    sta Y_OFFSET
-    
-    jsr GetCollisionPoint 
-    jsr GetCharacter
-    tax
-    lda CHAR_COLORS, x
-    sta TEMP3
-    
-    lda X_BORDER_OFFSET
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    clc
-    adc #1
-    sta Y_OFFSET
-
-    jsr GetCollisionPoint
-    jsr GetCharacter
-    tax
-    lda CHAR_COLORS, x
-    ora TEMP3
-    and #$f0
-    and #.COLLISION_SOLID
-    bne +
-    rts
-+
-    lda .CHECK_UP
-    ;sta PlayerUpSide
-    
-    rts
-
-CheckSideDown:
-    lda X_BORDER_OFFSET
-    sec
-    sbc #7
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sec
-    sbc #8
-    sta Y_OFFSET
-    
-    jsr GetCollisionPoint 
-    jsr GetCharacter
-    tax
-    lda CHAR_COLORS, x
-    sta TEMP3
-    
-    lda X_BORDER_OFFSET
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sec
-    sbc #8
-    sta Y_OFFSET
-
-    jsr GetCollisionPoint
-    jsr GetCharacter
-    tax
-    lda CHAR_COLORS, x
-    ora TEMP3
-    and #$f0
-    and #.COLLISION_SOLID
-    bne +
-    rts
-+
-    lda .CHECK_DN
-    ;sta PlayerDownSide
-    
-    rts
-
-CheckSideLeft:
+CheckMoveLeft:
     lda X_BORDER_OFFSET
     clc
     adc #1
@@ -574,13 +424,13 @@ CheckSideLeft:
     
     lda Y_BORDER_OFFSET
     sta Y_OFFSET
-
+    
     jsr GetCollisionPoint 
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
-    sta TEMP3
-   
+    sta TEMP4
+    
     lda X_BORDER_OFFSET
     clc
     adc #1
@@ -595,18 +445,13 @@ CheckSideLeft:
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
-    ora TEMP3
+    ora TEMP4
     and #$f0
     and #.COLLISION_SOLID
-    bne +
-    rts
-+
-    lda .CHECK_LT
-    ;sta PlayerDownSide
-    
+
     rts
 
-CheckSideRight:
+CheckMoveRight:
     lda X_BORDER_OFFSET
     sec
     sbc #8
@@ -614,13 +459,13 @@ CheckSideRight:
     
     lda Y_BORDER_OFFSET
     sta Y_OFFSET
-
-    jsr GetCollisionPoint 
+    
+    jsr GetCollisionPoint
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
-    sta TEMP3
- 
+    sta TEMP4 
+    
     lda X_BORDER_OFFSET
     sec
     sbc #8
@@ -631,24 +476,15 @@ CheckSideRight:
     sbc #7
     sta Y_OFFSET
 
-    jsr GetCollisionPoint
+    jsr GetCollisionPoint 
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
-    ora TEMP3
+    ora TEMP4
     and #$f0
     and #.COLLISION_SOLID
-    bne +
+
     rts
-+
-    lda .CHECK_RT
-    ;sta PlayerDownSide
-    
-    rts
-
-
-
-
 
 ;--------------------------------------------------------
 ;--Read character at player position              
