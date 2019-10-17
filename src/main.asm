@@ -38,6 +38,7 @@ loop:
 X_BORDER_OFFSET:        !byte $18
 Y_BORDER_OFFSET:        !byte $32
 
+
 !source "game.asm"
 !source "tables.asm"
 !source "assets.asm"   ; Load assets with Sprite and Map data

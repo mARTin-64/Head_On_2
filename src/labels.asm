@@ -4,7 +4,12 @@ TEMP2 = $03
 TEMP3 = $04
 TEMP4 = $05
 TEMP5 = $06
-TEMP6 = $07
+;TEMP6 = $07
+
+CollisionChecked = $20
+DN_CollisionChecked = $21
+LT_CollisionChecked = $22
+RT_CollisionChecked = $23
 
 SCREEN_RAM = $C000  ; Define label for screen memory location
 COLOR_RAM = $D800   ; Define label for colors memory location

@@ -86,10 +86,7 @@ PlayerInit:
 .COLLISION_SOLID =      %00010000
 .COLLISION_POINTS1 =    %00100000
 .COLLISION_POINTS2 =    %01000000
-
-.YES = $01
-.NO  = $00
-
+    
     lda #$43
     sta SPRITE_POINTERS + 0
     lda ENABLE_SPRITES
@@ -114,7 +111,7 @@ PlayerInit:
 ;--------------------------------------------------------
 PlayerUpdate:
 
-    jsr ReadJoystick
+    jsr ReadJoystick 
 
 GoUp:
     lda PL_DIR
@@ -141,21 +138,18 @@ C_UP:
     ora #$02
     sta .PlayerY
 	
-    jsr CheckMoveRight
-    bne +
-    lda .MV_RT
-    sta PL_DIR
-    inc CollisionChecked
-    jmp GoRight
-    
-+   
     jsr CheckMoveLeft
     bne +
     lda .MV_LT
     sta PL_DIR
-    inc CollisionChecked
     jmp GoLeft
 +
+    jsr CheckMoveRight
+    bne +
+    lda .MV_RT
+    sta PL_DIR
+    jmp GoRight
++   
 
 GoDown:
     lda PL_DIR
@@ -186,14 +180,12 @@ C_DN:
     bne +
     lda .MV_LT
     sta PL_DIR
-    inc CollisionChecked
     jmp GoLeft
 +
     jsr CheckMoveRight
     bne +
     lda .MV_RT
     sta PL_DIR
-    inc CollisionChecked
     jmp GoRight
 +   
     jmp End
@@ -249,14 +241,12 @@ C_LT:
     bne +
     lda .MV_UP
     sta PL_DIR
-    inc CollisionChecked
     jmp GoUp
 +
     jsr CheckMoveDown
     bne +
     lda .MV_DN
     sta PL_DIR
-    inc CollisionChecked
     jmp GoDown
 +
     jmp End
@@ -304,21 +294,19 @@ C_RT:
     clc
     adc #$08
     sta .PlayerX
- 
+    
     jsr CheckMoveUp
     bne +
     lda .MV_UP
     sta PL_DIR
-    inc CollisionChecked
     jmp GoUp
 +
     jsr CheckMoveDown
     bne +
     lda .MV_DN
     sta PL_DIR
-    inc CollisionChecked
     jmp GoDown
-+   
++
 
 End:
     lda .PlayerX
@@ -334,23 +322,18 @@ ReadJoystick:
 
     lda JOY_P_2
     sta JOY_ZP
-
 Up:
     lda JOY_ZP
     and #.JOY_UP
     bne Down
-   
+    
     lda PL_DIR
-    cmp .MV_UP
-    beq + 
-    cmp .MV_DN
+    and .MV_DN + .MV_UP
     beq Turbo 
 
     jsr CheckMoveUp
     bne Turbo
     dec .PlayerY
-+
-    jmp Turbo
 
 Down:
     lda JOY_ZP
@@ -358,10 +341,8 @@ Down:
     bne Left
     
     lda PL_DIR
-    cmp .MV_UP
+    and .MV_DN + .MV_UP
     beq Turbo 
-    cmp .MV_DN
-    beq Turbo
 
     jsr CheckMoveDown
     bne Turbo
@@ -371,13 +352,11 @@ Left:
     lda JOY_ZP
     and #.JOY_LT
     bne Right
-
-    lda PL_DIR
-    cmp .MV_LT
-    beq Turbo
-    cmp .MV_RT
-    beq Turbo
     
+    lda PL_DIR
+    and .MV_LT + .MV_RT
+    beq Turbo 
+
     jsr CheckMoveLeft
     bne Turbo
     
@@ -392,17 +371,18 @@ Left:
     and .PlayerX + 1
     sta SPRITE_MSB
  
+    ;lda .MV_LT
+    ;sta PL_DIR
+
 Right:
     lda JOY_ZP
     and #.JOY_RT
     bne Turbo
- 
+    
     lda PL_DIR
-    cmp .MV_LT
-    beq Turbo
-    cmp .MV_RT
-    beq Turbo
-   
+    and .MV_LT + .MV_RT
+    beq Turbo 
+
     jsr CheckMoveRight
     bne Turbo
   
@@ -416,6 +396,9 @@ Right:
     ora .PlayerX + 1
     sta .PlayerX + 1
     sta SPRITE_MSB
+    
+    ;lda .MV_RT
+    ;sta PL_DIR
 
 Turbo:    
     lda JOY_P_2
@@ -435,9 +418,6 @@ TurboOff:
 ;--Check forward collision for each direction
 ;--------------------------------------------------------
 CheckMoveUp:
-    lda CollisionChecked
-    bne +
-    
     lda X_BORDER_OFFSET
     sec 
     sbc #7
@@ -469,17 +449,10 @@ CheckMoveUp:
     ora TEMP4
     and #$f0
     and #.COLLISION_SOLID
-    
-    rts
-+
-    dec CollisionChecked
-    
+
     rts
 
 CheckMoveDown:
-    lda CollisionChecked
-    bne +
-
     lda X_BORDER_OFFSET
     sec
     sbc #7
@@ -513,15 +486,8 @@ CheckMoveDown:
     and #.COLLISION_SOLID 
     
     rts
-+
-    dec CollisionChecked
-    
-    rts
 
 CheckMoveLeft:
-    lda CollisionChecked
-    bne +
-
     lda X_BORDER_OFFSET
     clc
     adc #1
@@ -553,17 +519,10 @@ CheckMoveLeft:
     ora TEMP4
     and #$f0
     and #.COLLISION_SOLID
-   
-    rts
-+
-    dec CollisionChecked
-    
+
     rts
 
 CheckMoveRight:
-    lda CollisionChecked
-    bne +
-
     lda X_BORDER_OFFSET
     sec
     sbc #8
@@ -595,12 +554,8 @@ CheckMoveRight:
     ora TEMP4
     and #$f0
     and #.COLLISION_SOLID
-   
+
     rts
-+
-    dec CollisionChecked
-    
-    rts 
 
 ;--------------------------------------------------------
 ;--Read character at player position              
