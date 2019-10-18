@@ -331,6 +331,8 @@ End:
 ;--Read joystick and store direction    
 ;--------------------------------------------------------
 ReadJoystick:
+;First check for "free zone - behind player
+;depending on movement 
 
     lda JOY_P_2
     sta JOY_ZP
