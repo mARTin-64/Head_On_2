@@ -437,6 +437,8 @@ TurboOff:
 ;--Check forward collision for each direction
 ;--------------------------------------------------------
 CheckMoveUp:
+;Create routine for calculating x and y 
+;collisin points
     lda CollisionChecked
     bne +
     
