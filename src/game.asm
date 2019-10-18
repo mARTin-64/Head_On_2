@@ -104,8 +104,8 @@ PlayerInit:
     lda .MV_RT
     sta PL_DIR
     
-    lda #$18
-    sta X_OFFSET
+    lda #$01
+    sta CheckZone
 
     rts
 
@@ -145,7 +145,6 @@ C_UP:
     bne +
     lda .MV_RT
     sta PL_DIR
-    inc CollisionChecked
     jmp GoRight
     
 +   
@@ -153,7 +152,6 @@ C_UP:
     bne +
     lda .MV_LT
     sta PL_DIR
-    inc CollisionChecked
     jmp GoLeft
 +
 
@@ -186,14 +184,12 @@ C_DN:
     bne +
     lda .MV_LT
     sta PL_DIR
-    inc CollisionChecked
     jmp GoLeft
 +
     jsr CheckMoveRight
     bne +
     lda .MV_RT
     sta PL_DIR
-    inc CollisionChecked
     jmp GoRight
 +   
     jmp End
@@ -249,14 +245,12 @@ C_LT:
     bne +
     lda .MV_UP
     sta PL_DIR
-    inc CollisionChecked
     jmp GoUp
 +
     jsr CheckMoveDown
     bne +
     lda .MV_DN
     sta PL_DIR
-    inc CollisionChecked
     jmp GoDown
 +
     jmp End
@@ -309,14 +303,12 @@ C_RT:
     bne +
     lda .MV_UP
     sta PL_DIR
-    inc CollisionChecked
     jmp GoUp
 +
     jsr CheckMoveDown
     bne +
     lda .MV_DN
     sta PL_DIR
-    inc CollisionChecked
     jmp GoDown
 +   
 
@@ -331,12 +323,9 @@ End:
 ;--Read joystick and store direction    
 ;--------------------------------------------------------
 ReadJoystick:
-;First check for "free zone - behind player
-;depending on movement 
-
     lda JOY_P_2
     sta JOY_ZP
-
+    
 Up:
     lda JOY_ZP
     and #.JOY_UP
@@ -344,12 +333,14 @@ Up:
    
     lda PL_DIR
     cmp .MV_UP
-    beq + 
+    beq +  
     cmp .MV_DN
-    beq Turbo 
+    beq + 
 
+    lda #.NO
+    sta CheckZone
     jsr CheckMoveUp
-    bne Turbo
+    bne + 
     dec .PlayerY
 +
     jmp Turbo
@@ -365,6 +356,8 @@ Down:
     cmp .MV_DN
     beq Turbo
 
+    lda #.NO
+    sta CheckZone
     jsr CheckMoveDown
     bne Turbo
     inc .PlayerY
@@ -380,6 +373,8 @@ Left:
     cmp .MV_RT
     beq Turbo
     
+    lda #.NO
+    sta CheckZone
     jsr CheckMoveLeft
     bne Turbo
     
@@ -405,6 +400,8 @@ Right:
     cmp .MV_RT
     beq Turbo
    
+    lda #.NO
+    sta CheckZone
     jsr CheckMoveRight
     bne Turbo
   
@@ -437,34 +434,34 @@ TurboOff:
 ;--Check forward collision for each direction
 ;--------------------------------------------------------
 CheckMoveUp:
-;Create routine for calculating x and y 
-;collisin points
-    lda CollisionChecked
+    ldx #OFFSET_XR
+    ldy #OFFSET_YDU
+    
+    lda CheckZone 
     bne +
-    
-    lda X_BORDER_OFFSET
-    sec 
-    sbc #7
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    clc
-    adc #1
-    sta Y_OFFSET
-    
+    lda PL_DIR
+    cmp .MV_RT
+    beq +
+    dex
++
     jsr GetCollisionPoint 
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
     sta TEMP4
     
-    lda X_BORDER_OFFSET
-    sta X_OFFSET
+    ldx #OFFSET_XL
+    ldy #OFFSET_YDU
     
-    lda Y_BORDER_OFFSET
-    clc
-    adc #1
-    sta Y_OFFSET
+    lda CheckZone 
+    bne +
+    lda PL_DIR
+    cmp .MV_LT
+    beq +
+    inx
++
+    lda #.YES
+    sta CheckZone
 
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -473,41 +470,39 @@ CheckMoveUp:
     ora TEMP4
     and #$f0
     and #.COLLISION_SOLID
-    
-    rts
-+
-    dec CollisionChecked
-    
+
     rts
 
 CheckMoveDown:
-    lda CollisionChecked
+    ldx #OFFSET_XL
+    ldy #OFFSET_YDD
+    
+    lda CheckZone
     bne +
-
-    lda X_BORDER_OFFSET
-    sec
-    sbc #7
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sec
-    sbc #8
-    sta Y_OFFSET
-    
+    lda PL_DIR
+    cmp .MV_LT
+    beq +
+    inx
++    
     jsr GetCollisionPoint
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
     sta TEMP4 
-    
-    lda X_BORDER_OFFSET
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sec
-    sbc #8
-    sta Y_OFFSET
 
+    ldx #OFFSET_XR
+    ldy #OFFSET_YDD
+    
+    lda CheckZone
+    bne +
+    lda PL_DIR
+    cmp .MV_RT
+    beq +
+    dex
++ 
+    lda #.YES
+    sta CheckZone
+    
     jsr GetCollisionPoint 
     jsr GetCharacter
     tax
@@ -515,40 +510,32 @@ CheckMoveDown:
     ora TEMP4
     and #$f0
     and #.COLLISION_SOLID 
-    
-    rts
-+
-    dec CollisionChecked
-    
+     
     rts
 
 CheckMoveLeft:
-    lda CollisionChecked
+    ldx #OFFSET_XDL
+    ldy #OFFSET_YU
+    
+    lda CheckZone
     bne +
-
-    lda X_BORDER_OFFSET
-    clc
-    adc #1
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sta Y_OFFSET
-    
+    iny
++
     jsr GetCollisionPoint 
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
     sta TEMP4
     
-    lda X_BORDER_OFFSET
-    clc
-    adc #1
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sec
-    sbc #7
-    sta Y_OFFSET
+    ldx #OFFSET_XDL
+    ldy #OFFSET_YD
+
+    lda CheckZone
+    bne +
+    dey
++
+    lda #.YES
+    sta CheckZone
 
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -559,38 +546,30 @@ CheckMoveLeft:
     and #.COLLISION_SOLID
    
     rts
-+
-    dec CollisionChecked
-    
-    rts
 
 CheckMoveRight:
-    lda CollisionChecked
+    ldx #OFFSET_XDR
+    ldy #OFFSET_YU
+    
+    lda CheckZone
     bne +
-
-    lda X_BORDER_OFFSET
-    sec
-    sbc #8
-    sta X_OFFSET
-    
-    lda Y_BORDER_OFFSET
-    sta Y_OFFSET
-    
+    iny
++
     jsr GetCollisionPoint
     jsr GetCharacter
     tax
     lda CHAR_COLORS, x
     sta TEMP4 
     
-    lda X_BORDER_OFFSET
-    sec
-    sbc #8
-    sta X_OFFSET
+    ldx #OFFSET_XDR
+    ldy #OFFSET_YD
     
-    lda Y_BORDER_OFFSET
-    sec
-    sbc #7
-    sta Y_OFFSET
+    lda CheckZone
+    bne +
+    dey
++
+    lda #.YES
+    sta CheckZone
 
     jsr GetCollisionPoint 
     jsr GetCharacter
@@ -600,10 +579,6 @@ CheckMoveRight:
     and #$f0
     and #.COLLISION_SOLID
    
-    rts
-+
-    dec CollisionChecked
-    
     rts 
 
 ;--------------------------------------------------------
@@ -637,6 +612,9 @@ GetCharacter:
 ;--Get player character cordinates      
 ;--------------------------------------------------------
 GetCollisionPoint:
+    ; Store Loaded X and Y positions from X and Y registers
+    stx X_OFFSET
+    sty Y_OFFSET
     
     lda .PlayerX
     sec

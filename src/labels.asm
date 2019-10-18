@@ -4,9 +4,7 @@ TEMP2 = $03
 TEMP3 = $04
 TEMP4 = $05
 TEMP5 = $06
-;TEMP6 = $07
-
-CollisionChecked = $20
+TEMP6 = $07
 
 SCREEN_RAM = $C000  ; Define label for screen memory location
 COLOR_RAM = $D800   ; Define label for colors memory location
@@ -27,6 +25,16 @@ PL_X =      $D000 ;\
 PL_Y =      $D001 ; Player X and Y screen cordinates
 PL_DIR =    $08
 PL_TURBO =  $09
+
+OFFSET_XL =     $18 
+OFFSET_XR =     $11
+OFFSET_XDL =    $19
+OFFSET_XDR =    $10
+
+OFFSET_YU =     $32
+OFFSET_YD =     $2B
+OFFSET_YDU =    $33
+OFFSET_YDD =    $2A
 
 X_OFFSET = $0A
 Y_OFFSET = $0B

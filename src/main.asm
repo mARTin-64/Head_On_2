@@ -38,6 +38,9 @@ loop:
 X_BORDER_OFFSET:        !byte $18
 Y_BORDER_OFFSET:        !byte $32
 
+CheckZone:      !byte $00, $00, $00, $00, $00, $00, $00, $00
+FreeZone:       !byte $00, $00, $00, $00, $00, $00, $00, $00  
+MoveRotation:   !byte $00, $00, $00, $00, $00, $00, $00, $00  
 
 !source "game.asm"
 !source "tables.asm"
