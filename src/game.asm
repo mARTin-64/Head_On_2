@@ -317,7 +317,7 @@ End:
     sta PL_X 
     lda .PlayerY
     sta PL_Y
-    
+    jsr CheckPoint 
     rts
 ;--------------------------------------------------------
 ;--Read joystick and store direction    
@@ -429,6 +429,27 @@ TurboOff:
     sta PL_TURBO
     
     rts
+
+;--------------------------------------------------------
+;--Collect points and update score
+;--------------------------------------------------------
+CheckPoint:
+    ldx #OFFSET_XL - 4
+    ldy #OFFSET_YU - 4
+    
+    jsr GetCollisionPoint 
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    and #$f0
+    and #.COLLISION_POINTS1
+    bne _
+    rts    
+_
+    ldy COLLISION_X
+    lda #$00
+    sta (COLLISION_LOOKUP), y
+   rts
 
 ;--------------------------------------------------------
 ;--Check forward collision for each direction
@@ -585,16 +606,15 @@ CheckMoveRight:
 ;--Read character at player position              
 ;--------------------------------------------------------
 GetCharacter:
-.COLLISION_LOOKUP = TEMP1
     ; X register - character X position
     ; Y register - character Y position
 
     ;---ldy COLLISION_Y---DEBUG
     
     lda ScreenRowLSB, y
-    sta .COLLISION_LOOKUP
+    sta COLLISION_LOOKUP
     lda ScreenRowMSB, y
-    sta .COLLISION_LOOKUP + 1
+    sta COLLISION_LOOKUP + 1
 
     ;DEBUG----------------------
     ;ldy COLLISION_X
@@ -604,7 +624,7 @@ GetCharacter:
     
     txa
     tay
-    lda (.COLLISION_LOOKUP), y ; Return character in Accumulator
+    lda (COLLISION_LOOKUP), y ; Return character in Accumulator
    
     rts 
 
@@ -629,7 +649,8 @@ GetCollisionPoint:
     lsr
     lsr
     tax                     ; Return position X in X register
-    
+    stx COLLISION_X
+
     lda .PlayerY
     cmp Y_BORDER_OFFSET
     bcs +
@@ -641,7 +662,8 @@ GetCollisionPoint:
     lsr
     lsr
     tay                     ; Return position Y in Y register
-    
+    sty COLLISION_Y
+
     rts
 
 }
