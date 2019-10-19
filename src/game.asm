@@ -84,18 +84,13 @@ PlayerInit:
 .JOY_FR = %10000
 
 .COLLISION_SOLID =      %00010000
-.COLLISION_POINTS1 =    %00100000
-.COLLISION_POINTS2 =    %01000000
+
+.POINT_5 =    %00100000
+.POINT_25 =   %01000000
 
 .YES = $01
 .NO  = $00
 
-    lda #$43
-    sta SPRITE_POINTERS + 0
-    lda ENABLE_SPRITES
-    ora %00000001
-    sta ENABLE_SPRITES
-    
     lda #185
     sta .PlayerX 
     lda #234
@@ -106,6 +101,9 @@ PlayerInit:
     
     lda #$01
     sta CheckZone
+    
+    lda #$00
+    sta POINT_COUNTER
 
     rts
 
@@ -317,8 +315,10 @@ End:
     sta PL_X 
     lda .PlayerY
     sta PL_Y
-    jsr CheckPoint 
+    
+    jsr CheckScorePoints
     rts
+
 ;--------------------------------------------------------
 ;--Read joystick and store direction    
 ;--------------------------------------------------------
@@ -431,9 +431,9 @@ TurboOff:
     rts
 
 ;--------------------------------------------------------
-;--Collect points and update score
+;--Collect points, update score and game state
 ;--------------------------------------------------------
-CheckPoint:
+CheckScorePoints:
     ldx #OFFSET_XL - 4
     ldy #OFFSET_YU - 4
     
@@ -442,14 +442,28 @@ CheckPoint:
     tax
     lda CHAR_COLORS, x
     and #$f0
-    and #.COLLISION_POINTS1
-    bne _
+    and #(.POINT_5 + .POINT_25)
+    sta POINT_TYPE
+    bne +
     rts    
-_
++
     ldy COLLISION_X
     lda #$00
     sta (COLLISION_LOOKUP), y
-   rts
+    
+    jsr UpdateScore 
+    
+    inc POINT_COUNTER 
+    lda POINT_COUNTER
+    cmp #108
+    beq +
+    
+    rts
++
+    lda #VICTORY
+    sta GAME_STATE
+    
+    rts
 
 ;--------------------------------------------------------
 ;--Check forward collision for each direction
@@ -666,4 +680,71 @@ GetCollisionPoint:
 
     rts
 
+;--------------------------------------------------------
+;--Draw player score on screen
+;--------------------------------------------------------
+UpdateScore:
+    sed
+    
+    lda #$05
+    sta POINT_VALUE
+
+    lda POINT_TYPE
+    and #.POINT_5
+    bne + 
+    lda #$25
+    sta POINT_VALUE
++
+    clc
+    lda Score
+    adc POINT_VALUE
+    sta Score
+    lda Score + 1
+    adc #0
+    sta Score + 1
+    lda Score + 2
+    adc #0
+    sta Score + 2
+    
+    cld
+    
+    jsr ScoreDisplay
+    
+    rts
+
+ScoreDisplay:
+    ldy #22      ; Screen offset
+    ldx #0      ; Score byte index
+
+-    
+    lda Score, x
+    pha
+    and #$0f
+    jsr ShowDigit
+    
+    pla
+    lsr
+    lsr
+    lsr
+    lsr
+    jsr ShowDigit
+    
+    inx
+    cpx #3
+    bne -
+
+    rts
+
+ShowDigit:
+    clc
+    adc #10
+    sta SCREEN_RAM + 600, y
+    dey
+    
+    rts
 }
+
+
+
+
+

@@ -32,6 +32,11 @@
     
     lda #%00001100      ;\
     sta MEMORY_REGISTER ; Set screen and character location. See "labels.asm"
+    lda #$43
+    sta SPRITE_POINTERS + 0
+    lda ENABLE_SPRITES
+    ora %00000001
+    sta ENABLE_SPRITES
     
 }
 
@@ -40,4 +45,14 @@
     cmp RASTER_Y
     bne *-3
 
-}   
+}
+
+!macro GameInit {
+    jsr ClearScreen    ; Call to macro for clearing screen
+    jsr DrawMap
+    jsr PlayerInit
+    lda #PLAY
+    sta GAME_STATE
+    lda #$00
+    sta BORDER_COLOR
+}

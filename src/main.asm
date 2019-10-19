@@ -19,20 +19,25 @@
     * = $0810       ; Set program memory addres
     
     +Init6502
-    jsr ClearScreen    ; Call to macro for clearing screen
-    jsr DrawMap
-    jsr PlayerInit 
 
-loop:
+Start:
+
+    +GameInit
+
+Loop:
     +GetRaster($ff)
     inc $D020 
       
+    lda GAME_STATE
+    and #VICTORY
+    bne Start
+    
     jsr PlayerUpdate
    
     dec $d020
     +GetRaster($82)
     
-    jmp loop
+    jmp Loop
 ;----------LOAD ASSETS----------;
 
 X_BORDER_OFFSET:        !byte $18
@@ -41,6 +46,8 @@ Y_BORDER_OFFSET:        !byte $32
 CheckZone:      !byte $00, $00, $00, $00, $00, $00, $00, $00
 FreeZone:       !byte $00, $00, $00, $00, $00, $00, $00, $00  
 MoveRotation:   !byte $00, $00, $00, $00, $00, $00, $00, $00  
+
+Score   !byte $00, $00, $00
 
 !source "game.asm"
 !source "tables.asm"
