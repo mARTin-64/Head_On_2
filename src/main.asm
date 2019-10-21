@@ -9,10 +9,10 @@
 !TO "../head_on_2.prg", CBM    ; This line of code tells the compiler output file name and type
 
 ;----------LOAD FILES----------;
-
-!src "macros.asm"   ; Loads file with defined macros
-
+!src "zero_page.asm"
+!src "macros.asm"   ; Loads file with defined macro!
 !src "labels.asm"   ; Load predefined labels 
+
 ;----------MAIN PROGRAM----------;   
     +BasicStart     ; Call to macro for starting program
     
@@ -43,14 +43,26 @@ Loop:
 X_BORDER_OFFSET:        !byte $18
 Y_BORDER_OFFSET:        !byte $32
 
+PlayerX: !byte $00, $00
+PlayerY: !byte $00, $00
+
+MV_UP: !byte %0001
+MV_DN: !byte %0010
+MV_LT: !byte %0100
+MV_RT: !byte %1000
+
 CheckZone:      !byte $00, $00, $00, $00, $00, $00, $00, $00
 FreeZone:       !byte $00, $00, $00, $00, $00, $00, $00, $00  
 MoveRotation:   !byte $00, $00, $00, $00, $00, $00, $00, $00  
 
+EntityActive:   !byte $00
+
 Score   !byte $00, $00, $00
 
-!source "game.asm"
+!source "player.asm"
+!source "enemy.asm"
+!source "collision.asm"
 !source "tables.asm"
 !source "assets.asm"   ; Load assets with Sprite and Map data
-
+!source "score.asm"
 

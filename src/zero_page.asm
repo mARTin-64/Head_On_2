@@ -1,0 +1,31 @@
+TEMP1 = $02 ; ZP
+TEMP2 = $03 ; ZP
+TEMP3 = $04 ; ZP
+TEMP4 = $05 ; ZP
+TEMP5 = $06 ; ZP
+TEMP6 = $07 ; ZP
+
+COLLISION_LOOKUP = $08   ; ZP + 1
+COLLISION_X      = $0A   ; ZP
+COLLISION_Y      = $0B   ; ZP
+
+JOY_ZP =    $0C ; ZP
+
+PL_DIR =    $0D ; ZP
+PL_TURBO =  $0E ; ZP
+
+X_OFFSET = $0F  ; ZP
+Y_OFFSET = $10  ; ZP
+
+POINT_COUNTER = $11 ; ZP
+POINT_TYPE =    $12 ; ZP
+POINT_VALUE =   $13 ; ZP
+GAME_STATE =    $14 ; ZP
+
+COUNTER =       $15
+
+POINTER1 =  $1A
+POINTER2 =  $1C
+
+
+

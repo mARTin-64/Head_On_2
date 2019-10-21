@@ -1,11 +1,7 @@
 ; Load Sprite, and Map data into defined memory locations
 
-* = $F000       ; Character set starts at $F000
-CHAR_SET:
-    !binary "../char_set/char_set.bin"
-
 * = $D000
-PLAYER_SPRITEM:
+PLAYER_SPRITE:
     !binary "../sprites/player_sprites.bin"
 
 ENEMY_SPRITE:
@@ -17,5 +13,9 @@ MAP:
 
 CHAR_COLORS:
     !binary "../char_set/char_attributes.bin"
+
+* = $F000       ; Character set starts at $F000
+CHAR_SET:
+    !binary "../char_set/char_set.bin"
 
 

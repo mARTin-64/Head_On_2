@@ -32,12 +32,29 @@
     
     lda #%00001100      ;\
     sta MEMORY_REGISTER ; Set screen and character location. See "labels.asm"
-    lda #$43
-    sta SPRITE_POINTERS + 0
+    
     lda ENABLE_SPRITES
-    ora %00000001
+    ora #%00000011
     sta ENABLE_SPRITES
     
+    lda #$40
+    sta SPRITE_POINTERS
+   
+    lda #$46
+    sta SPRITE_POINTERS + 1
+    sta SPRITE_POINTERS + 2 
+    sta SPRITE_POINTERS + 3 
+    sta SPRITE_POINTERS + 4 
+
+
+
+
+    lda #$01
+    sta SPRITE_COLOR1
+    lda #$02
+    sta SPRITE_COLOR2
+     
+
 }
 
 !macro GetRaster .line {
@@ -51,6 +68,7 @@
     jsr ClearScreen    ; Call to macro for clearing screen
     jsr DrawMap
     jsr PlayerInit
+    jsr EnemyInit
     lda #PLAY
     sta GAME_STATE
     lda #$00
