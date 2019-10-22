@@ -3,7 +3,7 @@ TEMP2 = $03 ; ZP
 TEMP3 = $04 ; ZP
 TEMP4 = $05 ; ZP
 TEMP5 = $06 ; ZP
-TEMP6 = $07 ; ZP
+ENTITY_TO_UPDATE = $07 ; ZP
 
 COLLISION_LOOKUP = $08   ; ZP + 1
 COLLISION_X      = $0A   ; ZP
@@ -27,5 +27,5 @@ COUNTER =       $15
 POINTER1 =  $1A
 POINTER2 =  $1C
 
-
+ACTIVE_ENEMYES = $20
 

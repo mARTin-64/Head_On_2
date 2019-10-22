@@ -224,24 +224,24 @@ ENTITY_Y = POINTER2
     stx X_OFFSET
     sty Y_OFFSET
 
-    cmp #$00
-    bne SetupEntity1
-
-SetupEntity0:
+    lda ENTITY_TO_UPDATE 
+    cmp #PLAYER_ACTIVE
+    bne +
+SetupPlayer:
     lda PlayerX
     sta ENTITY_X
     lda PlayerY
     sta ENTITY_Y
     jmp SetupComplete
-
++
 SetupEntity1:
-    lda Enemy0_X
+    lda EnemyX
     sta ENTITY_X
-    lda Enemy0_Y
+    lda EnemyY
     sta ENTITY_Y
-
+   
 SetupComplete:
-    lda PlayerX
+    lda ENTITY_X
     sec
     sbc X_OFFSET 
     sta ENTITY_POSITION
@@ -256,7 +256,7 @@ SetupComplete:
     tax                     ; Return position X in X register
     stx COLLISION_X
 
-    lda PlayerY
+    lda ENTITY_Y
     cmp Y_BORDER_OFFSET
     bcs +
     lda Y_BORDER_OFFSET

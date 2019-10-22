@@ -37,18 +37,6 @@
     ora #%00000011
     sta ENABLE_SPRITES
     
-    lda #$40
-    sta SPRITE_POINTERS
-   
-    lda #$46
-    sta SPRITE_POINTERS + 1
-    sta SPRITE_POINTERS + 2 
-    sta SPRITE_POINTERS + 3 
-    sta SPRITE_POINTERS + 4 
-
-
-
-
     lda #$01
     sta SPRITE_COLOR1
     lda #$02
@@ -73,4 +61,6 @@
     sta GAME_STATE
     lda #$00
     sta BORDER_COLOR
+    lda #$01
+    sta ACTIVE_ENEMYES
 }

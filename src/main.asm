@@ -33,7 +33,8 @@ Loop:
     bne Start
     
     jsr PlayerUpdate
-   
+    ;jsr EnemyUpdate
+
     dec $d020
     +GetRaster($82)
     
@@ -44,18 +45,22 @@ X_BORDER_OFFSET:        !byte $18
 Y_BORDER_OFFSET:        !byte $32
 
 PlayerX: !byte $00, $00
-PlayerY: !byte $00, $00
+PlayerY: !byte $00 
+
+Enemy_X: !byte $00, $00
+Enemy_Y: !byte $00 
 
 MV_UP: !byte %0001
 MV_DN: !byte %0010
 MV_LT: !byte %0100
 MV_RT: !byte %1000
 
-CheckZone:      !byte $00, $00, $00, $00, $00, $00, $00, $00
-FreeZone:       !byte $00, $00, $00, $00, $00, $00, $00, $00  
-MoveRotation:   !byte $00, $00, $00, $00, $00, $00, $00, $00  
+EN_DIR:   !byte $00, $00, $00, $00
+EN_TURBO  !byte $00, $00, $00, $00
 
-EntityActive:   !byte $00
+CheckZone:      !byte $00, $00, $00, $00 
+FreeZone:       !byte $00, $00, $00, $00 
+MoveRotation:   !byte $00, $00, $00, $00  
 
 Score   !byte $00, $00, $00
 

@@ -1,2 +1,5 @@
 jmain.asm
 HO2.vim
+src/game.asm
+src/game_backup.asm
+src/UTILS.vim

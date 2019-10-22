@@ -1,5 +1,5 @@
 ;--------------------------------------------------------
-;--Main game routines                    
+;--Main game player routines                    
 ;--------------------------------------------------------
 
 !zone SCREEN {
@@ -73,6 +73,9 @@ DrawMap:
 ;--Routine for intializing player          
 ;--------------------------------------------------------
 PlayerInit:
+    lda #$40
+    sta SPRITE_POINTERS
+
     lda #185
     sta PlayerX 
     lda #234
@@ -93,7 +96,9 @@ PlayerInit:
 ;--Player controll and display routines 
 ;--------------------------------------------------------
 PlayerUpdate:
-
+    lda #PLAYER_ACTIVE
+    sta ENTITY_TO_UPDATE 
+    
     jsr ReadJoystick
 
 GoUp:
@@ -141,7 +146,7 @@ GoDown:
     bne GoLeft
     
     lda #$41
-    sta SPRITE_POINTERS + 0
+    sta SPRITE_POINTERS 
     
     jsr CheckMoveDown
     bne C_DN 
@@ -180,7 +185,7 @@ GoLeft:
     bne GoRight
     
     lda #$42
-    sta SPRITE_POINTERS + 0
+    sta SPRITE_POINTERS 
     
     jsr CheckMoveLeft
     bne C_LT
@@ -241,7 +246,7 @@ GoRight:
     bne End
     
     lda #$43
-    sta SPRITE_POINTERS + 0
+    sta SPRITE_POINTERS 
     
     jsr CheckMoveRight
     bne C_RT 

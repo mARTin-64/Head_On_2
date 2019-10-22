@@ -17,6 +17,9 @@ SPRITE_POINTERS = SCREEN_RAM + $3F8
 PL_X =      $D000 ;\
 PL_Y =      $D001 ; Player X and Y screen cordinates
 
+PLAYER_ACTIVE = %00000001
+ENEMY0_ACTIVE = %00000010
+
 JOY_P_2 =   $DC00
 
 COLLISION_SOLID =      %00010000
