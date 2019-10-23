@@ -1,8 +1,5 @@
 !zone Enemy {
 
-EnemyX:   !byte $00, $00
-EnemyY:   !byte $00
-
 .Turbo: !byte $01
 
 EnemyInit:
@@ -10,9 +7,9 @@ EnemyInit:
     sta SPRITE_POINTERS + 1
 
     lda #175
-    sta EnemyX 
+    sta Enemy_X 
     lda #234
-    sta EnemyY
+    sta Enemy_Y
     
     lda MV_LT
     sta EN_DIR
@@ -26,6 +23,7 @@ EnemyUpdate:
     lda #ENEMY0_ACTIVE
     sta ENTITY_TO_UPDATE
     
+    jsr GetBehaviour
 
 EGoUp:
     lda EN_DIR 
@@ -38,19 +36,19 @@ EGoUp:
     jsr CheckMoveUp
     bne EC_UP 
 
-    dec EnemyY
+    dec Enemy_Y
     lda EN_TURBO
     cmp .Turbo 
     bne EGoDown
      
-    dec EnemyY
+    dec Enemy_Y
     jmp EEnd
 
 EC_UP:
-    lda EnemyY 
+    lda Enemy_Y 
     and #$f8
     ora #$02
-    sta EnemyY
+    sta Enemy_Y
 	
     jsr CheckMoveRight
     bne +
@@ -77,19 +75,19 @@ EGoDown:
     jsr CheckMoveDown
     bne EC_DN 
 
-    inc EnemyY
+    inc Enemy_Y
     lda EN_TURBO
     cmp .Turbo 
     bne EGoLeft 
     
-    inc EnemyY
+    inc Enemy_Y
     jmp EEnd
 
 EC_DN:
-    lda EnemyY 
+    lda Enemy_Y 
     and #$f8
     ora #$02
-    sta EnemyY 
+    sta Enemy_Y 
 
     jsr CheckMoveLeft
     bne +
@@ -121,25 +119,25 @@ EGoLeft:
     cmp .Turbo 
     bne ENoturbo
     
-    lda EnemyX
+    lda Enemy_X
     sec
     sbc #02
-    sta EnemyX
+    sta Enemy_X
     bcs EGoRight
     jmp ESetMSB0
 
 ENoturbo:
-    lda EnemyX
+    lda Enemy_X
     sec
     sbc #$01
-    sta EnemyX
+    sta Enemy_X
     bcs EGoRight 
 
 ESetMSB0:
     lda #%00000010
     eor #%11111111
-    asl EnemyX + 1
-    and EnemyX + 1
+    asl Enemy_X + 1
+    and Enemy_X + 1
     sta ENEMY_MSB
     ora PLAYER_MSB
     sta SPRITE_MSB
@@ -147,13 +145,13 @@ ESetMSB0:
     jmp EEnd 
 
 EC_LT:
-    lda EnemyX
+    lda Enemy_X
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta EnemyX
+    sta Enemy_X
     
     jsr CheckMoveUp
     bne +
@@ -185,36 +183,36 @@ EGoRight:
     cmp .Turbo 
     bne ENoturbo1 
     
-    lda EnemyX
+    lda Enemy_X
     adc #$01
-    sta EnemyX
+    sta Enemy_X
     bcc EEnd 
     jmp ESetMSB1
 
 ENoturbo1:
-    lda EnemyX
+    lda Enemy_X
     adc #$01
-    sta EnemyX
+    sta Enemy_X
     bcc EEnd 
 
 ESetMSB1:    
     lda #%00000010
-    asl EnemyX + 1
-    ora EnemyX + 1
-    sta EnemyX + 1
+    asl Enemy_X + 1
+    ora Enemy_X + 1
+    sta Enemy_X + 1
     sta ENEMY_MSB
     ora PLAYER_MSB
     sta SPRITE_MSB
     jmp EEnd 
 
 EC_RT:
-    lda EnemyX 
+    lda Enemy_X 
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta EnemyX
+    sta Enemy_X
  
     jsr CheckMoveUp
     bne +
@@ -230,11 +228,111 @@ EC_RT:
 +   
 
 EEnd:
-    lda EnemyX
+    lda Enemy_X
     sta EN0_X 
-    lda EnemyY
+    lda Enemy_Y
     sta EN0_Y
     
     rts
+
+;--------------------------------------------------------
+;--Update Enemy Behaviours    
+;--------------------------------------------------------
+GetBehaviour:
+    jmp EUp
+EUp:
+    lda EN_DIR
+    cmp MV_UP
+    beq +  
+    cmp MV_DN
+    beq + 
+
+    lda #NO
+    sta CheckZone
+    jsr CheckMoveUp
+    bne + 
+    dec Enemy_Y
++
+    jmp ETurbo
+
+EDown:
+    lda EN_DIR
+    cmp MV_UP
+    beq ELeft 
+    cmp MV_DN
+    beq ETurbo
+
+    lda #NO
+    sta CheckZone
+    jsr CheckMoveDown
+    bne ETurbo
+    inc Enemy_Y
+
+ELeft:
+    lda EN_DIR
+    cmp MV_LT
+    beq ETurbo
+    cmp MV_RT
+    beq ETurbo
+    
+    lda #NO
+    sta CheckZone
+    jsr CheckMoveLeft
+    bne ETurbo
+    
+    lda Enemy_X
+    sec
+    sbc #01
+    sta Enemy_X
+    bcs ETurbo 
+    
+    lda #%00000010
+    eor #%11111111
+    and Enemy_X + 1
+    sta ENEMY_MSB
+    ora PLAYER_MSB
+    sta SPRITE_MSB
+
+ERight:
+    lda EN_DIR
+    cmp MV_LT
+    beq ETurbo
+    cmp MV_RT
+    beq ETurbo
+   
+    lda #NO
+    sta CheckZone
+    jsr CheckMoveRight
+    bne ETurbo
+  
+    lda Enemy_X
+    clc
+    adc #$01
+    sta Enemy_X
+    bcc ETurbo 
+
+    lda #%00000010
+    ora Enemy_X + 1
+    sta Enemy_X + 1
+    sta ENEMY_MSB
+    ora PLAYER_MSB
+    sta SPRITE_MSB
+    rts
+ETurbo:    
+    ;lda JOY_P_2
+    ;and #.JOY_FR
+    ;bne TurboOff 
+    ;lda Turbo
+    ;sta PL_TURBO
+    rts
+
+ETurboOff:
+    ;lda #$00
+    ;sta PL_TURBO
+    
+    rts
+
+
+   rts
 
 }

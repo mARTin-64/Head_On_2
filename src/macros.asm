@@ -64,3 +64,12 @@
     lda #$01
     sta ACTIVE_ENEMYES
 }
+
+!macro GetPlayerState {
+       
+}
+
+!macro GetPlayerRotation {
+
+}
+

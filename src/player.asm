@@ -77,9 +77,9 @@ PlayerInit:
     sta SPRITE_POINTERS
 
     lda #185
-    sta PlayerX 
+    sta Player_X 
     lda #234
-    sta PlayerY
+    sta Player_Y
     
     lda MV_RT
     sta PL_DIR
@@ -105,30 +105,36 @@ GoUp:
     lda PL_DIR
     cmp MV_UP 
     bne GoDown 
-   
+    sta PTH 
+    
     lda #$40
     sta SPRITE_POINTERS 
     
     jsr CheckMoveUp
     bne C_UP 
 
-    dec PlayerY
+    dec Player_Y
     lda PL_TURBO
     cmp .Turbo 
     bne GoDown
      
-    dec PlayerY
+    dec Player_Y
     jmp End
 
 C_UP:
-    lda PlayerY 
-    and #$f8
-    ora #$02
-    sta PlayerY
-	
+    ;lda Player_Y 
+    ;and #$f8
+    ;ora #$02
+    ;sta Player_Y
+	jsr SnapUp
+    beq +
+    jmp End
++
+
     jsr CheckMoveRight
     bne +
     lda MV_RT
+    sta PTH + 1
     sta PL_DIR
     jmp GoRight
     
@@ -136,6 +142,7 @@ C_UP:
     jsr CheckMoveLeft
     bne +
     lda MV_LT
+    sta PTH + 1
     sta PL_DIR
     jmp GoLeft
 +
@@ -144,6 +151,7 @@ GoDown:
     lda PL_DIR
     cmp MV_DN
     bne GoLeft
+    sta PTH
     
     lda #$41
     sta SPRITE_POINTERS 
@@ -151,29 +159,31 @@ GoDown:
     jsr CheckMoveDown
     bne C_DN 
 
-    inc PlayerY
+    inc Player_Y
     lda PL_TURBO
     cmp .Turbo 
     bne GoLeft 
     
-    inc PlayerY
+    inc Player_Y
     jmp End
 
 C_DN:
-    lda PlayerY 
+    lda Player_Y 
     and #$f8
     ora #$02
-    sta PlayerY 
+    sta Player_Y 
 
     jsr CheckMoveLeft
     bne +
     lda MV_LT
+    sta PTH + 1
     sta PL_DIR
     jmp GoLeft
 +
     jsr CheckMoveRight
     bne +
     lda MV_RT
+    sta PTH + 1
     sta PL_DIR
     jmp GoRight
 +   
@@ -183,6 +193,7 @@ GoLeft:
     lda PL_DIR
     cmp MV_LT
     bne GoRight
+    sta PTH
     
     lda #$42
     sta SPRITE_POINTERS 
@@ -195,24 +206,24 @@ GoLeft:
     cmp .Turbo 
     bne NoTurbo0
     
-    lda PlayerX
+    lda Player_X
     sec
     sbc #02
-    sta PlayerX
+    sta Player_X
     bcs GoRight
     jmp SetMSB0
 
 NoTurbo0:
-    lda PlayerX
+    lda Player_X
     sec
     sbc #$01
-    sta PlayerX
+    sta Player_X
     bcs GoRight 
 
 SetMSB0:
     lda #%00000001
     eor #%11111111
-    and PlayerX + 1
+    and Player_X + 1
     sta PLAYER_MSB
     ora ENEMY_MSB
     sta SPRITE_MSB
@@ -220,23 +231,25 @@ SetMSB0:
     jmp End 
 
 C_LT:
-    lda PlayerX
+    lda Player_X
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta PlayerX
+    sta Player_X
     
     jsr CheckMoveUp
     bne +
     lda MV_UP
+    sta PTH + 1
     sta PL_DIR
     jmp GoUp
 +
     jsr CheckMoveDown
     bne +
     lda MV_DN
+    sta PTH + 1
     sta PL_DIR
     jmp GoDown
 +
@@ -247,6 +260,7 @@ GoRight:
     cmp MV_RT
     bne End
     
+    sta PTH
     lda #$43
     sta SPRITE_POINTERS 
     
@@ -258,53 +272,55 @@ GoRight:
     cmp .Turbo 
     bne NoTurbo1 
     
-    lda PlayerX
+    lda Player_X
     adc #$01
-    sta PlayerX
+    sta Player_X
     bcc End 
     jmp SetMSB1
 
 NoTurbo1:
-    lda PlayerX
+    lda Player_X
     adc #$01
-    sta PlayerX
+    sta Player_X
     bcc End 
 
 SetMSB1:    
     lda #%00000001
-    ora PlayerX + 1
-    sta PlayerX + 1
+    ora Player_X + 1
+    sta Player_X + 1
     sta PLAYER_MSB
     ora ENEMY_MSB
     sta SPRITE_MSB
     jmp End 
 
 C_RT:
-    lda PlayerX 
+    lda Player_X 
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta PlayerX
+    sta Player_X
  
     jsr CheckMoveUp
     bne +
     lda MV_UP
+    sta PTH + 1
     sta PL_DIR
     jmp GoUp
 +
     jsr CheckMoveDown
     bne +
     lda MV_DN
+    sta PTH + 1
     sta PL_DIR
     jmp GoDown
 +   
 
 End:
-    lda PlayerX
+    lda Player_X
     sta PL_X 
-    lda PlayerY
+    lda Player_Y
     sta PL_Y
     
     jsr CheckScorePoints
@@ -332,7 +348,7 @@ Up:
     sta CheckZone
     jsr CheckMoveUp
     bne + 
-    dec PlayerY
+    dec Player_Y
 +
     jmp Turbo
 
@@ -351,7 +367,7 @@ Down:
     sta CheckZone
     jsr CheckMoveDown
     bne Turbo
-    inc PlayerY
+    inc Player_Y
 
 Left:
     lda JOY_ZP
@@ -369,15 +385,15 @@ Left:
     jsr CheckMoveLeft
     bne Turbo
     
-    lda PlayerX
+    lda Player_X
     sec
     sbc #01
-    sta PlayerX
+    sta Player_X
     bcs Turbo 
     
     lda #%00000001
     eor #%11111111
-    and PlayerX + 1
+    and Player_X + 1
     sta PLAYER_MSB
     ora ENEMY_MSB
     sta SPRITE_MSB
@@ -398,15 +414,15 @@ Right:
     jsr CheckMoveRight
     bne Turbo
   
-    lda PlayerX
+    lda Player_X
     clc
     adc #$01
-    sta PlayerX
+    sta Player_X
     bcc Turbo 
 
     lda #%00000001
-    ora PlayerX + 1
-    sta PlayerX + 1
+    ora Player_X + 1
+    sta Player_X + 1
     sta PLAYER_MSB
     ora ENEMY_MSB
     sta SPRITE_MSB
@@ -424,4 +440,55 @@ TurboOff:
     sta PL_TURBO
     
     rts
+
+;--------------------------------------------------------
+;--Snap Player moveing Up   
+;--------------------------------------------------------
+SnapUp: 
+    lda #NO
+    sta CheckZone
+    jsr CheckMoveLeft
+    sta FreeZone
+    
+    lda #NO
+    sta CheckZone
+    jsr CheckMoveRight
+    and FreeZone
+    bne NotFree 
+    
+    lda FreeZone
+    bne +
+    
+    lda Player_X
+    clc
+    adc #$08
+    and #$f8
+    sec
+    sbc #$08
+    sta Player_X
+    lda #$01
+    
+    rts
+
++
+    lda Player_X
+    sec
+    sbc #$08
+    and #$f8
+    clc
+    adc #$08
+    sta Player_X
+    lda #$01
+    
+    rts
+
+NotFree:
+    lda Player_Y 
+    and #$f8
+    ora #$02
+    sta Player_Y
+    lda #$00 
+    
+    rts
+
 }

@@ -73,7 +73,7 @@ CheckMoveUp:
     lda CHAR_COLORS, x
     ora TEMP4
     and #$f0
-    and #COLLISION_SOLID
+    and #SOLID
 
     rts
 
@@ -113,7 +113,7 @@ CheckMoveDown:
     lda CHAR_COLORS, x
     ora TEMP4
     and #$f0
-    and #COLLISION_SOLID 
+    and #SOLID 
      
     rts
 
@@ -147,7 +147,7 @@ CheckMoveLeft:
     lda CHAR_COLORS, x
     ora TEMP4
     and #$f0
-    and #COLLISION_SOLID
+    and #SOLID
    
     rts
 
@@ -181,7 +181,7 @@ CheckMoveRight:
     lda CHAR_COLORS, x
     ora TEMP4
     and #$f0
-    and #COLLISION_SOLID
+    and #SOLID
    
     rts 
 
@@ -230,9 +230,9 @@ ENTITY_MSB = POINTER3
     bne +
 
 SetupPlayer:
-    lda PlayerX
+    lda Player_X
     sta ENTITY_X
-    lda PlayerY
+    lda Player_Y
     sta ENTITY_Y
     lda PLAYER_MSB
     sta ENTITY_MSB
@@ -241,9 +241,9 @@ SetupPlayer:
 +
 
 SetupEntity1:
-    lda EnemyX
+    lda Enemy_X
     sta ENTITY_X
-    lda EnemyY
+    lda Enemy_Y
     sta ENTITY_Y
     lda ENEMY_MSB
     lsr
