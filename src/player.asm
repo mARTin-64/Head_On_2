@@ -213,6 +213,8 @@ SetMSB0:
     lda #%00000001
     eor #%11111111
     and PlayerX + 1
+    sta PLAYER_MSB
+    ora ENEMY_MSB
     sta SPRITE_MSB
     
     jmp End 
@@ -272,6 +274,8 @@ SetMSB1:
     lda #%00000001
     ora PlayerX + 1
     sta PlayerX + 1
+    sta PLAYER_MSB
+    ora ENEMY_MSB
     sta SPRITE_MSB
     jmp End 
 
@@ -339,7 +343,7 @@ Down:
     
     lda PL_DIR
     cmp MV_UP
-    beq Turbo 
+    beq Left 
     cmp MV_DN
     beq Turbo
 
@@ -374,6 +378,8 @@ Left:
     lda #%00000001
     eor #%11111111
     and PlayerX + 1
+    sta PLAYER_MSB
+    ora ENEMY_MSB
     sta SPRITE_MSB
  
 Right:
@@ -401,6 +407,8 @@ Right:
     lda #%00000001
     ora PlayerX + 1
     sta PlayerX + 1
+    sta PLAYER_MSB
+    ora ENEMY_MSB
     sta SPRITE_MSB
 
 Turbo:    

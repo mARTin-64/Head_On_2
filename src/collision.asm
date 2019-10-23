@@ -220,33 +220,42 @@ GetCollisionPoint:
 ENTITY_POSITION = TEMP1
 ENTITY_X = POINTER1
 ENTITY_Y = POINTER2
-    
+ENTITY_MSB = POINTER3
+
     stx X_OFFSET
     sty Y_OFFSET
 
     lda ENTITY_TO_UPDATE 
     cmp #PLAYER_ACTIVE
     bne +
+
 SetupPlayer:
     lda PlayerX
     sta ENTITY_X
     lda PlayerY
     sta ENTITY_Y
+    lda PLAYER_MSB
+    sta ENTITY_MSB
+
     jmp SetupComplete
 +
+
 SetupEntity1:
     lda EnemyX
     sta ENTITY_X
     lda EnemyY
     sta ENTITY_Y
-   
+    lda ENEMY_MSB
+    lsr
+    sta ENTITY_MSB
+
 SetupComplete:
     lda ENTITY_X
     sec
     sbc X_OFFSET 
     sta ENTITY_POSITION
     
-    lda SPRITE_MSB
+    lda ENTITY_MSB
     sbc #00
     lsr
     lda ENTITY_POSITION 

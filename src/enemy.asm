@@ -136,9 +136,12 @@ ENoturbo:
     bcs EGoRight 
 
 ESetMSB0:
-    lda #%00000001
+    lda #%00000010
     eor #%11111111
+    asl EnemyX + 1
     and EnemyX + 1
+    sta ENEMY_MSB
+    ora PLAYER_MSB
     sta SPRITE_MSB
     
     jmp EEnd 
@@ -195,9 +198,12 @@ ENoturbo1:
     bcc EEnd 
 
 ESetMSB1:    
-    lda #%00000001
+    lda #%00000010
+    asl EnemyX + 1
     ora EnemyX + 1
     sta EnemyX + 1
+    sta ENEMY_MSB
+    ora PLAYER_MSB
     sta SPRITE_MSB
     jmp EEnd 
 
