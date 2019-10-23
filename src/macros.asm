@@ -41,7 +41,6 @@
     sta SPRITE_COLOR1
     lda #$02
     sta SPRITE_COLOR2
-     
 
 }
 

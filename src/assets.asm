@@ -16,6 +16,6 @@ CHAR_COLORS:
 
 * = $F000       ; Character set starts at $F000
 CHAR_SET:
-    !binary "../char_set/char_set.bin"
+    !binary "../char_set/char_set_collision.bin"
 
 

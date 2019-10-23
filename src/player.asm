@@ -86,7 +86,8 @@ PlayerInit:
     
     lda #$01
     sta CheckZone
-    
+    sta CheckSnap
+
     lda #$00
     sta POINT_COUNTER
 
@@ -128,7 +129,7 @@ C_UP:
     ;sta Player_Y
 	jsr SnapUp
     beq +
-    jmp End
+    jmp End 
 +
 
     jsr CheckMoveRight
@@ -438,56 +439,6 @@ Turbo:
 TurboOff:
     lda #$00
     sta PL_TURBO
-    
-    rts
-
-;--------------------------------------------------------
-;--Snap Player moveing Up   
-;--------------------------------------------------------
-SnapUp: 
-    lda #NO
-    sta CheckZone
-    jsr CheckMoveLeft
-    sta FreeZone
-    
-    lda #NO
-    sta CheckZone
-    jsr CheckMoveRight
-    and FreeZone
-    bne NotFree 
-    
-    lda FreeZone
-    bne +
-    
-    lda Player_X
-    clc
-    adc #$08
-    and #$f8
-    sec
-    sbc #$08
-    sta Player_X
-    lda #$01
-    
-    rts
-
-+
-    lda Player_X
-    sec
-    sbc #$08
-    and #$f8
-    clc
-    adc #$08
-    sta Player_X
-    lda #$01
-    
-    rts
-
-NotFree:
-    lda Player_Y 
-    and #$f8
-    ora #$02
-    sta Player_Y
-    lda #$00 
     
     rts
 

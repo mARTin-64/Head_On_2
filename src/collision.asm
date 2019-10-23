@@ -48,6 +48,10 @@ CheckMoveUp:
     beq +
     dex
 +
+    lda CheckSnap
+    bne +
+    dey
++   
     jsr GetCollisionPoint 
     jsr GetCharacter
     tax
@@ -64,8 +68,13 @@ CheckMoveUp:
     beq +
     inx
 +
+    lda CheckSnap
+    bne +
+    dey
++  
     lda #YES
     sta CheckZone
+    sta CheckSnap
 
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -88,6 +97,10 @@ CheckMoveDown:
     beq +
     inx
 +    
+    lda CheckSnap
+    bne +
+    iny
++ 
     jsr GetCollisionPoint
     jsr GetCharacter
     tax
@@ -104,9 +117,14 @@ CheckMoveDown:
     beq +
     dex
 + 
+    lda CheckSnap
+    bne +
+    iny
++   
     lda #YES
     sta CheckZone
-    
+    sta CheckSnap
+
     jsr GetCollisionPoint 
     jsr GetCharacter
     tax
@@ -125,6 +143,10 @@ CheckMoveLeft:
     bne +
     iny
 +
+    lda CheckSnap
+    bne +
+    dex
++  
     jsr GetCollisionPoint 
     jsr GetCharacter
     tax
@@ -138,8 +160,13 @@ CheckMoveLeft:
     bne +
     dey
 +
+    lda CheckSnap
+    bne +
+    dex
++  
     lda #YES
     sta CheckZone
+    sta CheckSnap
 
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -154,10 +181,14 @@ CheckMoveLeft:
 CheckMoveRight:
     ldx #OFFSET_XDR
     ldy #OFFSET_YU
-    
+   
     lda CheckZone
     bne +
     iny
++
+    lda CheckSnap
+    bne +
+    inx
 +
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -172,8 +203,13 @@ CheckMoveRight:
     bne +
     dey
 +
+    lda CheckSnap
+    bne +
+    inx
++
     lda #YES
     sta CheckZone
+    sta CheckSnap
 
     jsr GetCollisionPoint 
     jsr GetCharacter
@@ -279,6 +315,56 @@ SetupComplete:
     sty COLLISION_Y
 
     rts
+
+;--------------------------------------------------------
+;--Snap Player moving Up   
+;--------------------------------------------------------
+SnapUp: 
+    lda #NO
+    sta CheckSnap
+    sta CheckZone
+    jsr CheckMoveRight
+    sta FreeZoneRight
+    
+    lda #NO
+    sta CheckSnap
+    sta CheckZone
+    jsr CheckMoveLeft
+    and FreeZoneRight
+    bne NotFree 
+    
+    lda FreeZoneRight
+    bne +
+ 
+    lda Player_X
+    clc
+    adc #$08
+    and #$f8
+    sta Player_X
+    lda #$01
+   
+    rts
++
+    lda Player_X
+    sec
+    sbc #$08
+    and #$f8
+    clc
+    adc #$08
+    sta Player_X
+    lda #$01
+
+    rts
+
+NotFree:
+    lda Player_Y 
+    and #$f8
+    ora #$02
+    sta Player_Y
+    lda #$00 
+    
+    rts
+
 
 }
 

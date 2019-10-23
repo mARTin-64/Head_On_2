@@ -62,9 +62,13 @@ EN_TURBO    !byte $00, $00, $00, $00
 ENEMY_MSB:  !byte $00, $00, $00, $00
 ENEMY_STATE !byte $00, $00, $00, $00
 
+CheckSnap:      !byte $00
 CheckZone:      !byte $00 
-FreeZone:       !byte $00 
-MoveRotation:   !byte $00, $00, $00, $00  
+FreeZone:       !byte $00
+FreeZoneUp:     !byte $00
+FreeZoneDown:   !byte $00
+FreeZoneLeft:   !byte $00
+FreeZoneRight:  !byte $00
 
 Score   !byte $00, $00, $00
 
