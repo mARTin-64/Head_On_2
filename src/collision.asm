@@ -50,7 +50,7 @@ CheckMoveUp:
 +
     lda CheckSnap
     bne +
-    dey
+    iny
 +   
     jsr GetCollisionPoint 
     jsr GetCharacter
@@ -70,7 +70,7 @@ CheckMoveUp:
 +
     lda CheckSnap
     bne +
-    dey
+    iny
 +  
     lda #YES
     sta CheckZone
@@ -99,7 +99,7 @@ CheckMoveDown:
 +    
     lda CheckSnap
     bne +
-    iny
+    dey
 + 
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -119,7 +119,7 @@ CheckMoveDown:
 + 
     lda CheckSnap
     bne +
-    iny
+    dey
 +   
     lda #YES
     sta CheckZone
@@ -331,7 +331,7 @@ SnapUp:
     sta CheckZone
     jsr CheckMoveLeft
     and FreeZoneRight
-    bne NotFree 
+    bne ++ 
     
     lda FreeZoneRight
     bne +
@@ -356,7 +356,7 @@ SnapUp:
 
     rts
 
-NotFree:
+++:
     lda Player_Y 
     and #$f8
     ora #$02
@@ -364,6 +364,93 @@ NotFree:
     lda #$00 
     
     rts
+
+SnapDown:
+    lda #NO
+    sta CheckSnap
+    sta CheckZone
+    jsr CheckMoveRight
+    sta FreeZoneRight
+    
+    lda #NO
+    sta CheckSnap
+    sta CheckZone
+    jsr CheckMoveLeft
+    and FreeZoneRight
+    bne ++ 
+    
+    lda FreeZoneRight
+    bne +
+ 
+    lda Player_X
+    clc
+    adc #$08
+    and #$f8
+    sta Player_X
+    lda #$01
+   
+    rts
++
+    lda Player_X
+    sec
+    sbc #$08
+    and #$f8
+    clc
+    adc #$08
+    sta Player_X
+    lda #$01
+
+    rts
+
+++:
+    lda Player_Y 
+    and #$f8
+    ora #$02
+    sta Player_Y
+    lda #$00 
+    
+    rts
+
+SnapLeft:
+    lda #NO
+    sta CheckSnap
+    sta CheckZone
+    jsr CheckMoveUp
+    sta FreeZoneUp
+    
+    lda #NO
+    sta CheckSnap
+    sta CheckZone
+    jsr CheckMoveDown
+    and FreeZoneUp
+    bne ++ 
+    
+    ;lda FreeZoneUp
+    ;bne +
+    
+    lda Player_Y 
+    and #$f8
+    sec
+    sbc #$08
+    sta Player_Y
+    lda #$01 
+  
+    rts
+
+++:
+    lda Player_X
+    sec
+    sbc #$02
+    and #$f8
+    clc
+    adc #$08
+    sta Player_X
+    lda #$00 
+    
+    rts
+
+
+
 
 
 }

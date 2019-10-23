@@ -169,11 +169,14 @@ GoDown:
     jmp End
 
 C_DN:
-    lda Player_Y 
-    and #$f8
-    ora #$02
-    sta Player_Y 
-
+    ;lda Player_Y 
+    ;and #$f8
+    ;ora #$02
+    ;sta Player_Y 
+    jsr SnapDown
+    beq +
+    jmp End
++
     jsr CheckMoveLeft
     bne +
     lda MV_LT
@@ -220,7 +223,7 @@ NoTurbo0:
     sbc #$01
     sta Player_X
     bcs GoRight 
-
+    
 SetMSB0:
     lda #%00000001
     eor #%11111111
@@ -232,14 +235,17 @@ SetMSB0:
     jmp End 
 
 C_LT:
-    lda Player_X
-    sec
-    sbc #$02
-    and #$f8
-    clc
-    adc #$08
-    sta Player_X
-    
+    ;lda Player_X
+    ;sec
+    ;sbc #$02
+    ;and #$f8
+    ;clc
+    ;adc #$08
+    ;sta Player_X
+    ;jsr SnapLeft
+    beq +
+    jmp End
++    
     jsr CheckMoveUp
     bne +
     lda MV_UP
