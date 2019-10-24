@@ -47,7 +47,7 @@ Y_BORDER_OFFSET:    !byte $32
 Player_X:    !byte $00, $00
 Player_Y:    !byte $00 
 PLAYER_MSB   !byte $00
-PTH !byte $00, $00          ; Player Turn History
+PTH          !byte $00, $00          ; Player Turn History
 
 Enemy_X:    !byte $00, $00
 Enemy_Y:    !byte $00 
@@ -64,7 +64,6 @@ ENEMY_STATE !byte $00, $00, $00, $00
 
 CheckSnap:      !byte $00
 CheckZone:      !byte $00 
-FreeZone:       !byte $00
 FreeZoneUp:     !byte $00
 FreeZoneDown:   !byte $00
 FreeZoneLeft:   !byte $00

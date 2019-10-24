@@ -123,15 +123,10 @@ GoUp:
     jmp End
 
 C_UP:
-    ;lda Player_Y 
-    ;and #$f8
-    ;ora #$02
-    ;sta Player_Y
-	jsr SnapUp
+	jsr SnapUpDown
     beq +
-    jmp End 
+    jmp GoUp 
 +
-
     jsr CheckMoveRight
     bne +
     lda MV_RT
@@ -169,13 +164,9 @@ GoDown:
     jmp End
 
 C_DN:
-    ;lda Player_Y 
-    ;and #$f8
-    ;ora #$02
-    ;sta Player_Y 
-    jsr SnapDown
+    jsr SnapUpDown
     beq +
-    jmp End
+    jmp GoDown 
 +
     jsr CheckMoveLeft
     bne +
@@ -235,16 +226,9 @@ SetMSB0:
     jmp End 
 
 C_LT:
-    ;lda Player_X
-    ;sec
-    ;sbc #$02
-    ;and #$f8
-    ;clc
-    ;adc #$08
-    ;sta Player_X
-    ;jsr SnapLeft
+    jsr SnapLeftRight
     beq +
-    jmp End
+    jmp GoLeft 
 +    
     jsr CheckMoveUp
     bne +
@@ -301,14 +285,10 @@ SetMSB1:
     jmp End 
 
 C_RT:
-    lda Player_X 
-    sec
-    sbc #$02
-    and #$f8
-    clc
-    adc #$08
-    sta Player_X
- 
+    jsr SnapLeftRight
+    beq +
+    jmp GoRight 
++
     jsr CheckMoveUp
     bne +
     lda MV_UP

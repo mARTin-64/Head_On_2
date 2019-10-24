@@ -50,7 +50,8 @@ CheckMoveUp:
 +
     lda CheckSnap
     bne +
-    iny
+    dex
+    ;dey
 +   
     jsr GetCollisionPoint 
     jsr GetCharacter
@@ -70,11 +71,13 @@ CheckMoveUp:
 +
     lda CheckSnap
     bne +
-    iny
+    inx
+    ;dey
+    lda #YES
+    sta CheckSnap
 +  
     lda #YES
     sta CheckZone
-    sta CheckSnap
 
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -99,7 +102,8 @@ CheckMoveDown:
 +    
     lda CheckSnap
     bne +
-    dey
+    inx
+    iny
 + 
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -119,11 +123,13 @@ CheckMoveDown:
 + 
     lda CheckSnap
     bne +
-    dey
+    dex
+    iny
+    lda #YES
+    sta CheckSnap
 +   
     lda #YES
     sta CheckZone
-    sta CheckSnap
 
     jsr GetCollisionPoint 
     jsr GetCharacter
@@ -146,6 +152,7 @@ CheckMoveLeft:
     lda CheckSnap
     bne +
     dex
+    iny
 +  
     jsr GetCollisionPoint 
     jsr GetCharacter
@@ -163,10 +170,12 @@ CheckMoveLeft:
     lda CheckSnap
     bne +
     dex
+    dey
+    lda #YES
+    sta CheckSnap
 +  
     lda #YES
     sta CheckZone
-    sta CheckSnap
 
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -188,7 +197,8 @@ CheckMoveRight:
 +
     lda CheckSnap
     bne +
-    inx
+    ;inx
+    iny
 +
     jsr GetCollisionPoint
     jsr GetCharacter
@@ -205,11 +215,13 @@ CheckMoveRight:
 +
     lda CheckSnap
     bne +
-    inx
+    ;inx
+    dey
+    lda #YES
+    sta CheckSnap
 +
     lda #YES
     sta CheckZone
-    sta CheckSnap
 
     jsr GetCollisionPoint 
     jsr GetCharacter
@@ -319,32 +331,21 @@ SetupComplete:
 ;--------------------------------------------------------
 ;--Snap Player moving Up   
 ;--------------------------------------------------------
-SnapUp: 
+SnapUpDown: 
     lda #NO
     sta CheckSnap
-    sta CheckZone
-    jsr CheckMoveRight
-    sta FreeZoneRight
-    
-    lda #NO
-    sta CheckSnap
-    sta CheckZone
     jsr CheckMoveLeft
-    and FreeZoneRight
+    sta FreeZoneLeft
+
+    lda #NO
+    sta CheckSnap
+    jsr CheckMoveRight
+    and FreeZoneLeft
     bne ++ 
     
-    lda FreeZoneRight
+    lda FreeZoneLeft
     bne +
  
-    lda Player_X
-    clc
-    adc #$08
-    and #$f8
-    sta Player_X
-    lda #$01
-   
-    rts
-+
     lda Player_X
     sec
     sbc #$08
@@ -355,33 +356,7 @@ SnapUp:
     lda #$01
 
     rts
-
-++:
-    lda Player_Y 
-    and #$f8
-    ora #$02
-    sta Player_Y
-    lda #$00 
-    
-    rts
-
-SnapDown:
-    lda #NO
-    sta CheckSnap
-    sta CheckZone
-    jsr CheckMoveRight
-    sta FreeZoneRight
-    
-    lda #NO
-    sta CheckSnap
-    sta CheckZone
-    jsr CheckMoveLeft
-    and FreeZoneRight
-    bne ++ 
-    
-    lda FreeZoneRight
-    bne +
- 
++
     lda Player_X
     clc
     adc #$08
@@ -390,19 +365,9 @@ SnapDown:
     lda #$01
    
     rts
-+
-    lda Player_X
-    sec
-    sbc #$08
-    and #$f8
-    clc
-    adc #$08
-    sta Player_X
-    lda #$01
-
-    rts
 
 ++:
+    
     lda Player_Y 
     and #$f8
     ora #$02
@@ -411,30 +376,39 @@ SnapDown:
     
     rts
 
-SnapLeft:
+SnapLeftRight:
     lda #NO
     sta CheckSnap
-    sta CheckZone
-    jsr CheckMoveUp
-    sta FreeZoneUp
-    
-    lda #NO
-    sta CheckSnap
-    sta CheckZone
     jsr CheckMoveDown
-    and FreeZoneUp
+    sta FreeZoneDown
+    
+    lda #NO
+    sta CheckSnap
+    jsr CheckMoveUp
+    and FreeZoneDown
     bne ++ 
     
-    ;lda FreeZoneUp
-    ;bne +
-    
+    lda FreeZoneDown
+    bne +
+
     lda Player_Y 
+    clc
+    adc #$03
     and #$f8
-    sec
-    sbc #$08
+    ora #$2
     sta Player_Y
     lda #$01 
-  
+    
+    rts  
++
+    lda Player_Y 
+    sec
+    sbc #$03
+    and #$f8
+    ora #$2
+    sta Player_Y
+    lda #$01 
+ 
     rts
 
 ++:
@@ -448,10 +422,6 @@ SnapLeft:
     lda #$00 
     
     rts
-
-
-
-
 
 }
 
