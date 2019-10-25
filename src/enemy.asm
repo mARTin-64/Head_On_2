@@ -7,7 +7,7 @@ EnemyInit:
     sta SPRITE_POINTERS + 1
 
     lda #175
-    sta Enemy_X 
+    sta Enemy0_X 
     lda #234
     sta Enemy_Y
     
@@ -119,39 +119,39 @@ EGoLeft:
     cmp .Turbo 
     bne ENoturbo
     
-    lda Enemy_X
+    lda Enemy0_X
     sec
     sbc #02
-    sta Enemy_X
+    sta Enemy0_X
     bcs EGoRight
     jmp ESetMSB0
 
 ENoturbo:
-    lda Enemy_X
+    lda Enemy0_X
     sec
     sbc #$01
-    sta Enemy_X
+    sta Enemy0_X
     bcs EGoRight 
 
 ESetMSB0:
     lda #%00000010
     eor #%11111111
-    asl Enemy_X + 1
-    and Enemy_X + 1
-    sta ENEMY_MSB
-    ora PLAYER_MSB
+    asl Enemy0_X + 1
+    and Enemy0_X + 1
+    sta Enemy_MSB
+    ora Player_MSB
     sta SPRITE_MSB
     
     jmp EEnd 
 
 EC_LT:
-    lda Enemy_X
+    lda Enemy0_X
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta Enemy_X
+    sta Enemy0_X
     
     jsr CheckMoveUp
     bne +
@@ -183,36 +183,36 @@ EGoRight:
     cmp .Turbo 
     bne ENoturbo1 
     
-    lda Enemy_X
+    lda Enemy0_X
     adc #$01
-    sta Enemy_X
+    sta Enemy0_X
     bcc EEnd 
     jmp ESetMSB1
 
 ENoturbo1:
-    lda Enemy_X
+    lda Enemy0_X
     adc #$01
-    sta Enemy_X
+    sta Enemy0_X
     bcc EEnd 
 
 ESetMSB1:    
     lda #%00000010
-    asl Enemy_X + 1
-    ora Enemy_X + 1
-    sta Enemy_X + 1
-    sta ENEMY_MSB
-    ora PLAYER_MSB
+    asl Enemy0_X + 1
+    ora Enemy0_X + 1
+    sta Enemy0_X + 1
+    sta Enemy_MSB
+    ora Player_MSB
     sta SPRITE_MSB
     jmp EEnd 
 
 EC_RT:
-    lda Enemy_X 
+    lda Enemy0_X 
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta Enemy_X
+    sta Enemy0_X
  
     jsr CheckMoveUp
     bne +
@@ -228,7 +228,7 @@ EC_RT:
 +   
 
 EEnd:
-    lda Enemy_X
+    lda Enemy0_X
     sta EN0_X 
     lda Enemy_Y
     sta EN0_Y
@@ -280,17 +280,17 @@ ELeft:
     jsr CheckMoveLeft
     bne ETurbo
     
-    lda Enemy_X
+    lda Enemy0_X
     sec
     sbc #01
-    sta Enemy_X
+    sta Enemy0_X
     bcs ETurbo 
     
     lda #%00000010
     eor #%11111111
-    and Enemy_X + 1
-    sta ENEMY_MSB
-    ora PLAYER_MSB
+    and Enemy0_X + 1
+    sta Enemy_MSB
+    ora Player_MSB
     sta SPRITE_MSB
 
 ERight:
@@ -305,34 +305,26 @@ ERight:
     jsr CheckMoveRight
     bne ETurbo
   
-    lda Enemy_X
+    lda Enemy0_X
     clc
     adc #$01
-    sta Enemy_X
+    sta Enemy0_X
     bcc ETurbo 
 
     lda #%00000010
-    ora Enemy_X + 1
-    sta Enemy_X + 1
-    sta ENEMY_MSB
-    ora PLAYER_MSB
+    ora Enemy0_X + 1
+    sta Enemy0_X + 1
+    sta Enemy_MSB
+    ora Player_MSB
     sta SPRITE_MSB
     rts
 ETurbo:    
-    ;lda JOY_P_2
-    ;and #.JOY_FR
-    ;bne TurboOff 
-    ;lda Turbo
-    ;sta PL_TURBO
+
     rts
 
 ETurboOff:
-    ;lda #$00
-    ;sta PL_TURBO
-    
+
     rts
 
-
-   rts
 
 }

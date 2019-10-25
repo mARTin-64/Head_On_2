@@ -6,8 +6,8 @@
 ;   Code was written by Martin Živica.
 ;   Date: October, 2019.
 
-!TO "../head_on_2.prg", CBM    ; This line of code tells the compiler output file name and type
-
+!to "../head_on_2.prg",cbm    ; This line of code tells the compiler output file name and type
+!cpu 6502
 ;----------LOAD FILES----------;
 !src "zero_page.asm"
 !src "macros.asm"   ; Loads file with defined macro!
@@ -46,21 +46,25 @@ Y_BORDER_OFFSET:    !byte $32
 
 Player_X:    !byte $00, $00
 Player_Y:    !byte $00 
-PLAYER_MSB   !byte $00
+Player_MSB   !byte $00
 PTH          !byte $00, $00          ; Player Turn History
-
-Enemy_X:    !byte $00, $00
-Enemy_Y:    !byte $00 
 
 MV_UP: !byte %0001
 MV_DN: !byte %0010
 MV_LT: !byte %0100
 MV_RT: !byte %1000
 
-EN_DIR:     !byte $00, $00, $00, $00
-EN_TURBO    !byte $00, $00, $00, $00
-ENEMY_MSB:  !byte $00, $00, $00, $00
-ENEMY_STATE !byte $00, $00, $00, $00
+Enemy0_X:       !byte $00, $00
+Enemy1_X:       !byte $00, $00
+Enemy2_X:       !byte $00, $00
+Enemy3_X:       !byte $00, $00
+
+Enemy_Y:        !byte $00, $00, $00, $00 
+EN_DIR:         !byte $00, $00, $00, $00
+EN_TURBO        !byte $00, $00, $00, $00
+Enemy_MSB:      !byte $00, $00, $00, $00
+ENEMY_STATE:    !byte $00, $00, $00, $00
+CurrentEnemy:   !byte $00
 
 CheckSnap:      !byte $00
 CheckZone:      !byte $00 

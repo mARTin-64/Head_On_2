@@ -266,9 +266,9 @@ GetCollisionPoint:
 ; Store Loaded X and Y positions from X and Y registers
 
 ENTITY_POSITION = TEMP1
-ENTITY_X = POINTER1
-ENTITY_Y = POINTER2
-ENTITY_MSB = POINTER3
+Entity_X = POINTER1
+Entity_Y = POINTER2
+Entity_MSB = POINTER3
 
     stx X_OFFSET
     sty Y_OFFSET
@@ -279,31 +279,23 @@ ENTITY_MSB = POINTER3
 
 SetupPlayer:
     lda Player_X
-    sta ENTITY_X
+    sta Entity_X
     lda Player_Y
-    sta ENTITY_Y
-    lda PLAYER_MSB
-    sta ENTITY_MSB
+    sta Entity_Y
+    lda Player_MSB
+    sta Entity_MSB
 
     jmp SetupComplete
 +
-
-SetupEntity1:
-    lda Enemy_X
-    sta ENTITY_X
-    lda Enemy_Y
-    sta ENTITY_Y
-    lda ENEMY_MSB
-    lsr
-    sta ENTITY_MSB
+    jsr SetupEntity
 
 SetupComplete:
-    lda ENTITY_X
+    lda Entity_X
     sec
     sbc X_OFFSET 
     sta ENTITY_POSITION
     
-    lda ENTITY_MSB
+    lda Entity_MSB
     sbc #00
     lsr
     lda ENTITY_POSITION 
@@ -313,7 +305,7 @@ SetupComplete:
     tax                     ; Return position X in X register
     stx COLLISION_X
 
-    lda ENTITY_Y
+    lda Entity_Y
     cmp Y_BORDER_OFFSET
     bcs +
     lda Y_BORDER_OFFSET
@@ -423,5 +415,47 @@ SnapLeftRight:
     
     rts
 
+;--------------------------------------------------------
+;--Setup current entity  
+;--------------------------------------------------------
+SetupEntity:
+    ldx CurrentEnemy
+    cmp #$00
+    beq Spr0
+
+Spr0:    
+    lda Enemy0_X 
+    sta Entity_X
+    lda Enemy_MSB, x
+    lsr
+    sta Entity_MSB
+    
+    jmp Rest
+
+Spr1:
+    lda Enemy1_X
+    sta Entity_X
+    lda Enemy_MSB, x
+    lsr
+    lsr
+    sta Entity_MSB
+
+    jmp Rest
+
+Rest:    
+    lda Enemy_Y, x
+    sta Entity_Y
+
+
+UpdateNext:
+    inc CurrentEnemy
+    ldx CurrentEnemy
+    cpx ACTIVE_ENEMYES
+    bcs +
+    rts
++   
+    ldx #$00
+    stx CurrentEnemy
+    rts
 }
 
