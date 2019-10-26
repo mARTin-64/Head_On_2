@@ -32,8 +32,8 @@ Loop:
     and #VICTORY
     bne Start
     
-    jsr PlayerUpdate
     jsr EnemyUpdate
+    jsr PlayerUpdate
 
     dec $d020
     +GetRaster($82)
@@ -54,16 +54,13 @@ MV_DN: !byte %0010
 MV_LT: !byte %0100
 MV_RT: !byte %1000
 
-Enemy0_X:       !byte $00, $00
-Enemy1_X:       !byte $00, $00
-Enemy2_X:       !byte $00, $00
-Enemy3_X:       !byte $00, $00
-
+Enemy0_X:       !byte $00, $00, $00, $00
+Enemy0_X_MSB:   !byte $00, $00, $00, $00
 Enemy_Y:        !byte $00, $00, $00, $00 
-EN_DIR:         !byte $00, $00, $00, $00
-EN_TURBO        !byte $00, $00, $00, $00
+Enemy_Dir:      !byte $00, $00, $00, $00
+Enemy_Turbo     !byte $00, $00, $00, $00
 Enemy_MSB:      !byte $00, $00, $00, $00
-ENEMY_STATE:    !byte $00, $00, $00, $00
+Enemy_State:    !byte $00, $00, $00, $00
 CurrentEnemy:   !byte $00
 
 CheckSnap:      !byte $00

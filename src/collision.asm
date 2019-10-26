@@ -51,7 +51,6 @@ CheckMoveUp:
     lda CheckSnap
     bne +
     dex
-    ;dey
 +   
     jsr GetCollisionPoint 
     jsr GetCharacter
@@ -72,7 +71,6 @@ CheckMoveUp:
     lda CheckSnap
     bne +
     inx
-    ;dey
     lda #YES
     sta CheckSnap
 +  
@@ -197,7 +195,6 @@ CheckMoveRight:
 +
     lda CheckSnap
     bne +
-    ;inx
     iny
 +
     jsr GetCollisionPoint
@@ -215,7 +212,6 @@ CheckMoveRight:
 +
     lda CheckSnap
     bne +
-    ;inx
     dey
     lda #YES
     sta CheckSnap
@@ -419,43 +415,28 @@ SnapLeftRight:
 ;--Setup current entity  
 ;--------------------------------------------------------
 SetupEntity:
-    ldx CurrentEnemy
-    cmp #$00
-    beq Spr0
+    ldy CurrentEnemy
 
 Spr0:    
-    lda Enemy0_X 
+    lda (ENEMY_X), y
     sta Entity_X
-    lda Enemy_MSB, x
+    lda (EN_MSB), y
     lsr
     sta Entity_MSB
-    
-    jmp Rest
-
-Spr1:
-    lda Enemy1_X
-    sta Entity_X
-    lda Enemy_MSB, x
-    lsr
-    lsr
-    sta Entity_MSB
-
-    jmp Rest
 
 Rest:    
-    lda Enemy_Y, x
+    lda (ENEMY_Y), y
     sta Entity_Y
 
 
 UpdateNext:
-    inc CurrentEnemy
-    ldx CurrentEnemy
-    cpx ACTIVE_ENEMYES
+    iny
+    cpy ACTIVE_ENEMYES
     bcs +
     rts
 +   
-    ldx #$00
-    stx CurrentEnemy
+    ldy #$00
+    sty CurrentEnemy
     rts
 }
 

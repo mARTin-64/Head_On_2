@@ -58,11 +58,10 @@
     jsr EnemyInit
     lda #PLAY
     sta GAME_STATE
-    lda #$00
+    lda #$01
     sta ACTIVE_ENEMYES
     lda #$00
     sta BORDER_COLOR
-    sta CurrentEnemy
 }
 
 !macro GetPlayerState {

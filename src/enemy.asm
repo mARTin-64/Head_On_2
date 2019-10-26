@@ -5,243 +5,333 @@
 EnemyInit:
     lda #$46
     sta SPRITE_POINTERS + 1
-
+    
     lda #175
     sta Enemy0_X 
     lda #234
     sta Enemy_Y
     
     lda MV_LT
-    sta EN_DIR
+    sta Enemy_Dir
     
     lda #$01
     sta CheckZone
-    
+   
+    lda SPRITE_MSB
+    and #%11111101
+    sta SPRITE_MSB
+
     rts
 
 EnemyUpdate:
+ENEMY_X     = POINTER4
+ENEMY_X_MSB = POINTER5
+ENEMY_Y     = POINTER6
+EN_DIR      = POINTER7
+EN_TURBO    = POINTER8
+EN_MSB      = POINTER9
+
     lda #ENEMY0_ACTIVE
     sta ENTITY_TO_UPDATE
     
-    jsr GetBehaviour
+SetupEnemy0:
+    lda #<Enemy0_X
+    sta ENEMY_X
+    lda #>Enemy0_X
+    sta ENEMY_X + 1
+    
+    lda #<Enemy0_X_MSB 
+    sta ENEMY_X_MSB
+    lda #>Enemy0_X_MSB 
+    sta ENEMY_X_MSB + 1 
+    
+    lda #<Enemy_Y
+    sta ENEMY_Y
+    lda #>Enemy_Y
+    sta ENEMY_Y + 1
+    
+    lda #<Enemy_Dir
+    sta EN_DIR
+    lda #>Enemy_Dir
+    sta EN_DIR + 1
 
+    lda #<Enemy_MSB
+    sta EN_MSB
+    lda #>Enemy_MSB
+    sta EN_MSB + 1
+       
+    ;jsr GetBehaviour
+    
+    ldy CurrentEnemy
 EGoUp:
-    lda EN_DIR 
+    lda (EN_DIR), y   
     cmp MV_UP 
     bne EGoDown 
    
     lda #$44
-    sta SPRITE_POINTERS + 1 
-    
+    sta SPRITE_POINTERS + 1, y  
     jsr CheckMoveUp
     bne EC_UP 
-
-    dec Enemy_Y
-    lda EN_TURBO
+   
+    ldy CurrentEnemy
+    lda (ENEMY_Y), y
+    sec
+    sbc #$01
+    sta (ENEMY_Y), y
+    
+    lda (EN_TURBO), y 
     cmp .Turbo 
     bne EGoDown
-     
-    dec Enemy_Y
+    
+    lda (ENEMY_Y), y
+    sec
+    sbc #$01
+    sta (ENEMY_Y), y
     jmp EEnd
 
 EC_UP:
-    lda Enemy_Y 
+    lda (ENEMY_Y), y 
     and #$f8
     ora #$02
-    sta Enemy_Y
+    sta (ENEMY_Y), y
 	
     jsr CheckMoveRight
     bne +
+    ldy CurrentEnemy
     lda MV_RT
-    sta EN_DIR
+    sta (EN_DIR), y 
     jmp EGoRight
     
 +   
     jsr CheckMoveLeft
     bne +
+    ldy CurrentEnemy
     lda MV_LT
-    sta EN_DIR
+    sta (EN_DIR), y
     jmp EGoLeft
 +
 
 EGoDown:
-    lda EN_DIR
+    lda (EN_DIR), y 
     cmp MV_DN
     bne EGoLeft
     
     lda #$45
-    sta SPRITE_POINTERS + 1
+    sta SPRITE_POINTERS + 1, y
     
     jsr CheckMoveDown
     bne EC_DN 
+    
+    ldy CurrentEnemy
+    lda (ENEMY_Y), y
+    clc
+    adc #$01
+    sta (ENEMY_Y), y
 
-    inc Enemy_Y
-    lda EN_TURBO
+    lda (EN_TURBO), y
     cmp .Turbo 
     bne EGoLeft 
     
-    inc Enemy_Y
+    lda (ENEMY_Y), y
+    clc
+    adc #$01
+    sta (ENEMY_Y), y
     jmp EEnd
 
 EC_DN:
-    lda Enemy_Y 
+    lda (ENEMY_Y), y 
     and #$f8
     ora #$02
-    sta Enemy_Y 
+    sta (ENEMY_Y), y
 
     jsr CheckMoveLeft
     bne +
+    ldy CurrentEnemy
     lda MV_LT
-    sta EN_DIR
+    sta (EN_DIR), y
     jmp EGoLeft
 +
     jsr CheckMoveRight
     bne +
+    ldy CurrentEnemy
     lda MV_RT
-    sta EN_DIR
+    sta (EN_DIR), y
     jmp EGoRight
 +   
     jmp EEnd
 
 EGoLeft:    
-    lda EN_DIR
+    ldy CurrentEnemy
+    lda (EN_DIR), y 
     cmp MV_LT
     bne EGoRight
     
     lda #$46    
-    sta SPRITE_POINTERS + 1
+    sta SPRITE_POINTERS + 1, y
     
     jsr CheckMoveLeft
     bne EC_LT
 
+    ldy CurrentEnemy
     clc
-    lda EN_TURBO
+    lda (EN_TURBO), y
     cmp .Turbo 
     bne ENoturbo
     
-    lda Enemy0_X
+    lda (ENEMY_X), y
     sec
     sbc #02
-    sta Enemy0_X
+    sta (ENEMY_X), y
     bcs EGoRight
     jmp ESetMSB0
 
 ENoturbo:
-    lda Enemy0_X
+    lda (ENEMY_X), y
     sec
     sbc #$01
-    sta Enemy0_X
+    sta (ENEMY_X), y
     bcs EGoRight 
 
 ESetMSB0:
-    lda #%00000010
-    eor #%11111111
-    asl Enemy0_X + 1
-    and Enemy0_X + 1
-    sta Enemy_MSB
+    ;lda #%00000010
+    ;eor #%11111111
+    ;asl Enemy0_X_MSB
+    ;and Enemy0_X_MSB
+    ;sta (EN_MSB), y
+    ;ora Player_MSB
+    ;sta SPRITE_MSB
+    
+    lda (ENEMY_X_MSB), y
+    asl
+    and #%11111101 
+    sta (EN_MSB), y
     ora Player_MSB
     sta SPRITE_MSB
     
     jmp EEnd 
 
 EC_LT:
-    lda Enemy0_X
+    lda (ENEMY_X), y 
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta Enemy0_X
+    sta (ENEMY_X), y
     
     jsr CheckMoveUp
     bne +
+    ldy CurrentEnemy
     lda MV_UP
-    sta EN_DIR
+    sta (EN_DIR), y
     jmp EGoUp
 +
     jsr CheckMoveDown
     bne +
+    ldy CurrentEnemy
     lda MV_DN
-    sta EN_DIR
+    sta (EN_DIR), y
     jmp EGoDown
 +
     jmp EEnd
 
 EGoRight: 
-    lda EN_DIR
+    lda (EN_DIR), y 
     cmp MV_RT
     bne EEnd
     
     lda #$47
-    sta SPRITE_POINTERS + 1 
+    sta SPRITE_POINTERS + 1, y 
     
     jsr CheckMoveRight
     bne EC_RT 
     
-    clc
-    lda EN_TURBO
+    ldy CurrentEnemy
+    lda (EN_TURBO), y
     cmp .Turbo 
+    clc
     bne ENoturbo1 
     
-    lda Enemy0_X
+    lda (ENEMY_X), y
     adc #$01
-    sta Enemy0_X
+    sta (ENEMY_X), y
     bcc EEnd 
     jmp ESetMSB1
 
 ENoturbo1:
-    lda Enemy0_X
+    lda (ENEMY_X), y
     adc #$01
-    sta Enemy0_X
+    sta (ENEMY_X), y
     bcc EEnd 
 
-ESetMSB1:    
-    lda #%00000010
-    asl Enemy0_X + 1
-    ora Enemy0_X + 1
-    sta Enemy0_X + 1
-    sta Enemy_MSB
+ESetMSB1: 
+    ;lda #%00000010
+    ;asl Enemy0_X_MSB
+    ;ora Enemy0_X_MSB
+    ;sta Enemy0_X_MSB
+    ;sta Enemy_MSB
+    ;sta (EN_MSB), y
+    ;ora Player_MSB
+    ;sta SPRITE_MSB   
+    
+
+    lda (ENEMY_X_MSB), y
+    asl 
+    ora #%00000010 
+    sta (ENEMY_X_MSB), y
+    sta (EN_MSB), y
     ora Player_MSB
     sta SPRITE_MSB
     jmp EEnd 
 
 EC_RT:
-    lda Enemy0_X 
+    lda (ENEMY_X), y 
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta Enemy0_X
- 
+    sta (ENEMY_X), y
+
     jsr CheckMoveUp
     bne +
+    ldy CurrentEnemy
     lda MV_UP
-    sta EN_DIR
+    sta (EN_DIR), y
     jmp EGoUp
 +
     jsr CheckMoveDown
     bne +
+    ldy CurrentEnemy
     lda MV_DN
-    sta EN_DIR
+    sta (EN_DIR), y
     jmp EGoDown
 +   
 
 EEnd:
-    lda Enemy0_X
+    lda (ENEMY_X), y
     sta EN0_X 
-    lda Enemy_Y
+    lda (ENEMY_Y), y
     sta EN0_Y
     
+    inc CurrentEnemy
+    ldx CurrentEnemy
+    cpx ACTIVE_ENEMYES
+    bcs +
+    rts
++
+    lda #$00
+    sta CurrentEnemy
     rts
 
 ;--------------------------------------------------------
 ;--Update Enemy Behaviours    
 ;--------------------------------------------------------
 GetBehaviour:
-    jmp EUp
+
 EUp:
-    lda EN_DIR
+    ldy CurrentEnemy
+    lda (EN_DIR), y 
     cmp MV_UP
     beq +  
     cmp MV_DN
@@ -251,12 +341,17 @@ EUp:
     sta CheckZone
     jsr CheckMoveUp
     bne + 
-    dec Enemy_Y
+    ldy CurrentEnemy
+    lda (ENEMY_Y), y
+    sec
+    sbc #$01
+    clc
+    sta (ENEMY_Y), y
 +
     jmp ETurbo
 
 EDown:
-    lda EN_DIR
+    lda Enemy_Dir
     cmp MV_UP
     beq ELeft 
     cmp MV_DN
@@ -269,7 +364,7 @@ EDown:
     inc Enemy_Y
 
 ELeft:
-    lda EN_DIR
+    lda Enemy_Dir
     cmp MV_LT
     beq ETurbo
     cmp MV_RT
@@ -288,13 +383,13 @@ ELeft:
     
     lda #%00000010
     eor #%11111111
-    and Enemy0_X + 1
+    and Enemy0_X_MSB
     sta Enemy_MSB
     ora Player_MSB
     sta SPRITE_MSB
 
 ERight:
-    lda EN_DIR
+    lda Enemy_Dir
     cmp MV_LT
     beq ETurbo
     cmp MV_RT
@@ -312,8 +407,8 @@ ERight:
     bcc ETurbo 
 
     lda #%00000010
-    ora Enemy0_X + 1
-    sta Enemy0_X + 1
+    ora Enemy0_X_MSB 
+    sta Enemy0_X_MSB
     sta Enemy_MSB
     ora Player_MSB
     sta SPRITE_MSB
@@ -325,6 +420,5 @@ ETurbo:
 ETurboOff:
 
     rts
-
 
 }
