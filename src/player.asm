@@ -80,7 +80,6 @@ PlayerInit:
     sta Player_X 
     lda #234
     sta Player_Y
-    
     lda MV_RT
     sta PL_DIR
     
@@ -90,6 +89,14 @@ PlayerInit:
 
     lda #$00
     sta POINT_COUNTER
+    sta Score
+    sta Score + 1
+    sta Score + 2
+    
+    lda SPRITE_MSB
+    and #%11111110
+    sta SPRITE_MSB
+    sta Player_MSB
 
     rts
 
@@ -123,7 +130,7 @@ GoUp:
     jmp End
 
 C_UP:
-	jsr SnapUpDown
+    jsr SnapUpDown
     beq +
     jmp GoUp 
 +

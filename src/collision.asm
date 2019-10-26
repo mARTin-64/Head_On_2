@@ -265,6 +265,7 @@ ENTITY_POSITION = TEMP1
 Entity_X = POINTER1
 Entity_Y = POINTER2
 Entity_MSB = POINTER3
+;Entity_Dir = POINTER10
 
     stx X_OFFSET
     sty Y_OFFSET
@@ -280,6 +281,8 @@ SetupPlayer:
     sta Entity_Y
     lda Player_MSB
     sta Entity_MSB
+    ;lda PL_DIR
+    ;sta Entity_Dir
 
     jmp SetupComplete
 +
@@ -317,126 +320,24 @@ SetupComplete:
     rts
 
 ;--------------------------------------------------------
-;--Snap Player moving Up   
-;--------------------------------------------------------
-SnapUpDown: 
-    lda #NO
-    sta CheckSnap
-    jsr CheckMoveLeft
-    sta FreeZoneLeft
-
-    lda #NO
-    sta CheckSnap
-    jsr CheckMoveRight
-    and FreeZoneLeft
-    bne ++ 
-    
-    lda FreeZoneLeft
-    bne +
- 
-    lda Player_X
-    sec
-    sbc #$08
-    and #$f8
-    clc
-    adc #$08
-    sta Player_X
-    lda #$01
-
-    rts
-+
-    lda Player_X
-    clc
-    adc #$08
-    and #$f8
-    sta Player_X
-    lda #$01
-   
-    rts
-
-++:
-    
-    lda Player_Y 
-    and #$f8
-    ora #$02
-    sta Player_Y
-    lda #$00 
-    
-    rts
-
-SnapLeftRight:
-    lda #NO
-    sta CheckSnap
-    jsr CheckMoveDown
-    sta FreeZoneDown
-    
-    lda #NO
-    sta CheckSnap
-    jsr CheckMoveUp
-    and FreeZoneDown
-    bne ++ 
-    
-    lda FreeZoneDown
-    bne +
-
-    lda Player_Y 
-    clc
-    adc #$03
-    and #$f8
-    ora #$2
-    sta Player_Y
-    lda #$01 
-    
-    rts  
-+
-    lda Player_Y 
-    sec
-    sbc #$03
-    and #$f8
-    ora #$2
-    sta Player_Y
-    lda #$01 
- 
-    rts
-
-++:
-    lda Player_X
-    sec
-    sbc #$02
-    and #$f8
-    clc
-    adc #$08
-    sta Player_X
-    lda #$00 
-    
-    rts
-
-;--------------------------------------------------------
 ;--Setup current entity  
 ;--------------------------------------------------------
 SetupEntity:
     ldy CurrentEnemy
 
-Spr0:    
     lda (ENEMY_X), y
     sta Entity_X
+    
     lda (EN_MSB), y
     lsr
     sta Entity_MSB
-
-Rest:    
+    
     lda (ENEMY_Y), y
     sta Entity_Y
 
+    ;lda (EN_DIR), y
+    ;sta Entity_Dir
 
-UpdateNext:
-    iny
-    cpy ACTIVE_ENEMYES
-    bcs +
-    rts
-+   
-    ldy #$00
-    sty CurrentEnemy
     rts
 }
 

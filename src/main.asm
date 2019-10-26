@@ -32,9 +32,9 @@ Loop:
     and #VICTORY
     bne Start
     
-    jsr EnemyUpdate
     jsr PlayerUpdate
-
+    jsr EnemyUpdate
+    
     dec $d020
     +GetRaster($82)
     
@@ -46,7 +46,8 @@ Y_BORDER_OFFSET:    !byte $32
 
 Player_X:    !byte $00, $00
 Player_Y:    !byte $00 
-Player_MSB   !byte $00
+Player_MSB:  !byte $00
+PL_DIR:      !byte $00
 PTH          !byte $00, $00          ; Player Turn History
 
 MV_UP: !byte %0001
@@ -54,13 +55,12 @@ MV_DN: !byte %0010
 MV_LT: !byte %0100
 MV_RT: !byte %1000
 
-Enemy0_X:       !byte $00, $00, $00, $00
-Enemy0_X_MSB:   !byte $00, $00, $00, $00
+Enemy_X:        !byte $00, $00, $00, $00
+Enemy_X_MSB:    !byte $00, $00, $00, $00
 Enemy_Y:        !byte $00, $00, $00, $00 
 Enemy_Dir:      !byte $00, $00, $00, $00
 Enemy_Turbo     !byte $00, $00, $00, $00
-Enemy_MSB:      !byte $00, $00, $00, $00
-Enemy_State:    !byte $00, $00, $00, $00
+Enemy_MSB:      !byte $00
 CurrentEnemy:   !byte $00
 
 CheckSnap:      !byte $00
@@ -76,6 +76,7 @@ Score   !byte $00, $00, $00
 !source "enemy.asm"
 !source "collision.asm"
 !source "tables.asm"
-!source "assets.asm"   ; Load assets with Sprite and Map data
 !source "score.asm"
+!source "snap.asm"
+!source "assets.asm"   ; Load assets with Sprite and Map data
 

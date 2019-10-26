@@ -36,7 +36,8 @@
     lda ENABLE_SPRITES
     ora #%00000011
     sta ENABLE_SPRITES
-    
+   
+
     lda #$01
     sta SPRITE_COLOR1
     lda #$02
