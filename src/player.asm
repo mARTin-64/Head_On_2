@@ -113,7 +113,6 @@ GoUp:
     lda PL_DIR
     cmp MV_UP 
     bne GoDown 
-    sta PTH 
     
     lda #$40
     sta SPRITE_POINTERS 
@@ -137,7 +136,6 @@ C_UP:
     jsr CheckMoveRight
     bne +
     lda MV_RT
-    sta PTH + 1
     sta PL_DIR
     jmp GoRight
     
@@ -145,7 +143,6 @@ C_UP:
     jsr CheckMoveLeft
     bne +
     lda MV_LT
-    sta PTH + 1
     sta PL_DIR
     jmp GoLeft
 +
@@ -154,7 +151,6 @@ GoDown:
     lda PL_DIR
     cmp MV_DN
     bne GoLeft
-    sta PTH
     
     lda #$41
     sta SPRITE_POINTERS 
@@ -178,14 +174,12 @@ C_DN:
     jsr CheckMoveLeft
     bne +
     lda MV_LT
-    sta PTH + 1
     sta PL_DIR
     jmp GoLeft
 +
     jsr CheckMoveRight
     bne +
     lda MV_RT
-    sta PTH + 1
     sta PL_DIR
     jmp GoRight
 +   
@@ -195,7 +189,6 @@ GoLeft:
     lda PL_DIR
     cmp MV_LT
     bne GoRight
-    sta PTH
     
     lda #$42
     sta SPRITE_POINTERS 
@@ -223,9 +216,10 @@ NoTurbo0:
     bcs GoRight 
     
 SetMSB0:
-    lda #%00000001
-    eor #%11111111
-    and Player_X + 1
+    ;lda #%00000001
+    ;eor #%11111111
+    ;and Player_MSB
+    lda #%00000000
     sta Player_MSB
     ora Enemy_MSB
     sta SPRITE_MSB
@@ -240,14 +234,12 @@ C_LT:
     jsr CheckMoveUp
     bne +
     lda MV_UP
-    sta PTH + 1
     sta PL_DIR
     jmp GoUp
 +
     jsr CheckMoveDown
     bne +
     lda MV_DN
-    sta PTH + 1
     sta PL_DIR
     jmp GoDown
 +
@@ -258,7 +250,6 @@ GoRight:
     cmp MV_RT
     bne End
     
-    sta PTH
     lda #$43
     sta SPRITE_POINTERS 
     
@@ -284,8 +275,7 @@ NoTurbo1:
 
 SetMSB1:    
     lda #%00000001
-    ora Player_X + 1
-    sta Player_X + 1
+    ;ora Player_MSB
     sta Player_MSB
     ora Enemy_MSB
     sta SPRITE_MSB
@@ -299,14 +289,12 @@ C_RT:
     jsr CheckMoveUp
     bne +
     lda MV_UP
-    sta PTH + 1
     sta PL_DIR
     jmp GoUp
 +
     jsr CheckMoveDown
     bne +
     lda MV_DN
-    sta PTH + 1
     sta PL_DIR
     jmp GoDown
 +   
@@ -385,9 +373,10 @@ Left:
     sta Player_X
     bcs Turbo 
     
-    lda #%00000001
-    eor #%11111111
-    and Player_X + 1
+    lda #%00000000
+    ;lda #%00000001
+    ;eor #%11111111
+    ;and Player_MSB 
     sta Player_MSB
     ora Enemy_MSB
     sta SPRITE_MSB
@@ -415,8 +404,7 @@ Right:
     bcc Turbo 
 
     lda #%00000001
-    ora Player_X + 1
-    sta Player_X + 1
+    ;ora Player_MSB
     sta Player_MSB
     ora Enemy_MSB
     sta SPRITE_MSB

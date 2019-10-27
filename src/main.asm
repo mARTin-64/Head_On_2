@@ -34,7 +34,7 @@ Loop:
     
     jsr PlayerUpdate
     jsr EnemyUpdate
-    
+ 
     dec $d020
     +GetRaster($82)
     
@@ -44,7 +44,7 @@ Loop:
 X_BORDER_OFFSET:    !byte $18
 Y_BORDER_OFFSET:    !byte $32
 
-Player_X:    !byte $00, $00
+Player_X:    !byte $00
 Player_Y:    !byte $00 
 Player_MSB:  !byte $00
 PL_DIR:      !byte $00
@@ -56,7 +56,6 @@ MV_LT: !byte %0100
 MV_RT: !byte %1000
 
 Enemy_X:        !byte $00, $00, $00, $00
-Enemy_X_MSB:    !byte $00, $00, $00, $00
 Enemy_Y:        !byte $00, $00, $00, $00 
 Enemy_Dir:      !byte $00, $00, $00, $00
 Enemy_Turbo     !byte $00, $00, $00, $00

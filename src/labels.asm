@@ -18,13 +18,12 @@ PL_X =      $D000 ;\
 PL_Y =      $D001 ; Player X and Y screen cordinates
 
 PLAYER_ACTIVE = %00000001
-ENEMY0_ACTIVE = %00000010
+ENEMY_ACTIVE  = %00000010
 
 PLAYER_STATE_1 = $00000001
 PLAYER_STATE_2 = $00000010
 PLAYER_STATE_3 = $00000100
 PLAYER_STATE_4 = $00001000
-
 JOY_P_2 =   $DC00
 
 SOLID =      %00010000
@@ -53,6 +52,3 @@ EN0_Y = $D003  ; Enemy X and Y screen cordinates
 
 EN1_X = $D004  ;\
 EN1_Y = $D005  ; Enemy X and Y sc
-
-ENEMY_UP    =      %00000001
-ENEMY_DOWN  =      %00000010

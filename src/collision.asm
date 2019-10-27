@@ -1,4 +1,9 @@
 !zone Collision {
+ENTITY_POSITION = TEMP1
+Entity_X = POINTER1
+Entity_Y = POINTER2
+Entity_MSB = POINTER3
+Entity_Dir = POINTER10
 ;--------------------------------------------------------
 ;--Collect points, update score and game state
 ;--------------------------------------------------------
@@ -14,6 +19,7 @@ CheckScorePoints:
     and #(POINT_5 + POINT_25)
     sta POINT_TYPE
     bne +
+    
     rts    
 +
     ldy COLLISION_X
@@ -43,7 +49,7 @@ CheckMoveUp:
     
     lda CheckZone 
     bne +
-    lda PL_DIR
+    lda Entity_Dir 
     cmp MV_RT
     beq +
     dex
@@ -63,7 +69,7 @@ CheckMoveUp:
     
     lda CheckZone 
     bne +
-    lda PL_DIR
+    lda Entity_Dir 
     cmp MV_LT
     beq +
     inx
@@ -93,7 +99,7 @@ CheckMoveDown:
     
     lda CheckZone
     bne +
-    lda PL_DIR
+    lda Entity_Dir
     cmp MV_LT
     beq +
     inx
@@ -114,7 +120,7 @@ CheckMoveDown:
     
     lda CheckZone
     bne +
-    lda PL_DIR
+    lda Entity_Dir
     cmp MV_RT
     beq +
     dex
@@ -261,11 +267,6 @@ GetCharacter:
 GetCollisionPoint:
 ; Store Loaded X and Y positions from X and Y registers
 
-ENTITY_POSITION = TEMP1
-Entity_X = POINTER1
-Entity_Y = POINTER2
-Entity_MSB = POINTER3
-;Entity_Dir = POINTER10
 
     stx X_OFFSET
     sty Y_OFFSET
@@ -281,8 +282,8 @@ SetupPlayer:
     sta Entity_Y
     lda Player_MSB
     sta Entity_MSB
-    ;lda PL_DIR
-    ;sta Entity_Dir
+    lda PL_DIR
+    sta Entity_Dir
 
     jmp SetupComplete
 +
@@ -323,20 +324,20 @@ SetupComplete:
 ;--Setup current entity  
 ;--------------------------------------------------------
 SetupEntity:
-    ldy CurrentEnemy
+    ldx CurrentEnemy
 
-    lda (ENEMY_X), y
+    lda Enemy_X, x
     sta Entity_X
     
-    lda (EN_MSB), y
+    lda Enemy_MSB, x
     lsr
     sta Entity_MSB
     
-    lda (ENEMY_Y), y
+    lda Enemy_Y, x
     sta Entity_Y
 
-    ;lda (EN_DIR), y
-    ;sta Entity_Dir
+    lda Enemy_Dir, x
+    sta Entity_Dir
 
     rts
 }
