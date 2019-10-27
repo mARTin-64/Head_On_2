@@ -108,35 +108,34 @@ ESnapUpDown:
     and FreeZoneLeft
     bne ++ 
     
+    ldx CurrentEnemy 
     lda FreeZoneLeft
     bne +
- 
-    lda Player_X
+    lda Enemy_X, x
     sec
     sbc #$08
     and #$f8
     clc
     adc #$08
-    sta Player_X
+    sta Enemy_X, x
     lda #$01
 
     rts
 +
-    lda Player_X
+    lda Enemy_X, x
     clc
     adc #$08
     and #$f8
-    sta Player_X
+    sta Enemy_X, x
     lda #$01
    
     rts
 
 ++:
-    
-    lda Player_Y 
+    lda Enemy_Y, x 
     and #$f8
     ora #$02
-    sta Player_Y
+    sta Enemy_Y, x
     lda #$00 
     
     rts
@@ -153,37 +152,38 @@ ESnapLeftRight:
     and FreeZoneDown
     bne ++ 
     
+    ldx CurrentEnemy 
     lda FreeZoneDown
     bne +
 
-    lda Player_Y 
+    lda Enemy_Y, x
     clc
     adc #$03
     and #$f8
     ora #$2
-    sta Player_Y
+    sta Enemy_Y, x
     lda #$01 
     
     rts  
 +
-    lda Player_Y 
+    lda Enemy_Y, x
     sec
     sbc #$03
     and #$f8
     ora #$2
-    sta Player_Y
+    sta Enemy_Y, x
     lda #$01 
  
     rts
 
 ++:
-    lda Player_X
+    lda Enemy_X, x
     sec
     sbc #$02
     and #$f8
     clc
     adc #$08
-    sta Player_X
+    sta Enemy_X, x
     lda #$00 
     
     rts

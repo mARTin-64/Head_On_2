@@ -85,11 +85,9 @@ EGoUp:
     jmp EEnd
 
 EC_UP:
-    lda Enemy_Y, x 
-    and #$f8
-    ora #$02
-    sta Enemy_Y, x
-	
+    jsr ESnapUpDown
+	bne EGoUp
+
     jsr CheckMoveRight
     bne +
     ldx CurrentEnemy
@@ -134,10 +132,8 @@ EGoDown:
     jmp EEnd
 
 EC_DN:
-    lda Enemy_Y, x 
-    and #$f8
-    ora #$02
-    sta Enemy_Y, x
+    jsr ESnapUpDown
+    bne EGoDown
 
     jsr CheckMoveLeft
     bne +
@@ -194,14 +190,8 @@ ESetMSB0:
     jmp EEnd 
 
 EC_LT:
-    lda Enemy_X, x 
-    sec
-    sbc #$02
-    and #$f8
-    clc
-    adc #$08
-    sta Enemy_X, x
-    
+    jsr ESnapLeftRight
+    bne EGoLeft
     jsr CheckMoveUp
     bne +
     ldx CurrentEnemy
@@ -255,13 +245,8 @@ ESetMSB1:
     jmp EEnd 
 
 EC_RT:
-    lda Enemy_X, x 
-    sec
-    sbc #$02
-    and #$f8
-    clc
-    adc #$08
-    sta Enemy_X, x
+    jsr ESnapLeftRight
+    bne EGoRight
 
     jsr CheckMoveUp
     bne +
@@ -298,9 +283,21 @@ EEnd:
 ;--Update Enemy Behaviours    
 ;--------------------------------------------------------
 GetBehaviour:
-    jmp EDown
-;EUp:
     ldx CurrentEnemy
+    lda Enemy_Dir
+    
+    cmp MV_DN
+    beq ELeft
+    cmp MV_LT
+    beq EDown
+    cmp MV_RT
+    beq EUp
+    cmp MV_UP
+    beq ERight
+
+    rts
+
+EUp:
     lda Enemy_Dir, x 
     cmp MV_UP
     beq +  
@@ -321,12 +318,11 @@ GetBehaviour:
     rts
 
 EDown:
-    ldx CurrentEnemy
     lda Enemy_Dir, x
     cmp MV_UP
-    beq ETurbo 
+    beq + 
     cmp MV_DN
-    beq ETurbo
+    beq +
 
     lda #NO
     sta CheckZone
@@ -338,6 +334,7 @@ EDown:
     clc 
     adc #$01
     sta Enemy_Y, x
++    
     rts
 
 ELeft:
@@ -359,11 +356,10 @@ ELeft:
     sta Enemy_X, x
     bcs ETurbo 
     
-    ;lda (ENEMY_X_MSB),y 
-    ;and #%11111101
-    ;sta (ENEMY_X_MSB), y 
-    ;ora Player_MSB
-    ;sta SPRITE_MSB
+    lda #%00000000
+    sta Enemy_MSB
+    ora Player_MSB
+    sta SPRITE_MSB
     
     rts
 
@@ -386,12 +382,10 @@ ERight:
     sta Enemy_X, x
     bcc ETurbo 
 
-    ;lda (ENEMY_X_MSB), y
-    ;ora #%00000010
-    ;sta (ENEMY_X_MSB), y
-    ;sta Enemy_MSB, x
-    ;ora Player_MSB
-    ;sta SPRITE_MSB
+    lda #%00000010
+    sta Enemy_MSB
+    ora Player_MSB
+    sta SPRITE_MSB
     
     rts
 

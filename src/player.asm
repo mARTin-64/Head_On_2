@@ -130,9 +130,8 @@ GoUp:
 
 C_UP:
     jsr SnapUpDown
-    beq +
-    jmp GoUp 
-+
+    bne GoUp
+    
     jsr CheckMoveRight
     bne +
     lda MV_RT
@@ -168,9 +167,8 @@ GoDown:
 
 C_DN:
     jsr SnapUpDown
-    beq +
-    jmp GoDown 
-+
+    bne GoDown
+    
     jsr CheckMoveLeft
     bne +
     lda MV_LT
@@ -216,9 +214,6 @@ NoTurbo0:
     bcs GoRight 
     
 SetMSB0:
-    ;lda #%00000001
-    ;eor #%11111111
-    ;and Player_MSB
     lda #%00000000
     sta Player_MSB
     ora Enemy_MSB
@@ -228,9 +223,8 @@ SetMSB0:
 
 C_LT:
     jsr SnapLeftRight
-    beq +
-    jmp GoLeft 
-+    
+    bne GoLeft
+    
     jsr CheckMoveUp
     bne +
     lda MV_UP
@@ -275,7 +269,6 @@ NoTurbo1:
 
 SetMSB1:    
     lda #%00000001
-    ;ora Player_MSB
     sta Player_MSB
     ora Enemy_MSB
     sta SPRITE_MSB
@@ -283,9 +276,8 @@ SetMSB1:
 
 C_RT:
     jsr SnapLeftRight
-    beq +
-    jmp GoRight 
-+
+    bne GoRight
+    
     jsr CheckMoveUp
     bne +
     lda MV_UP
