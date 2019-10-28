@@ -34,7 +34,9 @@ Loop:
     
     jsr PlayerUpdate
     jsr EnemyUpdate
- 
+    
+    inc COUNTER
+    
     dec $d020
     +GetRaster($82)
     
@@ -61,6 +63,8 @@ Enemy_Dir:      !byte $00, $00, $00, $00
 Enemy_Turbo     !byte $00, $00, $00, $00
 Enemy_MSB:      !byte $00
 CurrentEnemy:   !byte $00
+ENEMY_MSB_SET:  !byte %00000010, %00000100, %00001000, %00010000
+MSB_Carry       !byte $00, $00, $00, $00
 
 CheckSnap:      !byte $00
 CheckZone:      !byte $00 

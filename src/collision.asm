@@ -38,6 +38,14 @@ CheckScorePoints:
     lda #VICTORY
     sta GAME_STATE
     
+    inc ACTIVE_ENEMYES
+    lda ACTIVE_ENEMYES
+    cmp #$03
+    bne +
+    
+    lda #$01
+    sta ACTIVE_ENEMYES
++
     rts
 
 ;--------------------------------------------------------
@@ -49,7 +57,7 @@ CheckMoveUp:
     
     lda CheckZone 
     bne +
-    lda Entity_Dir 
+    lda Entity_Dir ;----------TODO
     cmp MV_RT
     beq +
     dex
@@ -69,7 +77,7 @@ CheckMoveUp:
     
     lda CheckZone 
     bne +
-    lda Entity_Dir 
+    lda Entity_Dir ;------------TODO
     cmp MV_LT
     beq +
     inx
@@ -99,7 +107,7 @@ CheckMoveDown:
     
     lda CheckZone
     bne +
-    lda Entity_Dir
+    lda Entity_Dir ;-------TODO
     cmp MV_LT
     beq +
     inx
@@ -120,7 +128,7 @@ CheckMoveDown:
     
     lda CheckZone
     bne +
-    lda Entity_Dir
+    lda Entity_Dir ;----------TODO
     cmp MV_RT
     beq +
     dex
@@ -282,8 +290,8 @@ SetupPlayer:
     sta Entity_Y
     lda Player_MSB
     sta Entity_MSB
-    lda PL_DIR
-    sta Entity_Dir
+    lda PL_DIR  ;--------TODO
+    sta Entity_Dir ;-----TODO
 
     jmp SetupComplete
 +
@@ -329,15 +337,14 @@ SetupEntity:
     lda Enemy_X, x
     sta Entity_X
     
-    lda Enemy_MSB, x
-    lsr
+    lda MSB_Carry, x 
     sta Entity_MSB
     
     lda Enemy_Y, x
     sta Entity_Y
 
-    lda Enemy_Dir, x
-    sta Entity_Dir
+    lda Enemy_Dir, x ;--------TODO
+    sta Entity_Dir   ;--------TODO
 
     rts
 }

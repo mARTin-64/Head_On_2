@@ -34,15 +34,19 @@
     sta MEMORY_REGISTER ; Set screen and character location. See "labels.asm"
     
     lda ENABLE_SPRITES
-    ora #%00000011
+    ora #%00000111
     sta ENABLE_SPRITES
    
-
     lda #$01
+    sta ACTIVE_ENEMYES
     sta SPRITE_COLOR1
+    
+    ldx #$07
+-   
     lda #$02
-    sta SPRITE_COLOR2
-
+    sta SPRITE_COLOR2, x
+    dex
+    bne -
 }
 
 !macro GetRaster .line {
@@ -57,12 +61,12 @@
     jsr DrawMap
     jsr PlayerInit
     jsr EnemyInit
+    jsr Enemy2Init
     lda #PLAY
     sta GAME_STATE
-    lda #$01
-    sta ACTIVE_ENEMYES
     lda #$00
     sta BORDER_COLOR
+    sta CurrentEnemy
 }
 
 !macro GetPlayerState {

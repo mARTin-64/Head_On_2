@@ -87,11 +87,11 @@ PlayerInit:
     sta CheckZone
     sta CheckSnap
 
-    lda #$00
-    sta POINT_COUNTER
-    sta Score
-    sta Score + 1
-    sta Score + 2
+    ;lda #$00
+    ;sta POINT_COUNTER
+    ;sta Score
+    ;sta Score + 1
+    ;sta Score + 2
     
     lda SPRITE_MSB
     and #%11111110
@@ -366,9 +366,6 @@ Left:
     bcs Turbo 
     
     lda #%00000000
-    ;lda #%00000001
-    ;eor #%11111111
-    ;and Player_MSB 
     sta Player_MSB
     ora Enemy_MSB
     sta SPRITE_MSB
@@ -396,7 +393,6 @@ Right:
     bcc Turbo 
 
     lda #%00000001
-    ;ora Player_MSB
     sta Player_MSB
     ora Enemy_MSB
     sta SPRITE_MSB

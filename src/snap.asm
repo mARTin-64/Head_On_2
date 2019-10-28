@@ -132,6 +132,7 @@ ESnapUpDown:
     rts
 
 ++:
+    ldx CurrentEnemy
     lda Enemy_Y, x 
     and #$f8
     ora #$02
@@ -177,6 +178,7 @@ ESnapLeftRight:
     rts
 
 ++:
+    ldx CurrentEnemy
     lda Enemy_X, x
     sec
     sbc #$02
