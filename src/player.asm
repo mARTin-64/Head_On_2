@@ -87,8 +87,8 @@ PlayerInit:
     sta CheckZone
     sta CheckSnap
 
-    ;lda #$00
-    ;sta POINT_COUNTER
+    lda #$00
+    sta POINT_COUNTER
     ;sta Score
     ;sta Score + 1
     ;sta Score + 2
