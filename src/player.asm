@@ -1,64 +1,6 @@
 ;--------------------------------------------------------
-;--Main game player routines                    
-;--------------------------------------------------------
-
-!zone SCREEN {
-
-;--------------------------------------------------------
-;--Clear the visible screen routine     
-;--------------------------------------------------------
-ClearScreen:
-
-    lda #$07
-    ldx #250
--
-    dex                 ; Decreas value in X register by 1
-    sta SCREEN_RAM, X       ;\
-    sta SCREEN_RAM + 250, X ; Store loaded character to Screen RAM
-    sta SCREEN_RAM + 500, X ; at multiple locations at once 
-    sta SCREEN_RAM + 750, X ;/
-    bne -               ; Go to - if X != 0
-
-    rts
-
-;--------------------------------------------------------
-;--Routine for drawing game map         
-;--------------------------------------------------------
-DrawMap:
-    
-    ldy #$00            ; Our map data is loaded to $8000 location. See "assets.asm"
--                       ; Loop through Map bytes and store them in Screen RAM
-    lda MAP, y          ; This is currently drawing map from 4 locations on screen
-    tax                 ; and setting right colors for characters. I will later 
-    sta SCREEN_RAM, y   ; change this code to be self modifying.
-    lda CHAR_COLORS, x
-    sta COLOR_RAM, y 
-    lda MAP + $0100, y 
-    tax
-    sta SCREEN_RAM + $0100, y
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + $0100, y
-    lda MAP + $0200, y
-    tax
-    sta SCREEN_RAM + $0200, y
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + $0200, y
-    lda MAP + $0300, y
-    tax
-    sta SCREEN_RAM + $0300, y
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + $0300, y
-    iny 
-    bne -
-    
-    rts
-
-}
-
-;--------------------------------------------------------
 ;--Player routines                       
 ;--------------------------------------------------------
-
 !zone Player { 
 
 ; Declaring some local variables    
@@ -89,10 +31,7 @@ PlayerInit:
 
     lda #$00
     sta POINT_COUNTER
-    ;sta Score
-    ;sta Score + 1
-    ;sta Score + 2
-    
+ 
     lda SPRITE_MSB
     and #%11111110
     sta SPRITE_MSB
@@ -106,7 +45,7 @@ PlayerInit:
 PlayerUpdate:
     lda #PLAYER_ACTIVE
     sta ENTITY_TO_UPDATE 
-    
+
     jsr ReadJoystick
 
 GoUp:
@@ -298,6 +237,8 @@ End:
     sta PL_Y
     
     jsr CheckScorePoints
+    jsr CheckSpriteCollision
+
     rts
 
 ;--------------------------------------------------------

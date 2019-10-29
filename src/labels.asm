@@ -6,6 +6,7 @@ BORDER_COLOR = $D020    ; Define label for border color memory location
 
 SPRITE_COLOR1 = $D027
 SPRITE_COLOR2 = $D028
+SPRITE_COLLISION =$D01E
 
 MEMORY_REGISTER = $D018 ; Define label for for memory register location
 RASTER_Y        = $D012

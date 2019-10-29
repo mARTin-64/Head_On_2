@@ -7,6 +7,16 @@ Entity_Dir = POINTER10
 ;--------------------------------------------------------
 ;--Collect points, update score and game state
 ;--------------------------------------------------------
+CheckSpriteCollision:
+    lda SPRITE_COLLISION
+    and #%00000001
+    bne +
+    rts   
++    
+    lda #LOOSE
+    sta GAME_STATE
+    rts
+
 CheckScorePoints:
     ldx #OFFSET_XL - 4
     ldy #OFFSET_YU - 4
@@ -37,15 +47,15 @@ CheckScorePoints:
 +
     lda #VICTORY
     sta GAME_STATE
-    
-    inc ACTIVE_ENEMYES
-    lda ACTIVE_ENEMYES
-    cmp #$03
-    bne +
-    
-    lda #$01
-    sta ACTIVE_ENEMYES
-+
+;    
+;    inc ACTIVE_ENEMYES
+;    lda ACTIVE_ENEMYES
+;    cmp #$03
+;    bne +
+;    
+;    lda #$01
+;    sta ACTIVE_ENEMYES
+;+
     rts
 
 ;--------------------------------------------------------

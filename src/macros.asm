@@ -47,6 +47,9 @@
     sta SPRITE_COLOR2, x
     dex
     bne -
+    
+    lda #$03
+    sta PlayerLives
 }
 
 !macro GetRaster .line {

@@ -27,15 +27,24 @@ Start:
 Loop:
     +GetRaster($ff)
     inc $D020 
-      
-    lda GAME_STATE
-    and #VICTORY
-    bne Start
-    
+   
     jsr PlayerUpdate
     jsr EnemyUpdate
     
     inc COUNTER
+    
+    lda GAME_STATE
+    cmp #VICTORY
+    bne +
+    jsr IfWin
+    jmp Start
++
+    cmp #LOOSE
+    bne +
+    jsr IfLoose
+    bne +
+    jmp Start   
++
     
     dec $d020
     +GetRaster($82)
@@ -51,6 +60,7 @@ Player_Y:    !byte $00
 Player_MSB:  !byte $00
 PL_DIR:      !byte $00
 PTH          !byte $00, $00          ; Player Turn History
+PlayerLives: !byte $00
 
 MV_UP: !byte %0001
 MV_DN: !byte %0010
@@ -62,9 +72,9 @@ Enemy_Y:        !byte $00, $00, $00, $00
 Enemy_Dir:      !byte $00, $00, $00, $00
 Enemy_Turbo     !byte $00, $00, $00, $00
 Enemy_MSB:      !byte $00
-CurrentEnemy:   !byte $00
 ENEMY_MSB_SET:  !byte %00000010, %00000100, %00001000, %00010000
 MSB_Carry       !byte $00, $00, $00, $00
+CurrentEnemy:   !byte $00
 
 CheckSnap:      !byte $00
 CheckZone:      !byte $00 
@@ -75,11 +85,13 @@ FreeZoneRight:  !byte $00
 
 Score   !byte $00, $00, $00
 
+!source "tables.asm"
+!source "draw_routines.asm"
 !source "player.asm"
 !source "enemy.asm"
 !source "collision.asm"
-!source "tables.asm"
 !source "score.asm"
 !source "snap.asm"
+!source "game_state.asm"
 !source "assets.asm"   ; Load assets with Sprite and Map data
 

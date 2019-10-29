@@ -11,6 +11,9 @@ ENEMY_SPRITE:
 MAP: 
     !binary "../maps/map.bin"
 
+START_MENU:    
+    !binary "../maps/menu_start.bin"
+
 CHAR_COLORS:
     !binary "../char_set/char_attributes.bin"
 

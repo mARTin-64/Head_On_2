@@ -8,8 +8,8 @@ EN_TURBO    = POINTER8
 EN_MSB      = POINTER9
 
 EnemyInit:
-    lda #$46
-    sta SPRITE_POINTERS + 1
+    ;lda #$46
+    ;sta SPRITE_POINTERS + 1
     
     lda #175
     sta Enemy_X  
@@ -21,12 +21,16 @@ EnemyInit:
     
     lda #$01
     sta CheckZone
-   
+    sta CheckSnap
+
     lda SPRITE_MSB
     and #%11111101
     sta SPRITE_MSB
     sta Enemy_MSB
 
+    lda #$00
+    sta MSB_Carry
+    
     rts
 
 Enemy2Init:
@@ -57,7 +61,9 @@ Enemy2Init:
     and #%11111011
     sta SPRITE_MSB
     sta Enemy_MSB
-    
+   
+    lda #$00
+    sta MSB_Carry + 1
     rts
 +
     lda ENABLE_SPRITES
@@ -70,8 +76,11 @@ EnemyUpdate:
     lda #ENEMY_ACTIVE
     sta ENTITY_TO_UPDATE
     
+    lda COUNTER
+    and #$01
+    bne +
     jsr GetBehaviour
-    
++    
     ldx CurrentEnemy
 
 EGoUp:
