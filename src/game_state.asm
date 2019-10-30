@@ -13,7 +13,7 @@ IfWin:
     
     rts
 
-IfLoose:
+IfCrashed:
     dec PlayerLives
     ;lda PlayerLives
     ;bne +
@@ -24,7 +24,7 @@ IfLoose:
     ;rts
 
 GameOver:
-
+        
 StartMenu:
 
 NextLevelMenu:

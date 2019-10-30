@@ -1,15 +1,10 @@
 !zone Enemy {
 
 .Turbo: !byte $01
-ENEMY_X     = POINTER4
-ENEMY_Y     = POINTER6
-EN_DIR      = POINTER7
-EN_TURBO    = POINTER8
-EN_MSB      = POINTER9
 
 EnemyInit:
-    ;lda #$46
-    ;sta SPRITE_POINTERS + 1
+    lda #$46
+    sta SPRITE_POINTERS + 1
     
     lda #175
     sta Enemy_X  
@@ -51,7 +46,7 @@ Enemy2Init:
     lda #60
     sta Enemy_Y + 1
     
-    lda MV_LT
+    lda MV_RT
     sta Enemy_Dir + 1 
     
     lda #$01

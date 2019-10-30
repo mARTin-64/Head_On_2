@@ -3,7 +3,7 @@ ENTITY_POSITION = TEMP1
 Entity_X = POINTER1
 Entity_Y = POINTER2
 Entity_MSB = POINTER3
-Entity_Dir = POINTER10
+Entity_Dir = POINTER4
 ;--------------------------------------------------------
 ;--Collect points, update score and game state
 ;--------------------------------------------------------
@@ -13,8 +13,9 @@ CheckSpriteCollision:
     bne +
     rts   
 +    
-    lda #LOOSE
+    lda #CRASH
     sta GAME_STATE
+   
     rts
 
 CheckScorePoints:
@@ -47,15 +48,7 @@ CheckScorePoints:
 +
     lda #VICTORY
     sta GAME_STATE
-;    
-;    inc ACTIVE_ENEMYES
-;    lda ACTIVE_ENEMYES
-;    cmp #$03
-;    bne +
-;    
-;    lda #$01
-;    sta ACTIVE_ENEMYES
-;+
+    
     rts
 
 ;--------------------------------------------------------

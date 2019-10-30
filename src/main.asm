@@ -39,9 +39,9 @@ Loop:
     jsr IfWin
     jmp Start
 +
-    cmp #LOOSE
+    cmp #CRASH
     bne +
-    jsr IfLoose
+    jsr IfCrashed
     bne +
     jmp Start   
 +

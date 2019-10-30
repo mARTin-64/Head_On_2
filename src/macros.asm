@@ -50,6 +50,10 @@
     
     lda #$03
     sta PlayerLives
+    
+    lda #PLAY
+    sta GAME_STATE
+
 }
 
 !macro GetRaster .line {
@@ -60,13 +64,13 @@
 }
 
 !macro GameInit {
+    lda #PLAY
+    sta GAME_STATE
     jsr ClearScreen    ; Call to macro for clearing screen
-    jsr DrawMap
+    jsr DrawGame
     jsr PlayerInit
     jsr EnemyInit
     jsr Enemy2Init
-    lda #PLAY
-    sta GAME_STATE
     lda #$00
     sta BORDER_COLOR
     sta CurrentEnemy

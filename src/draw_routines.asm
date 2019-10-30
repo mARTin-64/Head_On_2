@@ -23,35 +23,85 @@ ClearScreen:
 ;--------------------------------------------------------
 ;--Routine for drawing game map         
 ;--------------------------------------------------------
-DrawMap:
+DrawGame:
+DATA_POINTER = TEMP5
+.Row    = TEMP5
     
-    ldy #250            ; Our map data is loaded to $8000 location. See "assets.asm
--                       ; Loop through Map bytes and store them in Screen RAM
-    lda MAP, y          ; This is currently drawing map from 4 locations on screen
-    tax                 ; and setting right colors for characters. I will later 
-    sta SCREEN_RAM, y   ; change this code to be self modifying.
-    lda CHAR_COLORS, x
-    sta COLOR_RAM, y 
-    lda MAP + 250, y 
-    tax
-    sta SCREEN_RAM + 250, y
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + 250, y
-    lda MAP + 500, y
-    tax
-    sta SCREEN_RAM + 500, y
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + 500, y
-    lda MAP + 750, y
-    tax
-    sta SCREEN_RAM + 750, y
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + 750, y
-    dey
-    bne -
+    lda #$00
+    sta .Row
     
-    rts
+    lda #<SCREEN_RAM
+    sta Screen + 1 
+    sta Color + 1
 
+    lda #>SCREEN_RAM
+    sta Screen + 2
+    lda #>COLOR_RAM
+    sta Color + 2
+
+    lda GAME_STATE
+    cmp #MAIN_MENU
+    bne +
+    lda #<START_MENU
+    sta Data + 1
+    lda #>START_MENU
+    sta Data + 2
+    
+    jmp Done
++
+    cmp #PLAY
+    bne +    
+    lda #<MAP
+    sta Data + 1
+    lda #>MAP
+    sta Data + 2
+    
+    jmp Done
++
+    cmp #VICTORY
+    bne +
++
+
+Done:
+    ldy #00                ; Our map data is loaded to $8000 location. See "assets.asm
+-   
+Data:                       ; Loop through Map bytes and store them in Screen RAM
+    lda $B00B, y   ; This is currently drawing map from 4 locations on screen
+    tax                     ; and setting right colors for characters. I will later 
+Screen:    
+    sta $B00B, y       ; change this code to be self modifying.
+    lda CHAR_COLORS, x
+Color:    
+    sta $B00B, y 
+    iny
+    cpy #40
+    bne Data
+    
+    ; INCREASE TILE LOCATION
+    clc
+    lda Data + 1
+    adc #$28
+    sta Data + 1
+    lda Data + 2
+    adc #$00
+    sta Data + 2
+    
+    ; INCREASE SCREEN AND COLOR RAM LOCATIONS
+    clc
+    lda Screen + 1
+    adc #$28
+    sta Screen + 1
+    sta Color  + 1
+    bcc +
+    inc Screen + 2 
+    inc Color  + 2
++
+    inc .Row
+    ldx .Row
+    cpx #25
+    bne Done
+
+    rts
 }
 
 

@@ -41,9 +41,11 @@ OFFSET_YD =     $2B ; Const
 OFFSET_YDU =    $33 ; Const 
 OFFSET_YDD =    $2A ; Const 
 
-PLAY    =       $01 ; Const
-VICTORY =       $02 ; Const
-LOOSE   =       $04 ; Const
+MAIN_MENU =     $01 ; Const
+PLAY    =       $02 ; Const
+VICTORY =       $04 ; Const
+CRASH   =       $08 ; Const
+LOOSE   =       $10 ; Const
 
 YES = $01
 NO  = $00
