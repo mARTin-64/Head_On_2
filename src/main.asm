@@ -21,10 +21,23 @@
     +Init6502
 
 Start:
-
+    lda #MAIN_MENU
+    sta GAME_STATE
     +GameInit
 
-Loop:
+MainMenu:
+    +GetRaster($FF)
+    
+    inc COUNTER
+    lda COUNTER
+    cmp #200
+    bne +
+    +StartGame
++     
+    +GetRaster($FF)
+    jmp MainMenu
+
+GameLoop:
     +GetRaster($ff)
     inc $D020 
    
@@ -39,17 +52,20 @@ Loop:
     jsr IfWin
     jmp Start
 +
-    cmp #CRASH
+    cmp #CRASHED
     bne +
     jsr IfCrashed
     bne +
-    jmp Start   
+    lda #CRASHED
+    sta GAME_STATE
+    +GameInit
+
+    rts   
 +
-    
     dec $d020
-    +GetRaster($82)
+    +GetRaster($FF)
     
-    jmp Loop
+    jmp GameLoop
 ;----------LOAD ASSETS----------;
 
 X_BORDER_OFFSET:    !byte $18
@@ -73,6 +89,7 @@ Enemy_Dir:      !byte $00, $00, $00, $00
 Enemy_Turbo     !byte $00, $00, $00, $00
 Enemy_MSB:      !byte $00
 ENEMY_MSB_SET:  !byte %00000010, %00000100, %00001000, %00010000
+ENEMY_MSB_UNSET !byte %11111101, %11111011, %11110111, %11101111
 MSB_Carry       !byte $00, $00, $00, $00
 CurrentEnemy:   !byte $00
 

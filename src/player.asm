@@ -20,18 +20,24 @@ PlayerInit:
 
     lda #185
     sta Player_X 
+    sta PL_X
     lda #234
     sta Player_Y
+    sta PL_Y
     lda MV_RT
     sta PL_DIR
     
     lda #$01
     sta CheckZone
     sta CheckSnap
+    
+    lda ENABLE_SPRITES
+    ora #%00000001
+    sta ENABLE_SPRITES
 
     lda #$00
     sta POINT_COUNTER
- 
+
     lda SPRITE_MSB
     and #%11111110
     sta SPRITE_MSB

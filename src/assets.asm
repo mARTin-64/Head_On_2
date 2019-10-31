@@ -14,6 +14,9 @@ MAP:
 START_MENU:    
     !binary "../maps/menu_start.bin"
 
+BONUS_SCREEN:
+    !binary "../maps/bonus_screen.bin"
+
 CHAR_COLORS:
     !binary "../char_set/char_attributes.bin"
 

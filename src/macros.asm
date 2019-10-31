@@ -33,10 +33,6 @@
     lda #%00001100      ;\
     sta MEMORY_REGISTER ; Set screen and character location. See "labels.asm"
     
-    lda ENABLE_SPRITES
-    ora #%00000111
-    sta ENABLE_SPRITES
-   
     lda #$01
     sta ACTIVE_ENEMYES
     sta SPRITE_COLOR1
@@ -64,16 +60,28 @@
 }
 
 !macro GameInit {
-    lda #PLAY
-    sta GAME_STATE
     jsr ClearScreen    ; Call to macro for clearing screen
     jsr DrawGame
-    jsr PlayerInit
-    jsr EnemyInit
-    jsr Enemy2Init
     lda #$00
     sta BORDER_COLOR
+    sta COUNTER 
+}
+
+!macro StartGame {
+    lda #PLAY
+    sta GAME_STATE
+    jsr ClearScreen
+    jsr DrawGame
+    jsr DrawLives
+    jsr PlayerInit
+    jsr EnemyInit
+    
+    lda #$00
     sta CurrentEnemy
+    sta BORDER_COLOR
+    sta COUNTER
+
+    jsr GameLoop
 }
 
 !macro GetPlayerState {

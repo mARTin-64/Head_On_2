@@ -13,7 +13,7 @@ CheckSpriteCollision:
     bne +
     rts   
 +    
-    lda #CRASH
+    lda #CRASHED
     sta GAME_STATE
    
     rts

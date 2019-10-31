@@ -1,70 +1,92 @@
 !zone Enemy {
 
 .Turbo: !byte $01
+.Temp_X = TEMP1
+.Temp_Y = TEMP2
+.Temp_Dir = TEMP3
 
 EnemyInit:
+    ldx #$00
+
+.Loop   
     lda #$46
-    sta SPRITE_POINTERS + 1
+    sta SPRITE_POINTERS + 1, x
     
+    lda ENABLE_SPRITES
+    ora ENEMY_MSB_SET, x
+    sta ENABLE_SPRITES
+
+    cpx #$00
+    bne +
     lda #175
-    sta Enemy_X  
+    sta .Temp_X
     lda #234
-    sta Enemy_Y
-    
+    sta .Temp_Y
     lda MV_LT
-    sta Enemy_Dir
+    sta .Temp_Dir
+    jmp .Set
++
+    cpx #$01
+    bne +
+    lda #185
+    sta .Temp_X
+    lda #65
+    sta .Temp_Y
+    lda MV_RT
+    sta .Temp_Dir
+    jmp .Set
++
+    cpx #$02
+    bne +
+    lda #65
+    sta .Temp_X
+    lda #120
+    sta .Temp_Y
+    lda MV_UP
+    sta .Temp_Dir
+    jmp .Set
++   
+    cpx #$03
+    bne +
+    lda #220
+    sta .Temp_X
+    lda #150
+    sta .Temp_Y
+    lda MV_UP
+    sta .Temp_Dir
+
+.Set:    
+    txa 
+    asl
+    tay
+    lda .Temp_X 
+    sta EN0_X, y
+    sta Enemy_X, x
+
+    lda .Temp_Y
+    sta Enemy_Y, x
+    sta EN0_Y, y 
+    
+    lda .Temp_Dir
+    sta Enemy_Dir, x
     
     lda #$01
     sta CheckZone
     sta CheckSnap
 
     lda SPRITE_MSB
-    and #%11111101
+    and ENEMY_MSB_UNSET, x
     sta SPRITE_MSB
     sta Enemy_MSB
 
     lda #$00
-    sta MSB_Carry
+    sta MSB_Carry, x
     
-    rts
-
-Enemy2Init:
-    lda ACTIVE_ENEMYES
-    cmp #$02
-    bne +
-    
-    lda ENABLE_SPRITES
-    ora #%00000100
-    sta ENABLE_SPRITES
-
-
-    lda #$46
-    sta SPRITE_POINTERS + 2  
-    
-    lda #155
-    sta Enemy_X + 1 
-    lda #60
-    sta Enemy_Y + 1
-    
-    lda MV_RT
-    sta Enemy_Dir + 1 
-    
-    lda #$01
-    sta CheckZone
-   
-    lda SPRITE_MSB
-    and #%11111011
-    sta SPRITE_MSB
-    sta Enemy_MSB
-   
-    lda #$00
-    sta MSB_Carry + 1
-    rts
+    inx
+    cpx ACTIVE_ENEMYES
+    beq +
+    jmp .Loop
 +
-    lda ENABLE_SPRITES
-    and #%11111011
-    sta ENABLE_SPRITES
-
     rts
 
 EnemyUpdate:

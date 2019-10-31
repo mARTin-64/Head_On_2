@@ -24,7 +24,6 @@ ClearScreen:
 ;--Routine for drawing game map         
 ;--------------------------------------------------------
 DrawGame:
-DATA_POINTER = TEMP5
 .Row    = TEMP5
     
     lda #$00
@@ -49,6 +48,15 @@ DATA_POINTER = TEMP5
     
     jmp Done
 +
+    cmp #CRASHED
+    bne +
+    lda #<BONUS_SCREEN
+    sta Data + 1
+    lda #>BONUS_SCREEN
+    sta Data + 2
+    
+    jmp Done
++    
     cmp #PLAY
     bne +    
     lda #<MAP
@@ -63,16 +71,16 @@ DATA_POINTER = TEMP5
 +
 
 Done:
-    ldy #00                ; Our map data is loaded to $8000 location. See "assets.asm
+    ldy #00 
 -   
-Data:                       ; Loop through Map bytes and store them in Screen RAM
-    lda $B00B, y   ; This is currently drawing map from 4 locations on screen
-    tax                     ; and setting right colors for characters. I will later 
+Data:
+    lda $B00B, y   
+    tax
 Screen:    
-    sta $B00B, y       ; change this code to be self modifying.
+    sta $B00B, y
     lda CHAR_COLORS, x
-Color:    
-    sta $B00B, y 
+Color:
+    sta $B00B, y
     iny
     cpy #40
     bne Data
@@ -102,6 +110,22 @@ Color:
     bne Done
 
     rts
+
+DrawLives:
+    ldy #$00
+-    
+    lda #$07
+    sta SCREEN_RAM + 537, y
+    tax
+    lda CHAR_COLORS, x
+    sta COLOR_RAM + 537, y
+
+    iny
+    cpy PlayerLives
+    bne -
+    
+    rts
+
 }
 
 
