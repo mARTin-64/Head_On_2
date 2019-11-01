@@ -23,7 +23,7 @@
 Start:
     lda #MAIN_MENU
     sta GAME_STATE
-    +GameInit
+    +SetScreen
 
 MainMenu:
     +GetRaster($FF)
@@ -39,7 +39,7 @@ MainMenu:
 
 GameLoop:
     +GetRaster($ff)
-    inc $D020 
+    ;inc $D020 
    
     jsr PlayerUpdate
     jsr EnemyUpdate
@@ -50,7 +50,10 @@ GameLoop:
     cmp #VICTORY
     bne +
     jsr IfWin
-    jmp Start
+    lda #CRASHED
+    sta GAME_STATE
+    +SetScreen
+    rts
 +
     cmp #CRASHED
     bne +
@@ -58,12 +61,12 @@ GameLoop:
     bne +
     lda #CRASHED
     sta GAME_STATE
-    +GameInit
+    +SetScreen
 
     rts   
 +
-    dec $d020
-    +GetRaster($FF)
+    ;dec $d020
+    +GetRaster($80)
     
     jmp GameLoop
 ;----------LOAD ASSETS----------;

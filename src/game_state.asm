@@ -3,6 +3,12 @@ IfWin:
     inc ACTIVE_ENEMYES
     inc PlayerLives
     
+    lda PlayerLives
+    cmp #$07
+    bne +
+    ldx #$06
+    stx PlayerLives
++
     lda #%00000000
     and ENABLE_SPRITES
     sta ENABLE_SPRITES
@@ -22,15 +28,9 @@ IfCrashed:
     lda PlayerLives
     cmp #$00
     bne +
-    ldx #$03
+    ldx #$01
     stx PlayerLives
 +   
-    cmp #$07
-    bne +
-    ldx #$06
-    stx PlayerLives
-+
-    ;bne +
     lda #%00000000
     and ENABLE_SPRITES
     sta ENABLE_SPRITES

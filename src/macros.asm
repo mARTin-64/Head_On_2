@@ -59,7 +59,7 @@
 
 }
 
-!macro GameInit {
+!macro SetScreen {
     jsr ClearScreen    ; Call to macro for clearing screen
     jsr DrawGame
     lda #$00
@@ -75,6 +75,7 @@
     jsr DrawLives
     jsr PlayerInit
     jsr EnemyInit
+    jsr ScoreDisplay
     
     lda #$00
     sta CurrentEnemy
