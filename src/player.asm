@@ -15,7 +15,7 @@
 ;--Routine for intializing player          
 ;--------------------------------------------------------
 PlayerInit:
-    lda #$40
+    lda #$43
     sta SPRITE_POINTERS
 
     lda #185
@@ -51,8 +51,12 @@ PlayerInit:
 PlayerUpdate:
     lda #PLAYER_ACTIVE
     sta ENTITY_TO_UPDATE 
-
+    
+    lda COUNTER
+    and #$07
+    beq +
     jsr ReadJoystick
++    
 
 GoUp:
     lda PL_DIR
@@ -70,6 +74,7 @@ GoUp:
     cmp .Turbo 
     bne GoDown
      
+    dec Player_Y
     dec Player_Y
     jmp End
 
@@ -107,6 +112,7 @@ GoDown:
     cmp .Turbo 
     bne GoLeft 
     
+    inc Player_Y
     inc Player_Y
     jmp End
 
@@ -146,7 +152,7 @@ GoLeft:
     
     lda Player_X
     sec
-    sbc #02
+    sbc #03
     sta Player_X
     bcs GoRight
     jmp SetMSB0
@@ -201,7 +207,7 @@ GoRight:
     bne NoTurbo1 
     
     lda Player_X
-    adc #$01
+    adc #$02
     sta Player_X
     bcc End 
     jmp SetMSB1
@@ -345,6 +351,9 @@ Right:
     sta SPRITE_MSB
 
 Turbo:    
+    ;lda COUNTER
+    ;and #$03
+    ;beq TurboOff
     lda JOY_P_2
     and #.JOY_FR
     bne TurboOff 

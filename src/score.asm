@@ -5,13 +5,13 @@
 UpdateScore:
     sed
     
-    lda #$05
+    lda Value_Small 
     sta POINT_VALUE
 
     lda POINT_TYPE
     and #POINT_5
     bne + 
-    lda #$25
+    lda Value_Big
     sta POINT_VALUE
 +
     clc
@@ -58,6 +58,8 @@ ShowDigit:
     clc
     adc #10
     sta SCREEN_RAM + 600, y
+    lda #$01
+    sta COLOR_RAM + 600, y
     dey
     
     rts

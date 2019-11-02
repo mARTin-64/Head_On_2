@@ -84,7 +84,7 @@ SnapLeftRight:
 ++:
     lda Player_X
     sec
-    sbc #$02
+    sbc #$03
     and #$f8
     clc
     adc #$08

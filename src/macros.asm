@@ -34,8 +34,8 @@
     sta MEMORY_REGISTER ; Set screen and character location. See "labels.asm"
     
     lda #$01
-    sta ACTIVE_ENEMYES
     sta SPRITE_COLOR1
+    sta ACTIVE_ENEMYES
     
     ldx #$07
 -   
@@ -44,7 +44,7 @@
     dex
     bne -
     
-    lda #$03
+    lda #$04
     sta PlayerLives
     
     lda #PLAY
@@ -65,6 +65,7 @@
     lda #$00
     sta BORDER_COLOR
     sta COUNTER 
+    sta COUNTER + 1
 }
 
 !macro StartGame {
@@ -81,6 +82,7 @@
     sta CurrentEnemy
     sta BORDER_COLOR
     sta COUNTER
+    sta COUNTER + 1
 
     jsr GameLoop
 }

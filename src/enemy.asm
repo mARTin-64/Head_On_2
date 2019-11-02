@@ -18,7 +18,7 @@ EnemyInit:
 
     cpx #$00
     bne +
-    lda #175
+    lda #176
     sta .Temp_X
     lda #234
     sta .Temp_Y
@@ -28,9 +28,9 @@ EnemyInit:
 +
     cpx #$01
     bne +
-    lda #185
+    lda #184
     sta .Temp_X
-    lda #65
+    lda #58
     sta .Temp_Y
     lda MV_RT
     sta .Temp_Dir
@@ -38,9 +38,9 @@ EnemyInit:
 +
     cpx #$02
     bne +
-    lda #65
+    lda #64
     sta .Temp_X
-    lda #120
+    lda #146
     sta .Temp_Y
     lda MV_UP
     sta .Temp_Dir
@@ -48,11 +48,11 @@ EnemyInit:
 +   
     cpx #$03
     bne +
-    lda #220
+    lda #248
     sta .Temp_X
-    lda #150
+    lda #146
     sta .Temp_Y
-    lda MV_UP
+    lda MV_LT
     sta .Temp_Dir
 
 .Set:    
@@ -94,8 +94,8 @@ EnemyUpdate:
     sta ENTITY_TO_UPDATE
     
     lda COUNTER
-    and #$01
-    bne +
+    and #$07
+    beq +
     jsr GetBehaviour
 +    
     ldx CurrentEnemy

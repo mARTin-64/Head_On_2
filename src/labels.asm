@@ -11,6 +11,9 @@ SPRITE_COLLISION =$D01E
 MEMORY_REGISTER = $D018 ; Define label for for memory register location
 RASTER_Y        = $D012
 
+CIA_PORT_A = $DC00
+CIA_PORT_B = $DC01
+
 SPRITE_MSB      = $D010
 ENABLE_SPRITES  = $D015
 SPRITE_POINTERS = SCREEN_RAM + $3F8
@@ -44,7 +47,7 @@ OFFSET_YDD =    $2A ; Const
 MAIN_MENU =     $01 ; Const
 PLAY    =       $02 ; Const
 VICTORY =       $04 ; Const
-CRASHED   =       $08 ; Const
+CRASHED   =     $08 ; Const
 LOOSE   =       $10 ; Const
 
 YES = $01

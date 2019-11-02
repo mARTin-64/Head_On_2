@@ -6,7 +6,7 @@
 ;   Code was written by Martin Živica.
 ;   Date: October, 2019.
 
-!to "../head_on_2.prg",cbm    ; This line of code tells the compiler output file name and type
+!to "../out.prg",cbm    ; This line of code tells the compiler output file name and type
 !cpu 6502
 ;----------LOAD FILES----------;
 !src "zero_page.asm"
@@ -17,20 +17,25 @@
     +BasicStart     ; Call to macro for starting program
     
     * = $0810       ; Set program memory addres
-    
+
     +Init6502
 
 Start:
     lda #MAIN_MENU
     sta GAME_STATE
     +SetScreen
+-   
+    jsr ReadKeyboard
+    lda GAME_STATE
+    cmp #CRASHED
+    bne -
+    +SetScreen
 
 MainMenu:
     +GetRaster($FF)
-    
-    inc COUNTER
-    lda COUNTER
-    cmp #200
+    jsr Timer
+    lda COUNTER + 1
+    cmp #$40
     bne +
     +StartGame
 +     
@@ -39,12 +44,12 @@ MainMenu:
 
 GameLoop:
     +GetRaster($ff)
-    ;inc $D020 
+    inc $D020 
    
     jsr PlayerUpdate
     jsr EnemyUpdate
     
-    inc COUNTER
+    inc COUNTER 
     
     lda GAME_STATE
     cmp #VICTORY
@@ -65,7 +70,7 @@ GameLoop:
 
     rts   
 +
-    ;dec $d020
+    dec $d020
     +GetRaster($80)
     
     jmp GameLoop
@@ -103,7 +108,11 @@ FreeZoneDown:   !byte $00
 FreeZoneLeft:   !byte $00
 FreeZoneRight:  !byte $00
 
-Score   !byte $00, $00, $00
+Score:  !byte $00, $00, $00
+Bonus:  !byte $02, $00, $00 
+
+Value_Small: !byte $05
+Value_Big:   !byte $25
 
 !source "tables.asm"
 !source "draw_routines.asm"

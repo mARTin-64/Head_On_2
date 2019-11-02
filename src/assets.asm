@@ -9,7 +9,7 @@ ENEMY_SPRITE:
 
 * = $8000       ; Map and Color data starts at $8000
 MAP: 
-    !binary "../maps/map.bin"
+    !binary "../maps/map_test.bin"
 
 START_MENU:    
     !binary "../maps/menu_start.bin"

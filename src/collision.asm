@@ -55,6 +55,8 @@ CheckScorePoints:
 ;--Check forward collision for each direction
 ;--------------------------------------------------------
 CheckMoveUp:
+    jsr SetupDir
+    
     ldx #OFFSET_XR
     ldy #OFFSET_YDU
     
@@ -105,6 +107,8 @@ CheckMoveUp:
     rts
 
 CheckMoveDown:
+    jsr SetupDir
+
     ldx #OFFSET_XL
     ldy #OFFSET_YDD
     
@@ -350,5 +354,19 @@ SetupEntity:
     sta Entity_Dir   ;--------TODO
 
     rts
+
+SetupDir:
+    lda ENTITY_TO_UPDATE
+    cmp #PLAYER_ACTIVE
+    bne +
+    lda PL_DIR
+    sta Entity_Dir
+    rts
++   
+    ldx CurrentEnemy
+    lda Enemy_Dir
+    sta Entity_Dir
+    rts
 }
+
 
