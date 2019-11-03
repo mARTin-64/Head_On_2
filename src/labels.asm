@@ -31,8 +31,8 @@ PLAYER_STATE_4 = $00001000
 JOY_P_2 =   $DC00
 
 SOLID =      %00010000
-POINT_5 =    %00100000
-POINT_25 =   %01000000
+POINT_SMALL =    %00100000
+POINT_BIG =   %01000000
 
 OFFSET_XL =     $18 ; Const 
 OFFSET_XR =     $11 ; Const 
@@ -47,8 +47,9 @@ OFFSET_YDD =    $2A ; Const
 MAIN_MENU =     $01 ; Const
 PLAY    =       $02 ; Const
 VICTORY =       $04 ; Const
-CRASHED   =     $08 ; Const
-LOOSE   =       $10 ; Const
+CRASHED =       $08 ; Const
+BONUS_SCR =     $10 ; Const
+LOOSE   =       $20 ; Const
 
 YES = $01
 NO  = $00

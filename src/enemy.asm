@@ -83,7 +83,7 @@ EnemyInit:
     sta MSB_Carry, x
     
     inx
-    cpx ACTIVE_ENEMYES
+    cpx ACTIVE_ENEMIES
     beq +
     jmp .Loop
 +
@@ -325,7 +325,7 @@ EEnd:
     
     inc CurrentEnemy
     ldx CurrentEnemy
-    cpx ACTIVE_ENEMYES
+    cpx ACTIVE_ENEMIES
     beq +
     jmp EnemyUpdate 
 +

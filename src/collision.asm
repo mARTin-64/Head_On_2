@@ -27,7 +27,7 @@ CheckScorePoints:
     tax
     lda CHAR_COLORS, x
     and #$f0
-    and #(POINT_5 + POINT_25)
+    and #(POINT_SMALL + POINT_BIG)
     sta POINT_TYPE
     bne +
     

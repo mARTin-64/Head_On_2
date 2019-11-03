@@ -35,7 +35,7 @@
     
     lda #$01
     sta SPRITE_COLOR1
-    sta ACTIVE_ENEMYES
+    sta ACTIVE_ENEMIES
     
     ldx #$07
 -   
@@ -46,9 +46,6 @@
     
     lda #$04
     sta PlayerLives
-    
-    lda #PLAY
-    sta GAME_STATE
 
 }
 

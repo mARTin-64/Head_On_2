@@ -27,7 +27,7 @@ Start:
 -   
     jsr ReadKeyboard
     lda GAME_STATE
-    cmp #CRASHED
+    cmp #BONUS_SCR
     bne -
     +SetScreen
 
@@ -38,7 +38,13 @@ MainMenu:
     cmp #$40
     bne +
     +StartGame
-+     
+    +SetScreen
+
+    lda GAME_STATE
+    cmp #LOOSE
+    bne +
+    jmp Start
++
     +GetRaster($FF)
     jmp MainMenu
 
@@ -55,19 +61,12 @@ GameLoop:
     cmp #VICTORY
     bne +
     jsr IfWin
-    lda #CRASHED
-    sta GAME_STATE
     +SetScreen
     rts
 +
     cmp #CRASHED
     bne +
     jsr IfCrashed
-    bne +
-    lda #CRASHED
-    sta GAME_STATE
-    +SetScreen
-
     rts   
 +
     dec $d020
@@ -109,7 +108,7 @@ FreeZoneLeft:   !byte $00
 FreeZoneRight:  !byte $00
 
 Score:  !byte $00, $00, $00
-Bonus:  !byte $02, $00, $00 
+Bonus:  !byte $02 
 
 Value_Small: !byte $05
 Value_Big:   !byte $25

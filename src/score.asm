@@ -9,7 +9,7 @@ UpdateScore:
     sta POINT_VALUE
 
     lda POINT_TYPE
-    and #POINT_5
+    and #POINT_SMALL
     bne + 
     lda Value_Big
     sta POINT_VALUE

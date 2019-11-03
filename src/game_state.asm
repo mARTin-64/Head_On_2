@@ -1,7 +1,11 @@
 !zone GameStates {
 IfWin:
+;-----Set game state
+    lda #BONUS_SCR
+    sta GAME_STATE
+
 ;-----Increase Level variables
-    inc ACTIVE_ENEMYES
+    inc ACTIVE_ENEMIES
     inc PlayerLives
     inc Bonus
 
@@ -15,7 +19,7 @@ IfWin:
     sta Value_Small
 +
     lda Value_Big
-    cmp #$fe
+    cmp #$75
     beq +
     clc
     adc #$25
@@ -43,32 +47,63 @@ IfWin:
     sta ENABLE_SPRITES
 
 ;-----Reset number of enemyes if above 4
-    lda ACTIVE_ENEMYES
+    lda ACTIVE_ENEMIES
     cmp #$05
     beq +
     rts
 +
     lda #$04
-    sta ACTIVE_ENEMYES
+    sta ACTIVE_ENEMIES
     rts
 
 IfCrashed:
     dec PlayerLives
-    lda PlayerLives
-    cmp #$00
-    bne +
-    ldx #$01
-    stx PlayerLives
-+   
+
+;-----Disable sprite rendering    
     lda #%00000000
     and ENABLE_SPRITES
     sta ENABLE_SPRITES
-    
-    lda #NO
+
+;-----Check if player has no lives then goto end
+    lda PlayerLives
+    cmp #$00
+    beq +
+
+;-----Update game state   
+    lda #BONUS_SCR
+    sta GAME_STATE
     rts
-;+
-    ;lda #YES
-    ;rts
++
+;-----Update game state if no more lives
+    lda #LOOSE
+    sta GAME_STATE
+
+;-----Reset active enemies
+    lda #$01
+    sta ACTIVE_ENEMIES
+
+;-----Reset point values
+    lda #$05
+    sta Value_Small
+    lda #$25
+    sta Value_Big
+
+;-----Reset bonus per level
+    lda #$02
+    sta Bonus
+
+;-----Reset score    
+    lda #$00
+    sta Score
+    sta Score + 1
+    sta Score + 2
+
+;-----Reset player lives
+    lda #$04
+    sta PlayerLives
+    
+    rts
+
 
 ReadKeyboard:
     lda CIA_PORT_A
@@ -77,7 +112,7 @@ ReadKeyboard:
     lda CIA_PORT_B
     and #%00000001
     bne +
-    lda #CRASHED
+    lda #BONUS_SCR
     sta GAME_STATE
 +
     rts

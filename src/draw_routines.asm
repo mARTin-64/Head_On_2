@@ -48,15 +48,10 @@ DrawGame:
     
     jmp Done
 +
-    cmp #CRASHED
+    cmp #BONUS_SCR
     bne +
-    lda #<BONUS_SCREEN
-    sta Data + 1
-    lda #>BONUS_SCREEN
-    sta Data + 2
+    jmp BonusScreen
     
-    jsr BonusScreen
-    rts
 +    
     cmp #PLAY
     bne +    
@@ -113,13 +108,18 @@ Color:
     rts
 
 DrawLives:
-    ldy #$00
+    lda PlayerLives
+    cmp #$01
+    bne +
+    rts
++
+    ldy #$01
 -    
     lda #$07
-    sta SCREEN_RAM + 537, y
+    sta SCREEN_RAM + 536, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 537, y
+    sta COLOR_RAM + 536, y
 
     iny
     cpy PlayerLives
@@ -143,19 +143,6 @@ BonusScreen:
     lda CHAR_COLORS, x
     sta COLOR_RAM + 416, y
 
-;-----BONUS TEXT
-    lda BONUS_SCREEN + 20, y
-    sta SCREEN_RAM + 611, y
-    sta SCREEN_RAM + 691, y
-    tax
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + 611, y
-    sta COLOR_RAM + 691, y
-    
-    iny
-    cpy #$0a
-    bne -
-
 ;-----BONUS NUMBER
     lda Bonus
     clc 
@@ -169,32 +156,47 @@ BonusScreen:
     sta COLOR_RAM + 459
     sta COLOR_RAM + 460
 
-;-----POINTS PER
+
+;-----BONUS TEXT
+    lda BONUS_SCREEN + 20, y
+    sta SCREEN_RAM + 610, y
+    sta SCREEN_RAM + 690, y
+    tax
+    lda CHAR_COLORS, x
+    sta COLOR_RAM + 610, y
+    sta COLOR_RAM + 690, y
+    
+    iny
+    cpy #$0a
+    bne -
+
+;-----POINTS PER (dots and value)
     ldy #$00
 -    
     lda #$08
-    sta SCREEN_RAM + 622, y
+    sta SCREEN_RAM + 621, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 622, x
+    sta COLOR_RAM + 621, x
 
     lda #$09
-    sta SCREEN_RAM + 702, y
+    sta SCREEN_RAM + 701, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 702, y 
+    sta COLOR_RAM + 701, y 
     
     iny
     cpy #$03
     bne -
 
+;-----EQUAL SIGN
     lda #58
-    sta SCREEN_RAM + 626
-    sta SCREEN_RAM + 706
+    sta SCREEN_RAM + 625
+    sta SCREEN_RAM + 705
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 626
-    sta COLOR_RAM + 706
+    sta COLOR_RAM + 625
+    sta COLOR_RAM + 705
  
     ldy #$01
     

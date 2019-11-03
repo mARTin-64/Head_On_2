@@ -351,9 +351,9 @@ Right:
     sta SPRITE_MSB
 
 Turbo:    
-    ;lda COUNTER
-    ;and #$03
-    ;beq TurboOff
+    lda COUNTER
+    and #$03
+    beq TurboOff
     lda JOY_P_2
     and #.JOY_FR
     bne TurboOff 
