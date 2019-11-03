@@ -10,11 +10,17 @@ UpdateScore:
 
     lda POINT_TYPE
     and #POINT_SMALL
+    clc
     bne + 
     lda Value_Big
     sta POINT_VALUE
-+
+
+;-----Set carry if Value_Big + 1 is not 0
     clc
+    lda Value_Big + 1
+    beq +
+    sec
++
     lda Score
     adc POINT_VALUE
     sta Score

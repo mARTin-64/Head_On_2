@@ -11,6 +11,9 @@ IfWin:
 
 ;-----Increase point values and reset if above 20 and 100
     sed
+
+;-----Check if small point is allready worth 20 and skip
+;-----otherwise add 5 to it
     lda Value_Small
     cmp #$20
     beq +
@@ -18,13 +21,38 @@ IfWin:
     adc #$05
     sta Value_Small
 +
+
+;-----Compare if big point is worth 75, if yes add 24 to it and set carry
     lda Value_Big
     cmp #$75
-    beq +
+    bne +
+
+;-----Skip if carry is allready set
+    lda Value_Big + 1
+    cmp #$01
+    beq ++
+
+;-----Add 24 so Big point is now worth 99
+    lda Value_Big
+    clc
+    adc #$24
+    sta Value_Big
+
+;-----This is gonna be used to set carry in Score routine so it adds 99 + 1 = 100    
+    lda Value_Big + 1
+    clc 
+    adc #$01
+    sta Value_Big + 1
+    bne ++
++    
+
+;-----Skip if big point is worth 99 + 1 (carry)
+    cmp #$99
+    beq ++
     clc
     adc #$25
     sta Value_Big
-+   
+++   
     cld
 
 ;-----Reset bonus if above 500
@@ -87,6 +115,8 @@ IfCrashed:
     sta Value_Small
     lda #$25
     sta Value_Big
+    lda #$00
+    sta Value_Big + 1
 
 ;-----Reset bonus per level
     lda #$02

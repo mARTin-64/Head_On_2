@@ -111,7 +111,7 @@ Score:  !byte $00, $00, $00
 Bonus:  !byte $02 
 
 Value_Small: !byte $05
-Value_Big:   !byte $25
+Value_Big:   !byte $25, $00
 
 !source "tables.asm"
 !source "draw_routines.asm"

@@ -197,31 +197,44 @@ BonusScreen:
     lda CHAR_COLORS, x
     sta COLOR_RAM + 625
     sta COLOR_RAM + 705
- 
-    ldy #$01
+
+;-----Display values 
+    ldy #$00
     
     lda Value_Small
     pha
+    lsr
+    lsr
+    lsr
+    lsr
+    beq +
+    jsr ShowValue
++
+    pla
     and #$0f
     jsr ShowValue
-    pla
-    lsr
-    lsr
-    lsr
-    lsr
+    
+    ldy #80
+
+    lda Value_Big + 1
+    beq +
     jsr ShowValue
-
-    ldy #82
-
++    
+    sed
     lda Value_Big
+    clc
+    adc Value_Big + 1 
+    cld
     pha
-    and #$0f
+    lsr
+    lsr
+    lsr
+    lsr
+    ;beq +
     jsr ShowValue
+;+
     pla
-    lsr
-    lsr
-    lsr
-    lsr
+    and #$0f
     jsr ShowValue
     
     rts
@@ -229,11 +242,11 @@ BonusScreen:
 ShowValue:
     clc
     adc #10
-    sta SCREEN_RAM + 628, y
+    sta SCREEN_RAM + 627, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 628, y
-    dey
+    sta COLOR_RAM + 627, y
+    iny
     
     rts
 
