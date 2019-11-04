@@ -1,5 +1,6 @@
 !zone GameStates {
 IfWin:
+    jsr AddBonus
 ;-----Set game state
     lda #BONUS_SCR
     sta GAME_STATE
@@ -150,34 +151,51 @@ ReadKeyboard:
 Timer:
     inc COUNTER
     lda COUNTER
-    and #3
+    cmp #51
     bne +
-    lda COUNTER + 1
-    clc
-    adc #$01
-    sta COUNTER + 1
+    inc COUNTER + 1
++   
+    cmp #102
+    bne +
+    inc COUNTER + 1
++
+    cmp #153
+    bne + 
+    inc COUNTER + 1
++
+    cmp #204
+    bne +
+    inc COUNTER + 1
++
+    cmp #255
+    bne +
+    inc COUNTER + 1
 +
     rts
-;    ldy #22
-;
-;    lda COUNTER + 1
-;    ;pha
-;    ;and #$0f
-;    ;jsr ShowCounter
-;    ;pla
-;    lsr
-;    lsr
-;    lsr
-;    lsr
-;    jsr ShowCounter
-;    
-;    rts
-;
-;ShowCounter:
-;    clc
-;    adc #10
-;    sta SCREEN_RAM, y
-;    dey
-;    rts
-;
+
+;-----Display Timer code (comment the rts above to run it)
+    ldy #2
+
+    lda COUNTER + 1
+    pha
+    and #$0f
+    jsr ShowCounter
+    pla
+    lsr
+    lsr
+    lsr
+    lsr
+    jsr ShowCounter
+   
+    rts
+
+ShowCounter:
+    clc
+    adc #10
+    sta SCREEN_RAM, y
+    lda #$01
+    sta COLOR_RAM, y
+    dey
+    rts
+
 }

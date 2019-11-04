@@ -35,7 +35,7 @@ MainMenu:
     +GetRaster($FF)
     jsr Timer
     lda COUNTER + 1
-    cmp #$40
+    cmp #$04
     bne +
     +StartGame
     +SetScreen
@@ -45,17 +45,17 @@ MainMenu:
     bne +
     jmp Start
 +
-    +GetRaster($FF)
+    ;+GetRaster($FF)
     jmp MainMenu
 
 GameLoop:
     +GetRaster($ff)
-    inc $D020 
+    ;inc $D020 
    
+    jsr Timer
+
     jsr PlayerUpdate
     jsr EnemyUpdate
-    
-    inc COUNTER 
     
     lda GAME_STATE
     cmp #VICTORY
@@ -69,8 +69,8 @@ GameLoop:
     jsr IfCrashed
     rts   
 +
-    dec $d020
-    +GetRaster($80)
+    ;dec $d020
+    ;+GetRaster($80)
     
     jmp GameLoop
 ;----------LOAD ASSETS----------;

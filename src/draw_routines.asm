@@ -230,9 +230,7 @@ BonusScreen:
     lsr
     lsr
     lsr
-    ;beq +
     jsr ShowValue
-;+
     pla
     and #$0f
     jsr ShowValue

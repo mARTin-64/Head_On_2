@@ -37,6 +37,71 @@ UpdateScore:
     
     rts
 
+AddBonus:
+    ldx #$00
+-
+    lda #$00
+    sta PL_DIR
+    sta Enemy_Dir, x
+    inx 
+    cpx ACTIVE_ENEMIES
+    bne -
+
+    ldy #$00
+
+.Loop_Bonus
+    ldx #$00  
+    tya
+    pha
+
+.Add_10
+    +GetRaster($ff)
+    inc COUNTER
+    lda COUNTER
+    and #$1f
+    bne .Add_10
+    
+    sed
+    
+    lda Score
+    clc
+    adc #10
+    sta Score
+    lda Score + 1
+    adc #0
+    sta Score + 1
+    lda Score + 2
+    adc #0
+    sta Score + 2
+     
+    cld
+    
+    txa
+    pha
+    jsr ScoreDisplay
+    pla
+    tax
+    inx
+    cpx #10
+    beq + 
+    jmp .Add_10
++
+    pla
+    tay
+    iny 
+    cpy Bonus
+    bne .Loop_Bonus
+    lda #$00
+    sta COUNTER + 1
+-
+    +GetRaster($ff)
+    jsr Timer
+    lda COUNTER + 1
+    cmp #$02
+    bne -
+
+    rts
+
 ScoreDisplay:
     ldy #22      ; Screen offset
     ldx #0      ; Score byte index
