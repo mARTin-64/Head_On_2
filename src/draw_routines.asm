@@ -128,75 +128,74 @@ DrawLives:
     rts
 
 BonusScreen:
-;-----BONUS LOGO
+;-----BONUS SIGN 
     ldy #$00
 -    
     lda BONUS_SCREEN, y
-    sta SCREEN_RAM + 376, y
+    sta SCREEN_RAM + 377, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 376, y
+    sta COLOR_RAM + 377, y
     
     lda BONUS_SCREEN + 10, y
-    sta SCREEN_RAM + 416, y
+    sta SCREEN_RAM + 417, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 416, y
-
-;-----BONUS NUMBER
-    lda Bonus
-    clc 
-    adc #10
-    sta SCREEN_RAM + 458
-    lda #10
-    sta SCREEN_RAM + 459
-    sta SCREEN_RAM + 460
-    lda #$07 
-    sta COLOR_RAM + 458
-    sta COLOR_RAM + 459
-    sta COLOR_RAM + 460
-
+    sta COLOR_RAM + 417, y
 
 ;-----BONUS TEXT
     lda BONUS_SCREEN + 20, y
-    sta SCREEN_RAM + 610, y
-    sta SCREEN_RAM + 690, y
+    sta SCREEN_RAM + 611, y
+    sta SCREEN_RAM + 691, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 610, y
-    sta COLOR_RAM + 690, y
+    sta COLOR_RAM + 611, y
+    sta COLOR_RAM + 691, y
     
     iny
     cpy #$0a
     bne -
 
+;-----BONUS NUMBER
+    lda Bonus
+    clc 
+    adc #10
+    sta SCREEN_RAM + 459
+    lda #10
+    sta SCREEN_RAM + 460
+    sta SCREEN_RAM + 461
+    lda #$07 
+    sta COLOR_RAM + 459
+    sta COLOR_RAM + 460
+    sta COLOR_RAM + 461
+
 ;-----POINTS PER (dots and value)
     ldy #$00
 -    
     lda #$08
-    sta SCREEN_RAM + 621, y
+    sta SCREEN_RAM + 622, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 621, x
+    sta COLOR_RAM + 622, x
 
     lda #$09
-    sta SCREEN_RAM + 701, y
+    sta SCREEN_RAM + 702, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 701, y 
+    sta COLOR_RAM + 702, y 
     
     iny
     cpy #$03
     bne -
 
 ;-----EQUAL SIGN
-    lda #58
-    sta SCREEN_RAM + 625
-    sta SCREEN_RAM + 705
+    lda #46
+    sta SCREEN_RAM + 626
+    sta SCREEN_RAM + 706
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 625
-    sta COLOR_RAM + 705
+    sta COLOR_RAM + 626
+    sta COLOR_RAM + 706
 
 ;-----Display values 
     ldy #$00
@@ -237,13 +236,60 @@ BonusScreen:
     
     rts
 
+DrawBonusLogo:
+    ldy #$00
+-    
+    lda BONUS_SCREEN, y
+    sta SCREEN_RAM + 377, y
+    tax
+    lda CHAR_COLORS, x
+    sta COLOR_RAM + 377, y
+    
+    lda BONUS_SCREEN + 10, y
+    sta SCREEN_RAM + 417, y
+    tax
+    lda CHAR_COLORS, x
+    sta COLOR_RAM + 417, y
+       
+    iny
+    cpy #$06
+    bne -
+
+;-----BONUS NUMBER
+    lda Bonus
+    clc 
+    adc #10
+    sta SCREEN_RAM + 459
+    lda #10
+    sta SCREEN_RAM + 460
+    sta SCREEN_RAM + 461
+    lda #$07 
+    sta COLOR_RAM + 459
+    sta COLOR_RAM + 460
+    sta COLOR_RAM + 461
+   
+    rts
+
+ClearBonusLogo:
+    ldy #$00
+-    
+    lda #$00
+    sta SCREEN_RAM + 377, y
+    sta SCREEN_RAM + 417, y
+    sta SCREEN_RAM + 457, y
+    iny
+    cpy #$06
+    bne -
+    
+    rts
+
 ShowValue:
     clc
     adc #10
-    sta SCREEN_RAM + 627, y
+    sta SCREEN_RAM + 628, y
     tax
     lda CHAR_COLORS, x
-    sta COLOR_RAM + 627, y
+    sta COLOR_RAM + 628, y
     iny
     
     rts

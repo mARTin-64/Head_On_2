@@ -34,7 +34,8 @@ Start:
 MainMenu:
     +GetRaster($FF)
     jsr Timer
-    lda COUNTER + 1
+    ;lda COUNTER + 1
+    lda SECONDS
     cmp #$04
     bne +
     +StartGame
@@ -70,7 +71,6 @@ GameLoop:
     rts   
 +
     ;dec $d020
-    ;+GetRaster($80)
     
     jmp GameLoop
 ;----------LOAD ASSETS----------;

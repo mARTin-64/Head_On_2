@@ -22,6 +22,8 @@ POINT_VALUE =   $13 ; ZP
 GAME_STATE =    $14 ; ZP
 
 COUNTER =       $24
+MILISEC =       $25
+SECONDS =       $26
 
 POINTER1 =  $1A
 POINTER2 =  $1C

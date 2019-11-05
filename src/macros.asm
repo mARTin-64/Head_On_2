@@ -61,8 +61,9 @@
     jsr DrawGame
     lda #$00
     sta BORDER_COLOR
-    sta COUNTER 
-    sta COUNTER + 1
+    sta COUNTER
+    sta MILISEC
+    sta SECONDS 
 }
 
 !macro StartGame {
@@ -79,7 +80,8 @@
     sta CurrentEnemy
     sta BORDER_COLOR
     sta COUNTER
-    sta COUNTER + 1
+    sta MILISEC
+    sta SECONDS
 
     jsr GameLoop
 }

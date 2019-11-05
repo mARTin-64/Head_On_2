@@ -48,18 +48,25 @@ AddBonus:
     bne -
 
     ldy #$00
+    sty COUNTER
+    sty MILISEC
+    sty SECONDS
 
 .Loop_Bonus
     ldx #$00  
-    tya
-    pha
+    sty TEMP1
 
 .Add_10
+        
+    stx TEMP3
+    jsr DrawBonusLogo 
+    ldx TEMP3
+-    
     +GetRaster($ff)
-    inc COUNTER
-    lda COUNTER
-    and #$1f
-    bne .Add_10
+    jsr Timer
+    lda COUNTER  
+    and #$07
+    bne -
     
     sed
     
@@ -76,29 +83,37 @@ AddBonus:
      
     cld
     
-    txa
-    pha
+    stx TEMP2
     jsr ScoreDisplay
-    pla
-    tax
+    jsr ClearBonusLogo
+-    
+    +GetRaster($ff)
+    jsr Timer
+    lda COUNTER 
+    and #$03
+    bne - 
+    
+    ldx TEMP2
     inx
     cpx #10
     beq + 
     jmp .Add_10
 +
-    pla
-    tay
+    ldy TEMP1
     iny 
     cpy Bonus
+    
     bne .Loop_Bonus
+    jsr DrawBonusLogo 
     lda #$00
-    sta COUNTER + 1
+    sta MILISEC
+    sta SECONDS
 -
     +GetRaster($ff)
     jsr Timer
-    lda COUNTER + 1
+    lda SECONDS
     cmp #$02
-    bne -
+    bne - 
 
     rts
 
@@ -134,4 +149,9 @@ ShowDigit:
     dey
     
     rts
+
 }
+
+
+
+

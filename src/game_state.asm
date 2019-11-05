@@ -151,32 +151,61 @@ ReadKeyboard:
 Timer:
     inc COUNTER
     lda COUNTER
-    cmp #51
+    cmp #5
     bne +
-    inc COUNTER + 1
+    inc MILISEC
 +   
-    cmp #102
+    cmp #10
     bne +
-    inc COUNTER + 1
+    inc MILISEC
 +
-    cmp #153
+    cmp #15
     bne + 
-    inc COUNTER + 1
+    inc MILISEC
 +
-    cmp #204
+    cmp #21
     bne +
-    inc COUNTER + 1
+    inc MILISEC
 +
-    cmp #255
+    cmp #26
     bne +
-    inc COUNTER + 1
+    inc MILISEC
++
+    cmp #32
+    bne +
+    inc MILISEC
++
+    cmp #37
+    bne + 
+    inc MILISEC
++
+    cmp #43
+    bne +
+    inc MILISEC
++
+    cmp #48
+    bne +
+    inc MILISEC
++   
+    cmp #55
+    bne +
+    inc MILISEC 
+    inc SECONDS
+    lda #$00
+    sta COUNTER
++
+    lda MILISEC
+    cmp #11
+    bne +
+    lda #$00
+    sta MILISEC
 +
     rts
 
 ;-----Display Timer code (comment the rts above to run it)
     ldy #2
 
-    lda COUNTER + 1
+    lda SECONDS 
     pha
     and #$0f
     jsr ShowCounter
