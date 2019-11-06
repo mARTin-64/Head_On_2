@@ -16,11 +16,9 @@
     
     lda #$06            ;\Set background color to blue
     sta BG_COLOR        ;/You dont need it because it is default
+     
+    jsr SetIRQ
     
-    lda #$7f            ;\Disable interrupts from CIA chip
-    sta $DC0D           ; used by kernal to blink cursor
-    sta $DD0D           ;/and scan keyboard so it can't crash C64
-
     lda $01             ;\
     and #%11111000      ; Turn bit 0 and 2 in location $0001
     ora #%00000101      ; off to bank out BASIC and Kernal ROM
@@ -93,4 +91,17 @@
 !macro GetPlayerRotation {
 
 }
+
+!macro SaveState {
+    sta IRQ_A
+    stx IRQ_X 
+    sty IRQ_Y
+}
+
+!macro LoadState {
+    lda IRQ_A
+    ldx IRQ_X
+    ldy IRQ_Y
+}
+
 

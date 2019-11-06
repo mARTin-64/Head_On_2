@@ -62,7 +62,10 @@ AddBonus:
     jsr DrawBonusLogo 
     ldx TEMP3
 -    
-    +GetRaster($ff)
+    lda CODE_FLAG
+    beq -
+    ;+GetRaster($ff)
+    dec CODE_FLAG
     jsr Timer
     lda COUNTER  
     and #$07
@@ -87,7 +90,10 @@ AddBonus:
     jsr ScoreDisplay
     jsr ClearBonusLogo
 -    
-    +GetRaster($ff)
+    lda CODE_FLAG
+    beq -
+    dec CODE_FLAG
+    ;+GetRaster($ff)
     jsr Timer
     lda COUNTER 
     and #$03
@@ -106,10 +112,14 @@ AddBonus:
     bne .Loop_Bonus
     jsr DrawBonusLogo 
     lda #$00
+    sta COUNTER
     sta MILISEC
     sta SECONDS
 -
-    +GetRaster($ff)
+    lda CODE_FLAG
+    beq -
+    dec CODE_FLAG
+    ;+GetRaster($ff)
     jsr Timer
     lda SECONDS
     cmp #$02

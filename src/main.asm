@@ -32,9 +32,11 @@ Start:
     +SetScreen
 
 MainMenu:
-    +GetRaster($FF)
+    lda CODE_FLAG
+    beq MainMenu
+    dec CODE_FLAG
+    ;+GetRaster($FF)
     jsr Timer
-    ;lda COUNTER + 1
     lda SECONDS
     cmp #$04
     bne +
@@ -46,12 +48,13 @@ MainMenu:
     bne +
     jmp Start
 +
-    ;+GetRaster($FF)
     jmp MainMenu
 
 GameLoop:
-    +GetRaster($ff)
-    ;inc $D020 
+    lda CODE_FLAG
+    beq GameLoop
+    dec CODE_FLAG
+    inc $D020 
    
     jsr Timer
 
@@ -70,7 +73,7 @@ GameLoop:
     jsr IfCrashed
     rts   
 +
-    ;dec $d020
+    dec $d020
     
     jmp GameLoop
 ;----------LOAD ASSETS----------;
@@ -120,6 +123,6 @@ Value_Big:   !byte $25, $00
 !source "collision.asm"
 !source "score.asm"
 !source "snap.asm"
-!source "game_state.asm"
+!source "game_utils.asm"
 !source "assets.asm"   ; Load assets with Sprite and Map data
 

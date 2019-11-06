@@ -1,4 +1,44 @@
-!zone GameStates {
+!zone GameUtilities {
+SetIRQ:
+    sei
+
+    lda #$7f            ;\Disable interrupts from CIA chip
+    sta $DC0D           ; used by kernal to blink cursor
+    sta $DD0D           ;/and scan keyboard so it can't crash C64
+
+    lda $D01A
+    ora #%00000001
+    sta $D01A           ; Enable raster Interrupt
+    
+    lda #<Irq
+    sta $fffe
+    lda #>Irq
+    sta $ffff
+
+    lda #$ff
+    sta $D012
+
+    lda $D011
+    and #%01111111
+    sta $D011
+
+    cli
+
+    asl $D019           ; ACK Interrupt
+    
+    rts
+
+Irq:
+    +SaveState
+    
+    lda #YES
+    sta CODE_FLAG
+    
+    asl $D019           ; ACK Interrupt
+    +LoadState
+    
+    rti
+
 IfWin:
     jsr AddBonus
 ;-----Set game state
@@ -195,7 +235,7 @@ Timer:
     sta COUNTER
 +
     lda MILISEC
-    cmp #11
+    cmp #10
     bne +
     lda #$00
     sta MILISEC

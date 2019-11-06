@@ -19,12 +19,17 @@ Y_OFFSET = $10  ; ZP
 POINT_COUNTER = $11 ; ZP
 POINT_TYPE =    $12 ; ZP
 POINT_VALUE =   $13 ; ZP
+
 GAME_STATE =    $14 ; ZP
+CODE_FLAG  =    $27
 
 COUNTER =       $24
 MILISEC =       $25
 SECONDS =       $26
 
+IRQ_A   =       $28
+IRQ_X   =       $29
+IRQ_Y   =       $2A
 POINTER1 =  $1A
 POINTER2 =  $1C
 POINTER3 =  $1E
