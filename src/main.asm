@@ -118,6 +118,9 @@ Value_Big:   !byte $25, $00
 
 Expl_Index: !byte $00
 
+TEMPX:  !byte $00
+TEMPY:  !byte $00
+
 !source "tables.asm"
 !source "draw_routines.asm"
 !source "player.asm"

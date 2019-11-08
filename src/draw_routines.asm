@@ -297,11 +297,9 @@ ClearBonusLogo:
 
 Explosion:
 .LoopCounter:   !byte $00, $00
-    ldx Expl_Index
-
     lda COLLISION_Y 
     sec
-    sbc #$01 
+    sbc #$01
     tay
     
     lda ScreenRowLSB,  y
@@ -316,12 +314,14 @@ Explosion:
    
     lda COLLISION_X 
     sec
-    sbc #$01  
-    tay 
+    sbc #$02
+    tay
     ldx #$00
     stx TEMPX
 
 .loop_small:
+    ldx TEMPX
+
     lda Expl_Index
     cmp #$00
     bne +
@@ -343,7 +343,6 @@ Explosion:
     bne +
     lda EXPLOSION_5, x
 +
-  
     sta (COLLISION_LOOKUP), y 
     stx TEMPX
 
@@ -355,32 +354,39 @@ Explosion:
     iny
     inx
     stx TEMPX
+
+    ldx Expl_Index
     inc .LoopCounter
     lda .LoopCounter
-    cmp #04
+    cmp Expl_Loop_X, x 
     bne .loop_small
-
+    
+    ldx Expl_Index
     lda #$00
     sta .LoopCounter
     tya
     clc
-    adc #$24
+    adc #$28
+    sec
+    sbc Expl_Loop_X, x
     tay
+    
     inc .LoopCounter + 1
     lda .LoopCounter + 1
-    cmp #05
+    cmp #$06 
     bne .loop_small
    
     lda #$00
     sta .LoopCounter + 1
-    
+
     lda COLLISION_X
     sec
-    sbc #$01
+    sbc #$02
     tay
+    
     ldx #$00
 
-.color_change
+.color_change:
     lda CODE_FLAG
     beq .color_change
     dec CODE_FLAG
@@ -409,35 +415,42 @@ Explosion:
     lda .LoopCounter + 1
     cmp #$05
     bne .color_loop
+    
+    lda COLLISION_X
+    sec
+    sbc #$02
+    tay
+    
     lda Color_Timer + 1
     sta Color_Timer
     
     lda #$00
     sta .LoopCounter + 1
+    
     inx
-    cpx #$02
+    cpx #$03
     bne .color_change
     
     lda #$00
     sta .LoopCounter
     sta .LoopCounter + 1
     
+    lda Color_Timer + 1
+    sta Color_Timer
+ 
     inc Expl_Index
     lda Expl_Index
     cmp #$05
     beq +
-    lda #$00
-    sta .LoopCounter
-    sta .LoopCounter + 1
-    lda Color_Timer + 1
-    sta Color_Timer
-
-
+    
+    lda COLLISION_X
+    sec
+    sbc #$02
+    tay
+    
     jmp Explosion
 +
-    
     lda #$00
-    sta .LoopCounter + 1
     sta Expl_Index
     sta COUNTER
     sta MILISEC
