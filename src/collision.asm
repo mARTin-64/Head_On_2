@@ -267,7 +267,7 @@ GetCharacter:
     ;DEBUG----------------------
     ;ldy COLLISION_X
     ;lda #$7
-    ;sta (.COLLISION_LOOKUP), y
+    ;sta (COLLISION_LOOKUP), y
     ;---------------------------
     
     txa
@@ -297,8 +297,8 @@ SetupPlayer:
     sta Entity_Y
     lda Player_MSB
     sta Entity_MSB
-    lda PL_DIR  ;--------TODO
-    sta Entity_Dir ;-----TODO
+    lda PL_DIR  
+    sta Entity_Dir
 
     jmp SetupComplete
 +
@@ -350,8 +350,8 @@ SetupEntity:
     lda Enemy_Y, x
     sta Entity_Y
 
-    lda Enemy_Dir, x ;--------TODO
-    sta Entity_Dir   ;--------TODO
+    lda Enemy_Dir, x 
+    sta Entity_Dir
 
     rts
 

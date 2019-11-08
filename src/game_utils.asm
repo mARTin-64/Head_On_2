@@ -133,6 +133,9 @@ IfCrashed:
     and ENABLE_SPRITES
     sta ENABLE_SPRITES
 
+;-----Play explosion animation    
+    jsr Explosion
+   
 ;-----Check if player has no lives then goto end
     lda PlayerLives
     cmp #$00
@@ -143,6 +146,7 @@ IfCrashed:
     sta GAME_STATE
     rts
 +
+
 ;-----Update game state if no more lives
     lda #LOOSE
     sta GAME_STATE

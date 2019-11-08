@@ -164,6 +164,7 @@ BonusScreen:
     lda #10
     sta SCREEN_RAM + 460
     sta SCREEN_RAM + 461
+    
     lda #$07 
     sta COLOR_RAM + 459
     sta COLOR_RAM + 460
@@ -175,8 +176,8 @@ BonusScreen:
     lda #$08
     sta SCREEN_RAM + 622, y
     tax
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + 622, x
+    lda CHAR_COLORS, x 
+    sta COLOR_RAM + 622, y
 
     lda #$09
     sta SCREEN_RAM + 702, y
@@ -236,6 +237,17 @@ BonusScreen:
     
     rts
 
+ShowValue:
+    clc
+    adc #10
+    sta SCREEN_RAM + 628, y
+    tax
+    lda CHAR_COLORS, x
+    sta COLOR_RAM + 628, y
+    iny
+    
+    rts
+
 DrawBonusLogo:
     ldy #$00
 -    
@@ -283,16 +295,164 @@ ClearBonusLogo:
     
     rts
 
-ShowValue:
-    clc
-    adc #10
-    sta SCREEN_RAM + 628, y
-    tax
-    lda CHAR_COLORS, x
-    sta COLOR_RAM + 628, y
-    iny
-    
-    rts
+Explosion:
+.LoopCounter:   !byte $00, $00
+    ldx Expl_Index
 
+    lda COLLISION_Y 
+    sec
+    sbc #$01 
+    tay
+    
+    lda ScreenRowLSB,  y
+    sta COLLISION_LOOKUP
+    lda ScreenRowMSB, y
+    sta COLLISION_LOOKUP + 1
+   
+    lda ColorRowLSB,  y
+    sta COLOR_LOOKUP
+    lda ColorRowMSB, y
+    sta COLOR_LOOKUP + 1
+   
+    lda COLLISION_X 
+    sec
+    sbc #$01  
+    tay 
+    ldx #$00
+    stx TEMPX
+
+.loop_small:
+    lda Expl_Index
+    cmp #$00
+    bne +
+    lda EXPLOSION_1, x
++
+    cmp #$01
+    bne +
+    lda EXPLOSION_2, x
++
+    cmp #$02
+    bne +
+    lda EXPLOSION_3, x
++
+    cmp #$03
+    bne +
+    lda EXPLOSION_4, x
++
+    cmp #$04
+    bne +
+    lda EXPLOSION_5, x
++
+  
+    sta (COLLISION_LOOKUP), y 
+    stx TEMPX
+
+    tax 
+    lda CHAR_COLORS, x
+    sta (COLOR_LOOKUP), y
+    
+    ldx TEMPX
+    iny
+    inx
+    stx TEMPX
+    inc .LoopCounter
+    lda .LoopCounter
+    cmp #04
+    bne .loop_small
+
+    lda #$00
+    sta .LoopCounter
+    tya
+    clc
+    adc #$24
+    tay
+    inc .LoopCounter + 1
+    lda .LoopCounter + 1
+    cmp #05
+    bne .loop_small
+   
+    lda #$00
+    sta .LoopCounter + 1
+    
+    lda COLLISION_X
+    sec
+    sbc #$01
+    tay
+    ldx #$00
+
+.color_change
+    lda CODE_FLAG
+    beq .color_change
+    dec CODE_FLAG
+
+    dec Color_Timer
+    bne .color_change
+    
+.color_loop:
+    lda ColorTable, x
+    sta (COLOR_LOOKUP), y
+    iny
+    inc .LoopCounter
+    lda .LoopCounter
+    cmp #$04  
+    bne .color_loop
+    
+    lda #$00
+    sta .LoopCounter
+    
+    tya
+    clc
+    adc #$24
+    tay
+    
+    inc .LoopCounter + 1
+    lda .LoopCounter + 1
+    cmp #$05
+    bne .color_loop
+    lda Color_Timer + 1
+    sta Color_Timer
+    
+    lda #$00
+    sta .LoopCounter + 1
+    inx
+    cpx #$02
+    bne .color_change
+    
+    lda #$00
+    sta .LoopCounter
+    sta .LoopCounter + 1
+    
+    inc Expl_Index
+    lda Expl_Index
+    cmp #$05
+    beq +
+    lda #$00
+    sta .LoopCounter
+    sta .LoopCounter + 1
+    lda Color_Timer + 1
+    sta Color_Timer
+
+
+    jmp Explosion
++
+    
+    lda #$00
+    sta .LoopCounter + 1
+    sta Expl_Index
+    sta COUNTER
+    sta MILISEC
+    sta SECONDS
+
+-
+    lda CODE_FLAG
+    beq -
+    dec CODE_FLAG
+    
+    jsr Timer
+    lda SECONDS
+    cmp #$03
+    bne -
+    rts
+    
 }
 

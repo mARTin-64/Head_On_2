@@ -35,10 +35,10 @@ MainMenu:
     lda CODE_FLAG
     beq MainMenu
     dec CODE_FLAG
-    ;+GetRaster($FF)
+    
     jsr Timer
     lda SECONDS
-    cmp #$04
+    cmp #$01
     bne +
     +StartGame
     +SetScreen
@@ -54,7 +54,7 @@ GameLoop:
     lda CODE_FLAG
     beq GameLoop
     dec CODE_FLAG
-    inc $D020 
+    ;inc $D020 
    
     jsr Timer
 
@@ -73,7 +73,7 @@ GameLoop:
     jsr IfCrashed
     rts   
 +
-    dec $d020
+    ;dec $d020
     
     jmp GameLoop
 ;----------LOAD ASSETS----------;
@@ -115,6 +115,8 @@ Bonus:  !byte $02
 
 Value_Small: !byte $05
 Value_Big:   !byte $25, $00
+
+Expl_Index: !byte $00
 
 !source "tables.asm"
 !source "draw_routines.asm"

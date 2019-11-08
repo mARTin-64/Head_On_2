@@ -93,15 +93,17 @@
 }
 
 !macro SaveState {
+    php
     sta IRQ_A
     stx IRQ_X 
     sty IRQ_Y
 }
 
 !macro LoadState {
-    lda IRQ_A
-    ldx IRQ_X
     ldy IRQ_Y
+    ldx IRQ_X
+    lda IRQ_A
+    plp
 }
 
 

@@ -17,6 +17,21 @@ START_MENU:
 BONUS_SCREEN:
     !binary "../maps/bonus_screen.bin"
 
+EXPLOSION_1:
+    !binary "../animations/explosion_1.bin"
+
+EXPLOSION_2:
+    !binary "../animations/explosion_2.bin"
+
+EXPLOSION_3:
+    !binary "../animations/explosion_3.bin"
+
+EXPLOSION_4:
+    !binary "../animations/explosion_4.bin"
+
+EXPLOSION_5:
+    !binary "../animations/explosion_5.bin"
+
 CHAR_COLORS:
     !binary "../char_set/char_attributes.bin"
 

@@ -64,8 +64,8 @@ AddBonus:
 -    
     lda CODE_FLAG
     beq -
-    ;+GetRaster($ff)
     dec CODE_FLAG
+    
     jsr Timer
     lda COUNTER  
     and #$07
@@ -93,7 +93,7 @@ AddBonus:
     lda CODE_FLAG
     beq -
     dec CODE_FLAG
-    ;+GetRaster($ff)
+    
     jsr Timer
     lda COUNTER 
     and #$03
@@ -119,7 +119,7 @@ AddBonus:
     lda CODE_FLAG
     beq -
     dec CODE_FLAG
-    ;+GetRaster($ff)
+    
     jsr Timer
     lda SECONDS
     cmp #$02
