@@ -28,9 +28,11 @@ EnemyInit:
 +
     cpx #$01
     bne +
-    lda #184
+    ;lda #184
+    lda #185
     sta .Temp_X
     lda #58
+    ;lda #218
     sta .Temp_Y
     lda MV_RT
     sta .Temp_Dir

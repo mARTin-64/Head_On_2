@@ -295,54 +295,52 @@ ClearBonusLogo:
     
     rts
 
-Explosion:
+Explosion_1:
 .LoopCounter:   !byte $00, $00
+
+;-----Get the coordinates at player position    
+    lda #PLAYER_ACTIVE
+    sta ENTITY_TO_UPDATE
+
+    ldx #OFFSET_XR
+    
+    lda PL_Y
+    cmp #234
+    bne +
+    inc .LoopCounter + 1
+    inc .LoopCounter + 1
++  
+    ldy #OFFSET_YU 
+    jsr GetCollisionPoint
+
     lda COLLISION_Y 
     sec
     sbc #$01
     tay
-    
-    lda ScreenRowLSB,  y
+
+;-----Store coordinates
+    lda ScreenRowLSB, y
     sta COLLISION_LOOKUP
     lda ScreenRowMSB, y
     sta COLLISION_LOOKUP + 1
    
-    lda ColorRowLSB,  y
+    lda ColorRowLSB, y
     sta COLOR_LOOKUP
     lda ColorRowMSB, y
     sta COLOR_LOOKUP + 1
-   
+
+;-----Offset position for animation
     lda COLLISION_X 
     sec
     sbc #$02
     tay
+
     ldx #$00
     stx TEMPX
 
+;-----Start 1st explosion animation
 .loop_small:
-    ldx TEMPX
-
-    lda Expl_Index
-    cmp #$00
-    bne +
     lda EXPLOSION_1, x
-+
-    cmp #$01
-    bne +
-    lda EXPLOSION_2, x
-+
-    cmp #$02
-    bne +
-    lda EXPLOSION_3, x
-+
-    cmp #$03
-    bne +
-    lda EXPLOSION_4, x
-+
-    cmp #$04
-    bne +
-    lda EXPLOSION_5, x
-+
     sta (COLLISION_LOOKUP), y 
     stx TEMPX
 
@@ -353,39 +351,45 @@ Explosion:
     ldx TEMPX
     iny
     inx
-    stx TEMPX
-
-    ldx Expl_Index
+    
     inc .LoopCounter
     lda .LoopCounter
-    cmp Expl_Loop_X, x 
-    bne .loop_small
-    
-    ldx Expl_Index
+    cmp #$04 
+    bne .loop_small ;-----Loop 4 columns
+
+;-----Setup new row
     lda #$00
     sta .LoopCounter
     tya
     clc
-    adc #$28
-    sec
-    sbc Expl_Loop_X, x
+    adc #$24
     tay
     
     inc .LoopCounter + 1
     lda .LoopCounter + 1
-    cmp #$06 
-    bne .loop_small
-   
+    cmp #$05 
+    bne .loop_small ;-----Loop 6 rows
+
+;------Setup color animation
+    ldx #$00
+
+.color_setup_1:
+    lda PL_Y
+    cmp #234
+    bne +
+    lda #$02
+    sta .LoopCounter + 1
+    jmp ++
++
     lda #$00
     sta .LoopCounter + 1
-
+++
     lda COLLISION_X
     sec
     sbc #$02
     tay
-    
-    ldx #$00
 
+;-----Loop through colors
 .color_change:
     lda CODE_FLAG
     beq .color_change
@@ -393,7 +397,8 @@ Explosion:
 
     dec Color_Timer
     bne .color_change
-    
+
+;-----Rows and columns
 .color_loop:
     lda ColorTable, x
     sta (COLOR_LOOKUP), y
@@ -415,21 +420,13 @@ Explosion:
     lda .LoopCounter + 1
     cmp #$05
     bne .color_loop
-    
-    lda COLLISION_X
-    sec
-    sbc #$02
-    tay
-    
+   
     lda Color_Timer + 1
     sta Color_Timer
-    
-    lda #$00
-    sta .LoopCounter + 1
-    
+   
     inx
     cpx #$03
-    bne .color_change
+    bne .color_setup_1
     
     lda #$00
     sta .LoopCounter
@@ -438,24 +435,237 @@ Explosion:
     lda Color_Timer + 1
     sta Color_Timer
  
-    inc Expl_Index
-    lda Expl_Index
-    cmp #$05
-    beq +
-    
-    lda COLLISION_X
-    sec
-    sbc #$02
-    tay
-    
-    jmp Explosion
-+
     lda #$00
     sta Expl_Index
     sta COUNTER
     sta MILISEC
     sta SECONDS
+    
+    rts
+ 
+Explosion_2:
+;-----Get the coordinates at player position    
+    lda #PLAYER_ACTIVE
+    sta ENTITY_TO_UPDATE
+    
+    inc Expl_Extend_Flag
+;-----Check if player is at top row
+    ldx #OFFSET_XL
+    lda PL_Y
+    cmp #66
+    bcs +   ; If not then skip this part
+    ldy #OFFSET_YU
+    jmp ++
++
+;-----Get coordinate one row above player
+    ldy #(OFFSET_YU + 8) 
+    lda PL_Y
+    cmp #218
+    bcc +
+    dec Expl_Extend_Flag
++
+    cmp #226    ; If player is at the bottom then else...
+    bcc ++
+    inc .LoopCounter + 1
+    dec Expl_Extend_Flag
+++  
+    cmp #234
+    bcc +
+    inc .LoopCounter + 1
++
+    jsr GetCollisionPoint
 
+    ldy COLLISION_Y 
+    dey
+;-----Store coordinates
+    lda ScreenRowLSB, y
+    sta COLLISION_LOOKUP
+    lda ScreenRowMSB, y
+    sta COLLISION_LOOKUP + 1
+   
+    lda ColorRowLSB, y
+    sta COLOR_LOOKUP
+    lda ColorRowMSB, y
+    sta COLOR_LOOKUP + 1
+
+;-----Get offset player cordinates for extended explosion data
+    ldx #OFFSET_XL
+    ldy #(OFFSET_YU - 40) 
+    
+    jsr GetCollisionPoint
+    ldy COLLISION_Y
+    dey
+
+;-----Store 2nd coordinates
+    lda ScreenRowLSB, y
+    sta COLLISION_LOOKUP2
+    lda ScreenRowMSB, y
+    sta COLLISION_LOOKUP2 + 1
+   
+    lda ColorRowLSB, y
+    sta COLOR_LOOKUP2
+    lda ColorRowMSB, y
+    sta COLOR_LOOKUP2 + 1
+     
+    ldx #36
+    stx TEMPX1
+
+;-----Offset position for animation
+    lda COLLISION_X 
+    sec
+    sbc #$03
+    tay
+
+    lda PL_Y
+    cmp #66
+    bcs +
+    ldx #06
+    stx TEMPX
+    inc .LoopCounter + 1
+    jmp .loop_2
++    
+    ldx #$00
+    stx TEMPX
+
+;-----Start explosion animation
+.loop_2:
+    lda EXPLOSION_2, x
+    sta (COLLISION_LOOKUP), y 
+    stx TEMPX
+
+    tax 
+    lda CHAR_COLORS, x
+    sta (COLOR_LOOKUP), y
+
+;-----Explosion Extended    
+    lda Expl_Extend_Flag
+    beq +
+    ldx TEMPX1
+    lda EXPLOSION_2, x
+    sta (COLLISION_LOOKUP2), y
+    tax
+    lda CHAR_COLORS, x
+    sta (COLOR_LOOKUP2), y
+    ldx TEMPX1
+    inx 
+    stx TEMPX1
++
+    ldx TEMPX
+    iny
+    inx
+    
+    inc .LoopCounter
+    lda .LoopCounter
+    cmp #$06 
+    bne .loop_2 ;-----Loop 6 columns
+
+;-----Setup new row
+    lda Expl_Extend_Flag
+    beq +
+    dec Expl_Extend_Flag
++
+    lda #$00
+    sta .LoopCounter
+    tya
+    clc
+    adc #$22
+    tay
+    
+    inc .LoopCounter + 1
+    lda .LoopCounter + 1
+    cmp #$06 
+    bne .loop_2 ;-----Loop 6 rows
+
+;------Setup color animation
+    ldx #$00
+
+.color_setup_2:
+    lda #$00
+    sta .LoopCounter + 1
+
+    inc Expl_Extend_Flag
+    
+    lda PL_Y
+    cmp #66
+    bcs +
+    lda #$01
+    sta .LoopCounter + 1
+    jmp .done_2 
++
+    lda PL_Y
+    cmp #218
+    bcc +
+    dec Expl_Extend_Flag
++
+    cmp #226
+    bcc +
+    inc .LoopCounter + 1
+    dec Expl_Extend_Flag
++   
+    cmp #234
+    bcc +
+    inc .LoopCounter + 1
++
+.done_2:
+    lda COLLISION_X
+    sec
+    sbc #$03
+    tay
+    
+;-----Loop through colors
+.color_next_2:
+    lda CODE_FLAG
+    beq .color_next_2
+    dec CODE_FLAG
+
+    dec Color_Timer
+    bne .color_next_2
+    
+.color_loop_2:
+    lda ColorTable, x
+    sta (COLOR_LOOKUP), y
+    lda Expl_Extend_Flag
+    beq +
+    lda ColorTable, x
+    sta (COLOR_LOOKUP2), y
++
+    iny
+    inc .LoopCounter
+    lda .LoopCounter
+    cmp #$06 
+    bne .color_loop_2
+    
+    lda #$00
+    sta .LoopCounter
+    sta Expl_Extend_Flag
+    
+    tya
+    clc
+    adc #$22
+    tay
+    
+    inc .LoopCounter + 1
+    lda .LoopCounter + 1
+    cmp #$06
+    bne .color_loop_2
+     
+    lda Color_Timer + 1
+    sta Color_Timer
+
+    inc Expl_Extend_Flag
+    inx
+    cpx #$03
+    beq +
+    jmp .color_setup_2
++    
+    lda #$00
+    sta .LoopCounter
+    sta .LoopCounter + 1
+    sta Expl_Extend_Flag
+
+    lda Color_Timer + 1
+    sta Color_Timer
+ 
 -
     lda CODE_FLAG
     beq -
@@ -466,6 +676,6 @@ Explosion:
     cmp #$03
     bne -
     rts
-    
+   
 }
 

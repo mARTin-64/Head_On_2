@@ -21,21 +21,26 @@ POINT_TYPE =    $12 ; ZP
 POINT_VALUE =   $13 ; ZP
 
 GAME_STATE =    $14 ; ZP
-CODE_FLAG  =    $27
+CODE_FLAG  =    $15
 
-COUNTER =       $24
-MILISEC =       $25
-SECONDS =       $26
+COUNTER =       $16
+MILISEC =       $17
+SECONDS =       $18
 
-IRQ_A   =       $28
-IRQ_X   =       $29
-IRQ_Y   =       $2A
-POINTER1 =  $1A
-POINTER2 =  $1C
-POINTER3 =  $1E
-POINTER4 =  $20
+IRQ_A   =       $19
+IRQ_X   =       $1A
+IRQ_Y   =       $1B
 
-ACTIVE_ENEMIES = $22
-ENTITY_TO_UPDATE = $23 ; ZP
+POINTER1 =  $1C
+POINTER2 =  $1E
+POINTER3 =  $20
+POINTER4 =  $22
 
-COLOR_LOOKUP = $2C
+ACTIVE_ENEMIES      = $24
+ENTITY_TO_UPDATE    = $25 ; ZP
+
+COLLISION_LOOKUP2   = $26
+COLOR_LOOKUP        = $28
+COLOR_LOOKUP2       = $2A
+
+

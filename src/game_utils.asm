@@ -134,8 +134,8 @@ IfCrashed:
     sta ENABLE_SPRITES
 
 ;-----Play explosion animation    
-    jsr Explosion
-   
+    jsr Explosion_1
+    jsr Explosion_2
 ;-----Check if player has no lives then goto end
     lda PlayerLives
     cmp #$00
