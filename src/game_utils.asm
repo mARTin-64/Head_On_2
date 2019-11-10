@@ -136,6 +136,9 @@ IfCrashed:
 ;-----Play explosion animation    
     jsr Explosion_1
     jsr Explosion_2
+    jsr Explosion_3
+    jsr Explosion_4
+    jsr Explosion_5
 ;-----Check if player has no lives then goto end
     lda PlayerLives
     cmp #$00

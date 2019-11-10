@@ -1,9 +1,8 @@
 !zone Tables {
 
 ColorTable:     !byte $02, $07, $01
-Color_Timer:    !byte $0f, $0f
-Expl_Offset_Y:  !byte $02, $03, $03, $02, $02
-Expl_Offset_X:  !byte $01, $02, $02, $02, $01
+ColorTable2:    !byte $07, $01, $01
+Color_Timer:    !byte $06, $06
 Expl_Loop_X:    !byte $04, $06, $06, $04, $03
 Expl_Loop_Y:    !byte $05, $07, $08, $07, $04
 
