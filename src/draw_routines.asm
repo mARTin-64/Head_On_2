@@ -59,12 +59,6 @@ DrawGame:
     sta Data + 1
     lda #>MAP
     sta Data + 2
-    
-    jmp Done
-+
-    cmp #VICTORY
-    bne +
-+
 
 Done:
     ldy #00 
@@ -292,9 +286,183 @@ ClearBonusLogo:
     iny
     cpy #$06
     bne -
+    rts
+
+DrawGameOver:
+;-----Redraw map
+    lda #PLAY
+    sta GAME_STATE
+    jsr DrawGame
+    lda #LOOSE
+    sta GAME_STATE
+
+;-----Draw text (GAME OVER)    
+    ldy #$00
+-   
+    lda BONUS_SCREEN + 30, y
+    sta SCREEN_RAM + 378, y
+    tax
+    lda CHAR_COLORS, x
+    sta COLOR_RAM + 378, y
+
+    lda BONUS_SCREEN + 40, y
+    sta SCREEN_RAM + 418, y
+    tax
+    lda CHAR_COLORS, x
+    sta COLOR_RAM + 418, y
+
+    iny 
+    cpy #$04
+    bne -
+
+;-----Draw scores
+    jsr DrawScore1
+    jsr DrawScore2
+    jsr DrawScore3
+    jsr DrawHighScore
+    inc Enable_Blink
+-    
+    jsr ReadKey 
+    lda GAME_STATE
+    cmp #BONUS_SCR
+    bne -
+    
+    dec Enable_Blink
     
     rts
 
+DrawScore1:
+    ldy #22
+    ldx #0
+
+-    
+    lda Score1, x
+    pha
+    and #$0f
+    jsr DrawDigit1
+    
+    pla
+    lsr
+    lsr
+    lsr
+    lsr
+    jsr DrawDigit1
+    
+    inx
+    cpx #3
+    bne -
+
+    rts
+
+DrawDigit1:
+    clc
+    adc #10
+    sta SCREEN_RAM + 440, y
+    lda #$07
+    sta COLOR_RAM + 440, y
+    dey
+    
+    rts
+
+DrawScore2:
+    ldy #22
+    ldx #0
+
+-    
+    lda Score2, x
+    pha
+    and #$0f
+    jsr DrawDigit2
+    
+    pla
+    lsr
+    lsr
+    lsr
+    lsr
+    jsr DrawDigit2
+    
+    inx
+    cpx #3
+    bne -
+
+    rts
+
+DrawDigit2:
+    clc
+    adc #10
+    sta SCREEN_RAM + 480, y
+    lda #$07
+    sta COLOR_RAM + 480, y
+    dey
+    
+    rts
+
+DrawScore3:
+    ldy #22
+    ldx #0
+
+-    
+    lda Score3, x
+    pha
+    and #$0f
+    jsr DrawDigit3
+    
+    pla
+    lsr
+    lsr
+    lsr
+    lsr
+    jsr DrawDigit3
+    
+    inx
+    cpx #3
+    bne -
+
+    rts
+
+DrawDigit3:
+    clc
+    adc #10
+    sta SCREEN_RAM + 520, y
+    lda #$07
+    sta COLOR_RAM + 520, y
+    dey
+    
+    rts
+
+DrawHighScore:
+    ldy #22      ; Screen offset
+    ldx #0      ; Score byte index
+
+-    
+    lda HighScore, x
+    pha
+    and #$0f
+    jsr ShowDigit
+    
+    pla
+    lsr
+    lsr
+    lsr
+    lsr
+    jsr ShowDigit
+    
+    inx
+    cpx #3
+    bne -
+
+    rts
+
+ClearHighScore:
+    ldx #$00
+-
+    lda #00
+    sta SCREEN_RAM + 617, x
+    inx
+    cpx #$06
+    bne -
+    
+    rts
 
 Explosion_1:
 .LoopCounter:   !byte $00, $00
@@ -369,7 +537,7 @@ Explosion_1:
     bne .loop_small ;-----Loop 6 rows
 
 ;------Setup color animation
-    ldx #$00
+    ldx #$01
 
 .color_setup_1:
     lda PL_Y

@@ -19,13 +19,13 @@
     * = $0810       ; Set program memory addres
 
     +Init6502
-
 Start:
     lda #MAIN_MENU
     sta GAME_STATE
+    
     +SetScreen
 -   
-    jsr ReadKeyboard
+    jsr ReadKey
     lda GAME_STATE
     cmp #BONUS_SCR
     bne -
@@ -112,6 +112,13 @@ FreeZoneRight:  !byte $00
 
 Score:  !byte $00, $00, $00
 Bonus:  !byte $02 
+
+Score1: !byte $00, $00, $00
+Score2: !byte $00, $00, $00
+Score3: !byte $00, $00, $00
+
+HighScore:      !byte $00, $00, $00
+Enable_Blink:   !byte $00
 
 Value_Small: !byte $05
 Value_Big:   !byte $25, $00

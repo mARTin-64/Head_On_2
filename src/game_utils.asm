@@ -33,7 +33,27 @@ Irq:
     
     lda #YES
     sta CODE_FLAG
-    
+   
+    lda Enable_Blink
+    beq .skip 
+
+    dec Blink_Timer
+    lda Blink_Timer
+    cmp #$0B
+    bcs +
+    jsr DrawHighScore
+    jmp .check_t
++
+    jsr ClearHighScore
+
+.check_t:    
+    lda Blink_Timer
+    bne .skip
+
+    lda Blink_Timer + 1
+    sta Blink_Timer
+
+.skip:    
     asl $D019           ; ACK Interrupt
     +LoadState
     
@@ -169,6 +189,22 @@ IfCrashed:
 ;-----Reset bonus per level
     lda #$02
     sta Bonus
+;-----Store Score
+    ldx #$00
+-
+    lda Score2, x
+    sta Score3, x
+    lda Score1, x
+    sta Score2, x
+    lda Score, x
+    sta Score1, x
+    inx 
+    cpx #$03
+    bne -
+
+;-----Draw game over screen
+    jsr GetHighScore
+    jsr DrawGameOver
 
 ;-----Reset score    
     lda #$00
@@ -179,11 +215,82 @@ IfCrashed:
 ;-----Reset player lives
     lda #$04
     sta PlayerLives
-    
+
     rts
 
+GetHighScore:
+;-----Check high digits    
+.check_1_3:
+    lda Score1 + 2
+    beq .check_2_3
+    
+    lda Score1 + 2
+    cmp HighScore + 2
+    bcc .check_2_3
+    sta HighScore + 2
+    lda Score1 + 1
+    sta HighScore + 1
+    lda Score1
+    sta HighScore
+    rts
 
-ReadKeyboard:
+.check_2_3:    
+    lda Score2 + 2
+    beq .check_3_3
+    
+    lda Score2 + 2
+    cmp HighScore + 2
+    bcc .check_3_3
+    sta HighScore + 2
+    lda Score2 + 1
+    sta HighScore + 1
+    lda Score2
+    sta HighScore
+    rts
+
+.check_3_3:
+    lda Score3 + 2
+    beq +
+    
+    lda Score3 + 2
+    cmp HighScore + 2
+    bcc + 
+    sta HighScore + 2
+    sta HighScore + 2
+    lda Score3 + 1
+    sta HighScore + 1
+    lda Score3
+    sta HighScore
+    rts
++
+;-----Check middle digits
+.check_1_2:
+    lda Score1 + 1
+    cmp HighScore + 1
+    bcc .check_2_2
+    sta HighScore + 1
+    lda Score1
+    sta HighScore
+
+.check_2_2:    
+    lda Score2 + 1 
+    cmp HighScore + 1
+    bcc .check_3_2
+    sta HighScore + 1
+    lda Score2
+    sta HighScore
+
+.check_3_2:
+    lda Score3 + 1
+    cmp HighScore + 1
+    bcc + 
+    sta HighScore + 1
+    lda Score3
+    sta HighScore
++
+    rts
+
+ReadKey:
     lda CIA_PORT_A
     and #%10000000
     bne +
