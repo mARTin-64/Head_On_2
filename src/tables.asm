@@ -2,8 +2,11 @@
 
 ColorTable:     !byte $02, $07, $01
 ColorTable2:    !byte $07, $01, $01
+
+Update_Timer:   !byte $01, $01
 Color_Timer:    !byte $07, $07
 Blink_Timer:    !byte $16, $16
+
 Expl_Loop_X:    !byte $04, $06, $06, $04, $03
 Expl_Loop_Y:    !byte $05, $07, $08, $07, $04
 

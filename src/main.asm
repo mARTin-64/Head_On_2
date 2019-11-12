@@ -1,12 +1,14 @@
-;   This is a game code for Commodore 64 called 
-;   Head On 2 written in ACME cross-assembler. 
-;   Graphics is made in program called CharPad. 
-;   This game was tested with VICE emulator 
-;   on Arch-Linux operating system.
+;   This is Commodore 64 asm code for game called
+;   Head On 2 that was originali made by SEGA and GREMLIN
+;   in 1979.
+;    
+;   The code is  written in ACME cross-assembler. 
+;   Graphics is made in program called CharPad and SpritePad 
+;   Tested with VICE emulator on Arch-Linux operating system.
 ;   Code was written by Martin Živica.
-;   Date: October, 2019.
+;   Date: October/November, 2019.
 
-!to "../out.prg",cbm    ; This line of code tells the compiler output file name and type
+!to "../out.prg",cbm    ; Tell the compiler output file name and type
 !cpu 6502
 ;----------LOAD FILES----------;
 !src "zero_page.asm"
@@ -14,7 +16,7 @@
 !src "labels.asm"   ; Load predefined labels 
 
 ;----------MAIN PROGRAM----------;   
-    +BasicStart     ; Call to macro for starting program
+    +BasicStart     ; Call to macro (basic SYS) for starting program
     
     * = $0810       ; Set program memory addres
 
@@ -57,13 +59,22 @@ GameLoop:
     ;inc $D020 
    
     jsr Timer
-
-    jsr PlayerUpdate
-    jsr EnemyUpdate
     
+    jsr PlayerUpdate
+    
+    lda SECONDS
+    cmp #$02
+    bcc ++
+    lda Speed_Flag
+    bne +
+    inc Speed_Flag
++
+    jsr EnemyUpdate
+++   
     lda GAME_STATE
     cmp #VICTORY
     bne +
+
     jsr IfWin
     +SetScreen
     rts
@@ -85,13 +96,16 @@ Player_X:    !byte $00
 Player_Y:    !byte $00 
 Player_MSB:  !byte $00
 PL_DIR:      !byte $00
-PTH          !byte $00, $00          ; Player Turn History
 PlayerLives: !byte $00
 
 MV_UP: !byte %0001
 MV_DN: !byte %0010
 MV_LT: !byte %0100
 MV_RT: !byte %1000
+
+Speed:          !byte $01
+Enemy_Speed:    !byte $01, $01, $01, $01
+Speed_Flag:     !byte $00
 
 Enemy_X:        !byte $00, $00, $00, $00
 Enemy_Y:        !byte $00, $00, $00, $00 
@@ -125,6 +139,7 @@ Value_Big:   !byte $25, $00
 
 Expl_Index: !byte $00
 Expl_Extend_Flag:   !byte $00
+
 TEMPX:  !byte $00
 TEMPX1: !byte $00
 TEMPY:  !byte $00

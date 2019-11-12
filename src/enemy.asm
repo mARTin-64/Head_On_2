@@ -115,17 +115,17 @@ EGoUp:
     ldx CurrentEnemy
     lda Enemy_Y, x
     sec
-    sbc #$01
+    sbc Enemy_Speed, x
     sta Enemy_Y, x
     
-    lda Enemy_Turbo 
-    cmp .Turbo 
-    bne EGoDown
+;    lda Enemy_Turbo 
+;    cmp .Turbo 
+;    bne EGoDown
     
-    lda Enemy_Y, x
-    sec
-    sbc #$01
-    sta Enemy_Y, x
+;    lda Enemy_Y, x
+;    sec
+;    sbc #$01
+;    sta Enemy_Y, x
     jmp EEnd
 
 EC_UP:
@@ -162,17 +162,9 @@ EGoDown:
     ldx CurrentEnemy
     lda Enemy_Y, x
     clc
-    adc #$01
+    adc Enemy_Speed, x 
     sta Enemy_Y, x
 
-    lda Enemy_Turbo
-    cmp .Turbo 
-    bne EGoLeft 
-    
-    lda Enemy_Y, x
-    clc
-    adc #$01
-    sta Enemy_Y, x
     jmp EEnd
 
 EC_DN:
@@ -206,27 +198,27 @@ EGoLeft:
     
     jsr CheckMoveLeft
     bne EC_LT
-
-    ldx CurrentEnemy
-    lda Enemy_Turbo 
-    cmp .Turbo 
-    bne ENoturbo
     
+    ldx CurrentEnemy
     lda Enemy_X, x
     sec
-    sbc #02
+    sbc Enemy_Speed, x 
     sta Enemy_X, x
     bcs EGoRight
-    jmp ESetMSB0
 
-ENoturbo:
-    lda Enemy_X, x
-    sec
-    sbc #$01
-    sta Enemy_X, x
-    bcs EGoRight 
-
-ESetMSB0:
+;    lda Enemy_Turbo 
+;    cmp .Turbo 
+;    bne ENoturbo
+;    jmp ESetMSB0
+;
+;ENoturbo:
+;    lda Enemy_X, x
+;    sec
+;    sbc #$01
+;    sta Enemy_X, x
+;    bcs EGoRight 
+;
+;ESetMSB0:
     lda MSB_Carry, x
     sbc #$00
     sta MSB_Carry, x
@@ -269,24 +261,24 @@ EGoRight:
     bne EC_RT 
     
     ldx CurrentEnemy
-    lda Enemy_Turbo, x 
-    cmp .Turbo 
+    lda Enemy_X, x
     clc
-    bne ENoturbo1 
-    
-    lda Enemy_X, x
-    adc #$01
+    adc Enemy_Speed, x 
     sta Enemy_X, x
     bcc EEnd 
-    jmp ESetMSB1
-
-ENoturbo1:
-    lda Enemy_X, x
-    adc #$01
-    sta Enemy_X, x
-    bcc EEnd 
-
-ESetMSB1: 
+;    lda Enemy_Turbo, x 
+;    cmp .Turbo 
+;    clc
+;    bne ENoturbo1 
+;    jmp ESetMSB1
+;
+;ENoturbo1:
+;    lda Enemy_X, x
+;    adc #$01
+;    sta Enemy_X, x
+;    bcc EEnd 
+;
+;ESetMSB1: 
     lda MSB_Carry, x
     adc #$00
     sta MSB_Carry, x

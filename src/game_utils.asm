@@ -65,7 +65,17 @@ IfWin:
     lda #BONUS_SCR
     sta GAME_STATE
 
-;-----Increase Level variables
+    dec Speed_Flag
+
+;-----Reset enemy speed
+    ldx #$00
+-   
+    dec Enemy_Speed, x
+    inx
+    cpx ACTIVE_ENEMIES
+    bne - 
+
+;-----Update Level variables
     inc ACTIVE_ENEMIES
     inc PlayerLives
     inc Bonus
@@ -147,6 +157,18 @@ IfWin:
 
 IfCrashed:
     dec PlayerLives
+    dec Speed_Flag
+;-----Reset enemy speed
+    lda Enemy_Speed
+    cmp #$01
+    beq +
+    ldx #$00
+-   
+    dec Enemy_Speed, x
+    inx
+    cpx ACTIVE_ENEMIES
+    bne - 
++
 
 ;-----Disable sprite rendering    
     lda #%00000000
@@ -159,6 +181,7 @@ IfCrashed:
     jsr Explosion_3
     jsr Explosion_4
     jsr Explosion_5
+    
 ;-----Check if player has no lives then goto end
     lda PlayerLives
     cmp #$00
@@ -267,27 +290,54 @@ GetHighScore:
 .check_1_2:
     lda Score1 + 1
     cmp HighScore + 1
+    beq .check_2_2
+    cmp HighScore + 1
     bcc .check_2_2
     sta HighScore + 1
     lda Score1
     sta HighScore
+    rts
 
 .check_2_2:    
     lda Score2 + 1 
+    cmp HighScore + 1
+    beq .check_3_2
     cmp HighScore + 1
     bcc .check_3_2
     sta HighScore + 1
     lda Score2
     sta HighScore
+    rts
 
 .check_3_2:
     lda Score3 + 1
+    cmp HighScore + 1
+    beq +
     cmp HighScore + 1
     bcc + 
     sta HighScore + 1
     lda Score3
     sta HighScore
+    rts
 +
+    ;-----Check middle digits
+.check_1_1:
+    lda Score1
+    cmp HighScore
+    bcc .check_2_1
+    sta HighScore
+    rts
+
+.check_2_1:    
+    lda Score2 
+    cmp HighScore
+    bcc .check_3_1
+    sta HighScore
+    rts
+
+.check_3_1:
+    lda Score3
+    sta HighScore
     rts
 
 ReadKey:

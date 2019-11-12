@@ -42,10 +42,18 @@ CheckScorePoints:
     inc POINT_COUNTER 
     lda POINT_COUNTER
     cmp #108
-    beq +
-    
-    rts
+    beq ++
+    cmp #100
+    bne +
+    ldx #$00 
+-    
+    inc Enemy_Speed, x
+    inx
+    cpx ACTIVE_ENEMIES
+    bne -
 +
+    rts
+++
     lda #VICTORY
     sta GAME_STATE
     

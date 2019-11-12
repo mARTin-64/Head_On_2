@@ -52,11 +52,23 @@ PlayerUpdate:
     lda #PLAYER_ACTIVE
     sta ENTITY_TO_UPDATE 
     
+    lda Speed_Flag
+    bne +
+    lda JOY_P_2
+    and #.JOY_FR
+    beq .skip
+
+    lda COUNTER
+    and #$01
+    bne +
+    rts   
++
     lda COUNTER
     and #$07
     beq +
     jsr ReadJoystick
 +    
+.skip:
 
 GoUp:
     lda PL_DIR
@@ -69,13 +81,18 @@ GoUp:
     jsr CheckMoveUp
     bne C_UP 
 
-    dec Player_Y
-    lda PL_TURBO
-    cmp .Turbo 
-    bne GoDown
-     
-    dec Player_Y
-    dec Player_Y
+    lda Player_Y
+    sec
+    sbc Speed
+    sta Player_Y
+
+;   dec Player_Y
+;   lda PL_TURBO
+;   cmp .Turbo 
+;   bne GoDown
+;    
+;   dec Player_Y
+;   dec Player_Y
     jmp End
 
 C_UP:
@@ -107,13 +124,19 @@ GoDown:
     jsr CheckMoveDown
     bne C_DN 
 
-    inc Player_Y
-    lda PL_TURBO
-    cmp .Turbo 
-    bne GoLeft 
-    
-    inc Player_Y
-    inc Player_Y
+    lda Player_Y
+    clc
+    adc Speed
+    sta Player_Y 
+
+;    inc Player_Y
+;    lda PL_TURBO
+;    cmp .Turbo 
+;    bne GoLeft 
+;    
+;    inc Player_Y
+;    inc Player_Y
+
     jmp End
 
 C_DN:
@@ -145,26 +168,12 @@ GoLeft:
     jsr CheckMoveLeft
     bne C_LT
 
-    clc
-    lda PL_TURBO
-    cmp .Turbo 
-    bne NoTurbo0
-    
     lda Player_X
     sec
-    sbc #03
+    sbc Speed
     sta Player_X
     bcs GoRight
-    jmp SetMSB0
-
-NoTurbo0:
-    lda Player_X
-    sec
-    sbc #$01
-    sta Player_X
-    bcs GoRight 
     
-SetMSB0:
     lda #%00000000
     sta Player_MSB
     ora Enemy_MSB
@@ -172,6 +181,23 @@ SetMSB0:
     
     jmp End 
 
+;    lda PL_TURBO
+;    cmp .Turbo 
+;    bne NoTurbo0
+;    
+;    lda Player_X
+;    sec
+;    sbc #03
+;    sta Player_X
+;    bcs GoRight
+;    jmp SetMSB0
+;
+;NoTurbo0:
+;    lda Player_X
+;    sec
+;    sbc #$01
+;    sta Player_X
+    
 C_LT:
     jsr SnapLeftRight
     bne GoLeft
@@ -201,24 +227,28 @@ GoRight:
     jsr CheckMoveRight
     bne C_RT 
     
+    lda Player_X
     clc
-    lda PL_TURBO
-    cmp .Turbo 
-    bne NoTurbo1 
-    
-    lda Player_X
-    adc #$02
+    adc Speed
     sta Player_X
-    bcc End 
-    jmp SetMSB1
-
-NoTurbo1:
-    lda Player_X
-    adc #$01
-    sta Player_X
-    bcc End 
-
-SetMSB1:    
+    bcc End
+;    lda PL_TURBO
+;    cmp .Turbo 
+;    bne NoTurbo1 
+;    
+;    lda Player_X
+;    adc #$02
+;    sta Player_X
+;    bcc End 
+;    jmp SetMSB1
+;
+;NoTurbo1:
+;    lda Player_X
+;    adc #$01
+;    sta Player_X
+;    bcc End 
+;
+;SetMSB1:    
     lda #%00000001
     sta Player_MSB
     ora Enemy_MSB
@@ -351,20 +381,25 @@ Right:
     sta SPRITE_MSB
 
 Turbo:    
-    lda COUNTER
-    and #$03
-    beq TurboOff
     lda JOY_P_2
     and #.JOY_FR
     bne TurboOff 
-    lda .Turbo
-    sta PL_TURBO
+    ;lda COUNTER
+    ;and #$03
+    ;beq TurboOff
+    lda Speed
+    cmp #$03
+    beq +
+    inc Speed
++    
     rts
 
 TurboOff:
-    lda #$00
-    sta PL_TURBO
-    
+    lda Speed
+    cmp #$01
+    beq +
+    dec Speed
++    
     rts
 
 }
