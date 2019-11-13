@@ -372,7 +372,7 @@ SetupDir:
     rts
 +   
     ldx CurrentEnemy
-    lda Enemy_Dir
+    lda Enemy_Dir, x
     sta Entity_Dir
     rts
 }

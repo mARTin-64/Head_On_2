@@ -86,13 +86,6 @@ GoUp:
     sbc Speed
     sta Player_Y
 
-;   dec Player_Y
-;   lda PL_TURBO
-;   cmp .Turbo 
-;   bne GoDown
-;    
-;   dec Player_Y
-;   dec Player_Y
     jmp End
 
 C_UP:

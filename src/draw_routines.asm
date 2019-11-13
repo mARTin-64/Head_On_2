@@ -435,7 +435,7 @@ DrawHighScore:
     ldx #0      ; Score byte index
 
 -    
-    lda HighScore, x
+    lda Score1, x
     pha
     and #$0f
     jsr ShowDigit

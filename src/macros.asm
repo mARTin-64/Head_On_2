@@ -84,6 +84,28 @@
     jsr GameLoop
 }
 
+!macro PushScore1  {
+    ldx #$00
+-
+    lda Score2, x
+    sta Score3, x
+    lda Score1, x
+    sta Score2, x
+    inx 
+    cpx #$03
+    bne -
+}
+
+!macro PushScore2 {
+    ldx #$00
+-
+    lda Score2, x
+    sta Score3, x
+    inx 
+    cpx #$03
+    bne -
+}
+
 !macro GetPlayerState {
        
 }

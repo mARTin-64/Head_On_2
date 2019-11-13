@@ -65,15 +65,19 @@ IfWin:
     lda #BONUS_SCR
     sta GAME_STATE
 
+;-----Reset player speed
     dec Speed_Flag
+    lda #$01
+    sta Speed
 
 ;-----Reset enemy speed
+    lda #$01
     ldx #$00
 -   
-    dec Enemy_Speed, x
-    inx
+    sta Enemy_Speed, x
+    inx 
     cpx ACTIVE_ENEMIES
-    bne - 
+    bne -
 
 ;-----Update Level variables
     inc ACTIVE_ENEMIES
@@ -158,13 +162,13 @@ IfWin:
 IfCrashed:
     dec PlayerLives
     dec Speed_Flag
+
 ;-----Reset enemy speed
-    lda Enemy_Speed
-    cmp #$01
-    beq +
+    lda #$01  
+    sta Speed
     ldx #$00
 -   
-    dec Enemy_Speed, x
+    sta Enemy_Speed, x
     inx
     cpx ACTIVE_ENEMIES
     bne - 
@@ -212,21 +216,9 @@ IfCrashed:
 ;-----Reset bonus per level
     lda #$02
     sta Bonus
-;-----Store Score
-    ldx #$00
--
-    lda Score2, x
-    sta Score3, x
-    lda Score1, x
-    sta Score2, x
-    lda Score, x
-    sta Score1, x
-    inx 
-    cpx #$03
-    bne -
 
 ;-----Draw game over screen
-    jsr GetHighScore
+    jsr SetHighScore
     jsr DrawGameOver
 
 ;-----Reset score    
@@ -241,103 +233,123 @@ IfCrashed:
 
     rts
 
-GetHighScore:
-;-----Check high digits    
-.check_1_3:
-    lda Score1 + 2
-    beq .check_2_3
-    
-    lda Score1 + 2
-    cmp HighScore + 2
+SetHighScore:
+;----------------------------------------
+; Score 1 
+;----------------------------------------
+;-----Higher digits
+    lda Score + 2
+    cmp Score1 + 2
+    beq .check_1_2
     bcc .check_2_3
-    sta HighScore + 2
-    lda Score1 + 1
-    sta HighScore + 1
-    lda Score1
-    sta HighScore
+    +PushScore1
+    lda Score + 2
+    sta Score1 + 2
+    lda Score + 1
+    sta Score1 + 1
+    lda Score 
+    sta Score1
     rts
-
-.check_2_3:    
-    lda Score2 + 2
-    beq .check_3_3
-    
-    lda Score2 + 2
-    cmp HighScore + 2
-    bcc .check_3_3
-    sta HighScore + 2
-    lda Score2 + 1
-    sta HighScore + 1
-    lda Score2
-    sta HighScore
-    rts
-
-.check_3_3:
-    lda Score3 + 2
-    beq +
-    
-    lda Score3 + 2
-    cmp HighScore + 2
-    bcc + 
-    sta HighScore + 2
-    sta HighScore + 2
-    lda Score3 + 1
-    sta HighScore + 1
-    lda Score3
-    sta HighScore
-    rts
-+
-;-----Check middle digits
+;-----Middle Digits
 .check_1_2:
-    lda Score1 + 1
-    cmp HighScore + 1
-    beq .check_2_2
-    cmp HighScore + 1
-    bcc .check_2_2
-    sta HighScore + 1
-    lda Score1
-    sta HighScore
+    lda Score + 1
+    cmp Score1 + 1
+    beq .check_1_1
+    bcc .check_2_3
+    +PushScore1
+    lda Score + 1
+    sta Score1 + 1
+    lda Score
+    sta Score1
     rts
-
-.check_2_2:    
-    lda Score2 + 1 
-    cmp HighScore + 1
-    beq .check_3_2
-    cmp HighScore + 1
-    bcc .check_3_2
-    sta HighScore + 1
-    lda Score2
-    sta HighScore
-    rts
-
-.check_3_2:
-    lda Score3 + 1
-    cmp HighScore + 1
-    beq +
-    cmp HighScore + 1
-    bcc + 
-    sta HighScore + 1
-    lda Score3
-    sta HighScore
-    rts
-+
-    ;-----Check middle digits
+;-----Lower Digits
 .check_1_1:
-    lda Score1
-    cmp HighScore
-    bcc .check_2_1
-    sta HighScore
+    lda Score
+    cmp Score1
+    beq .check_2_3 
+    bcc .check_2_3
+    +PushScore1
+    lda Score
+    sta Score1
     rts
 
-.check_2_1:    
-    lda Score2 
-    cmp HighScore
-    bcc .check_3_1
-    sta HighScore
+;----------------------------------------
+; Score 2
+;----------------------------------------
+;-----Higher digits
+.check_2_3:    
+    lda Score + 2
+    cmp Score2 + 2
+    beq .check_2_2
+    bcc .check_3_3
+    +PushScore2
+    lda Score + 2
+    sta Score2 + 2
+    lda Score + 1
+    sta Score2 + 1
+    lda Score
+    sta Score2
     rts
 
+;-----Middle digits
+.check_2_2:
+    lda Score + 1
+    cmp Score2 + 1
+    beq .check_2_1
+    bcc .check_3_3
+    +PushScore2
+    lda Score + 1 
+    sta Score2 + 1
+    lda Score
+    sta Score2
+    rts
+
+;-----Lower digits
+.check_2_1:  
+    lda Score
+    cmp Score2
+    beq .check_3_3 
+    bcc .check_3_3
+    +PushScore2 
+    lda Score
+    sta Score2
+    rts
+
+;----------------------------------------
+; Score3 
+;----------------------------------------
+;-----Higher digits
+.check_3_3:
+    lda Score + 2
+    cmp Score3 + 2
+    beq .check_3_2 
+    bcc .done
+    sta Score3 + 2
+    lda Score + 1
+    sta Score3 + 1
+    lda Score
+    sta Score3
+    rts
+
+;-----Middle digits
+.check_3_2:
+    lda Score + 1
+    cmp Score3 + 1
+    beq .check_3_1
+    bcc .done
+    sta Score3 + 1
+    lda Score
+    sta Score3 
+    rts
+
+;-----Lower digits
 .check_3_1:
-    lda Score3
-    sta HighScore
+    lda Score
+    cmp Score3
+    beq .done
+    bcc .done
+    sta Score3
+.done
     rts
 
 ReadKey:

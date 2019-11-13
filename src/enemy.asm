@@ -117,15 +117,6 @@ EGoUp:
     sec
     sbc Enemy_Speed, x
     sta Enemy_Y, x
-    
-;    lda Enemy_Turbo 
-;    cmp .Turbo 
-;    bne EGoDown
-    
-;    lda Enemy_Y, x
-;    sec
-;    sbc #$01
-;    sta Enemy_Y, x
     jmp EEnd
 
 EC_UP:
@@ -205,20 +196,6 @@ EGoLeft:
     sbc Enemy_Speed, x 
     sta Enemy_X, x
     bcs EGoRight
-
-;    lda Enemy_Turbo 
-;    cmp .Turbo 
-;    bne ENoturbo
-;    jmp ESetMSB0
-;
-;ENoturbo:
-;    lda Enemy_X, x
-;    sec
-;    sbc #$01
-;    sta Enemy_X, x
-;    bcs EGoRight 
-;
-;ESetMSB0:
     lda MSB_Carry, x
     sbc #$00
     sta MSB_Carry, x
@@ -266,19 +243,6 @@ EGoRight:
     adc Enemy_Speed, x 
     sta Enemy_X, x
     bcc EEnd 
-;    lda Enemy_Turbo, x 
-;    cmp .Turbo 
-;    clc
-;    bne ENoturbo1 
-;    jmp ESetMSB1
-;
-;ENoturbo1:
-;    lda Enemy_X, x
-;    adc #$01
-;    sta Enemy_X, x
-;    bcc EEnd 
-;
-;ESetMSB1: 
     lda MSB_Carry, x
     adc #$00
     sta MSB_Carry, x
@@ -445,16 +409,9 @@ ERight:
     sta Enemy_MSB
     ora Player_MSB
     sta SPRITE_MSB
-    jmp EEnd 
     
     rts
 
 ETurbo:    
-
-    rts
-
-ETurboOff:
-
-    rts
 
 }
