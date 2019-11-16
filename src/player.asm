@@ -50,8 +50,16 @@ PlayerInit:
 ;--------------------------------------------------------
 PlayerUpdate:
     lda #PLAYER_ACTIVE
-    sta ENTITY_TO_UPDATE 
-    
+    sta ENTITY_TO_UPDATE
+
+    jsr GetPlayerState 
+    lda PLAYER_STATE
+    clc 
+    adc #10
+    sta SCREEN_RAM + 2
+    lda #$01
+    sta COLOR_RAM + 2 
+
     lda Speed_Flag
     bne +
     lda JOY_P_2
@@ -394,5 +402,71 @@ TurboOff:
     dec Speed
 +    
     rts
+
+GetPlayerState:
+    lda Player_Y
+    cmp #150
+    bcs .is_bottom 
+    lda PL_DIR
+    cmp MV_LT
+    bne +
+    lda #IS_CCW
+    sta PLAYER_STATE
+    rts
++
+    cmp MV_RT
+    bne .check_lr 
+    lda #IS_CW
+    sta PLAYER_STATE
+    rts
+
+.is_bottom:
+    lda PL_DIR
+    cmp MV_LT
+    bne + 
+    lda #IS_CW
+    sta PLAYER_STATE
+    rts
++
+    cmp MV_RT
+    bne .check_lr
+    lda #IS_CCW
+    sta PLAYER_STATE
+    rts
+
+.check_lr:
+    lda Player_MSB
+    bne .is_right
+    lda Player_X
+    cmp #200
+    bcs .is_right
+    lda PL_DIR
+    cmp MV_UP
+    bne +
+    lda #IS_CW
+    sta PLAYER_STATE
+    rts
++
+    cmp MV_DN
+    bne .is_right 
+    lda #IS_CCW
+    sta PLAYER_STATE
+    rts
+
+.is_right:
+    lda PL_DIR
+    cmp MV_DN
+    bne + 
+    lda #IS_CW
+    sta PLAYER_STATE
+    rts
++
+    cmp MV_UP
+    bne +
+    lda #IS_CCW
+    sta PLAYER_STATE
++    
+    rts
+
 
 }

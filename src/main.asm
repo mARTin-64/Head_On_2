@@ -40,7 +40,7 @@ MainMenu:
     
     jsr Timer
     lda SECONDS
-    cmp #$04
+    cmp #$00
     bne +
     +StartGame
     +SetScreen
@@ -56,7 +56,7 @@ GameLoop:
     lda CODE_FLAG
     beq GameLoop
     dec CODE_FLAG
-    ;inc $D020 
+    inc $D020 
    
     jsr Timer
     
@@ -84,7 +84,7 @@ GameLoop:
     jsr IfCrashed
     rts   
 +
-    ;dec $d020
+    dec $d020
     
     jmp GameLoop
 ;----------LOAD ASSETS----------;
@@ -92,11 +92,11 @@ GameLoop:
 X_BORDER_OFFSET:    !byte $18
 Y_BORDER_OFFSET:    !byte $32
 
-Player_X:    !byte $00
-Player_Y:    !byte $00 
-Player_MSB:  !byte $00
-PL_DIR:      !byte $00
-PlayerLives: !byte $00
+Player_X:     !byte $00
+Player_Y:     !byte $00 
+Player_MSB:   !byte $00
+PL_DIR:       !byte $00
+PlayerLives:  !byte $00
 
 MV_UP: !byte %0001
 MV_DN: !byte %0010
@@ -114,8 +114,9 @@ Enemy_Turbo     !byte $00, $00, $00, $00
 Enemy_MSB:      !byte $00
 ENEMY_MSB_SET:  !byte %00000010, %00000100, %00001000, %00010000
 ENEMY_MSB_UNSET !byte %11111101, %11111011, %11110111, %11101111
-MSB_Carry       !byte $00, $00, $00, $00
+MSB_Carry:      !byte $00, $00, $00, $00
 CurrentEnemy:   !byte $00
+ENEMY_STATE:    !byte $00, $00, $00, $00
 
 CheckSnap:      !byte $00
 CheckZone:      !byte $00 

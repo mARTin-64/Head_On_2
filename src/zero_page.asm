@@ -10,8 +10,7 @@ COLLISION_Y      = $0B   ; ZP
 
 JOY_ZP =    $0C ; ZP
 
-PLAYER_STATE    = $0D ; ZP
-PL_TURBO        = $0E ; ZP
+PL_TURBO = $0E ; ZP
 
 X_OFFSET = $0F  ; ZP
 Y_OFFSET = $10  ; ZP
@@ -43,4 +42,4 @@ COLLISION_LOOKUP2   = $26
 COLOR_LOOKUP        = $28
 COLOR_LOOKUP2       = $2A
 
-
+PLAYER_STATE    = $0D ; ZP

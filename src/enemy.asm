@@ -295,22 +295,60 @@ EEnd:
 ;--Update Enemy Behaviours    
 ;--------------------------------------------------------
 GetBehaviour:
-    ldx CurrentEnemy
-    lda Enemy_Dir, x
-    
-    cmp MV_DN
-    bne +
+
+;-----First change rotation if it is the same as player
+.on_rotation:
+    jsr GetEnemyState
+    lda ENEMY_STATE, x
+    cmp PLAYER_STATE
+    bne .on_position 
+    lda Enemy_MSB, x
+    bne .move_right
+    lda Enemy_X, x
+    cmp #160
+    bcs .move_right
     jmp ELeft
-+    
-    cmp MV_LT
-    beq EDown
-    cmp MV_RT
-    beq EUp
-    cmp MV_UP
-    bne +
-    jmp ERight
+
+.move_right:
+    jmp ERight    
+
+;-----If rotation is differend then move based on position
+.on_position:
+    lda Enemy_Dir, x
+    cmp MV_DN
+    beq .check_x
+    lda Enemy_Y, x
+    cmp Player_Y
+    bcc +
+    jmp EUp
 +
-    rts
+    jmp EDown
+
+.check_x
+    lda Enemy_MSB, x
+    bne ELeft 
+    lda Enemy_X, x
+    cmp Player_X
+    bcc +
+    jmp ELeft 
++    
+    jmp ERight
+;    ldx CurrentEnemy
+;    lda Enemy_Dir, x
+;    
+;    cmp MV_DN
+;    bne +
+;    jmp ELeft
+;+    
+;    cmp MV_LT
+;    beq EDown
+;    cmp MV_RT
+;    beq EUp
+;    cmp MV_UP
+;    bne +
+;    jmp ERight
+;+
+;    rts
 
 EUp:
     lda Enemy_Dir, x 
@@ -412,6 +450,75 @@ ERight:
     
     rts
 
-ETurbo:    
+ETurbo: 
+    
+    rts
+
+GetEnemyState:
+    ldx CurrentEnemy
+    lda Enemy_Y, x
+    cmp #150
+    bcs .is_bottom 
+    lda Enemy_Dir, x
+    cmp MV_LT
+    bne +
+    lda #IS_CCW
+    sta ENEMY_STATE, x
+    rts
++
+    cmp MV_RT
+    bne .check_lr
+    lda #IS_CW
+    sta ENEMY_STATE, x
+    rts
+
+.is_bottom:
+    lda Enemy_Dir, x
+    cmp MV_LT
+    bne + 
+    lda #IS_CW
+    sta ENEMY_STATE, x 
+    rts
++
+    cmp MV_RT
+    bne .check_lr
+    lda #IS_CCW
+    sta ENEMY_STATE, x
+    rts
+
+.check_lr:
+    lda Enemy_MSB, x
+    bne .is_right
+    lda Enemy_X, x
+    cmp #200
+    bcs .is_right
+    lda Enemy_Dir, x
+    cmp MV_UP
+    bne +
+    lda #IS_CW
+    sta ENEMY_STATE, x
+    rts
++
+    cmp MV_DN
+    bne .is_right
+    lda #IS_CCW
+    sta ENEMY_STATE, x
+    rts
+
+.is_right:
+    lda Enemy_Dir, x
+    cmp MV_DN
+    bne + 
+    lda #IS_CW
+    sta ENEMY_STATE, x 
+    rts
++
+    cmp MV_UP
+    bne +
+    lda #IS_CCW
+    sta ENEMY_STATE, x
++    
+    rts
+
 
 }

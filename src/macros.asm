@@ -13,7 +13,7 @@
 !macro Init6502 {    ; Main graphics chip initialization
     lda #$00            ;\Set border color to black
     sta BORDER_COLOR    ;/
-    
+
     lda #$06            ;\Set background color to blue
     sta BG_COLOR        ;/You dont need it because it is default
      
@@ -44,7 +44,9 @@
     
     lda #$04
     sta PlayerLives
-
+    
+    lda #$00
+    sta PLAYER_STATE
 }
 
 !macro GetRaster .line {
@@ -104,14 +106,6 @@
     inx 
     cpx #$03
     bne -
-}
-
-!macro GetPlayerState {
-       
-}
-
-!macro GetPlayerRotation {
-
 }
 
 !macro SaveState {
