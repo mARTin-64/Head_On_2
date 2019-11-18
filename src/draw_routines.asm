@@ -322,11 +322,23 @@ DrawGameOver:
     jsr DrawHighScore
     inc Enable_Blink
 -    
+    lda CODE_FLAG
+    beq -
+    dec CODE_FLAG
+
+    jsr Timer
+    lda SECONDS
+    cmp #10
+    bne +
+    lda #BONUS_SCR
+    sta GAME_STATE
++    
     jsr ReadKey 
     lda GAME_STATE
     cmp #BONUS_SCR
     bne -
-    
+    lda #LOOSE
+    sta GAME_STATE
     dec Enable_Blink
     
     rts

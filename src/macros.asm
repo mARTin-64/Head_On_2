@@ -41,7 +41,6 @@
     sta SPRITE_COLOR2, x
     dex
     bne -
-    
     lda #$04
     sta PlayerLives
     

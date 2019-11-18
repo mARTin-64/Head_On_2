@@ -323,6 +323,7 @@ GetBehaviour:
 
     rts
 
+;-----Chase player if behind
 .check_if_m_up
     lda Enemy_X, x
     cmp Player_X
@@ -365,6 +366,7 @@ GetBehaviour:
     bcs .on_rotation 
     jmp ETurbo
 
+;-----Go change rotation if same as player
 .on_rotation    
     jsr ETurboOff
     lda ENEMY_STATE, x
