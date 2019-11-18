@@ -296,9 +296,77 @@ EEnd:
 ;--------------------------------------------------------
 GetBehaviour:
 
-;-----First change rotation if it is the same as player
-.on_rotation:
+;;-----DEBUG----------------
+;    lda ENEMY_STATE, x
+;    clc 
+;    adc #10
+;    sta SCREEN_RAM + 37, x
+;    lda #$01
+;    sta COLOR_RAM + 37, x  
+;;--------------------------
+
     jsr GetEnemyState
+
+.check_behind:
+    lda Enemy_Dir, x
+    cmp PL_DIR
+    bne .on_rotation
+    lda Enemy_Dir, x
+    cmp MV_UP
+    beq .check_if_m_up
+    cmp MV_DN
+    beq .check_if_m_down
+    cmp MV_LT
+    beq .check_if_m_left
+    cmp MV_RT
+    beq .check_if_m_right
+
+    rts
+
+.check_if_m_up
+    lda Enemy_X, x
+    cmp Player_X
+    bne .on_rotation
+    lda Enemy_Y, x
+    cmp Player_Y
+    bcc +  
+    jmp ETurbo
++
+    jmp .on_rotation
+
+.check_if_m_down:
+    lda Enemy_X, x
+    cmp Player_X
+    bne .on_rotation
+    lda Enemy_Y, x
+    cmp Player_Y
+    bcs +
+    jmp ETurbo
++
+    jmp .on_rotation
+
+.check_if_m_left
+    lda Enemy_Y, x
+    cmp Player_Y
+    bne .on_rotation
+    lda Enemy_X, x
+    cmp Player_X
+    bcc +  
+    jmp ETurbo
++
+    jmp .on_rotation
+
+.check_if_m_right:
+    lda Enemy_Y, x
+    cmp Player_Y
+    bne .on_rotation
+    lda Enemy_X, x
+    cmp Player_X
+    bcs .on_rotation 
+    jmp ETurbo
+
+.on_rotation    
+    jsr ETurboOff
     lda ENEMY_STATE, x
     cmp PLAYER_STATE
     bne .on_position 
@@ -317,6 +385,8 @@ GetBehaviour:
     lda Enemy_Dir, x
     cmp MV_DN
     beq .check_x
+    cmp MV_UP
+    beq .check_x
     lda Enemy_Y, x
     cmp Player_Y
     bcc +
@@ -333,22 +403,6 @@ GetBehaviour:
     jmp ELeft 
 +    
     jmp ERight
-;    ldx CurrentEnemy
-;    lda Enemy_Dir, x
-;    
-;    cmp MV_DN
-;    bne +
-;    jmp ELeft
-;+    
-;    cmp MV_LT
-;    beq EDown
-;    cmp MV_RT
-;    beq EUp
-;    cmp MV_UP
-;    bne +
-;    jmp ERight
-;+
-;    rts
 
 EUp:
     lda Enemy_Dir, x 
@@ -423,21 +477,21 @@ ELeft:
 ERight:
     lda Enemy_Dir, x
     cmp MV_LT
-    beq ETurbo
+    beq +
     cmp MV_RT
-    beq ETurbo
+    beq +
    
     lda #NO
     sta CheckZone
     jsr CheckMoveRight
-    bne ETurbo
+    bne +
     
     ldx CurrentEnemy
     lda Enemy_X, x
     clc
     adc #$01
     sta Enemy_X, x
-    bcc ETurbo 
+    bcc +
 
     lda MSB_Carry, x
     adc #$00
@@ -447,11 +501,23 @@ ERight:
     sta Enemy_MSB
     ora Player_MSB
     sta SPRITE_MSB
-    
++    
     rts
 
 ETurbo: 
-    
+    lda Enemy_Speed, x
+    cmp #$03
+    beq +
+    inc Enemy_Speed, x
++    
+    rts
+
+ETurboOff:
+    lda Enemy_Speed, x
+    cmp #$01
+    beq +
+    dec Enemy_Speed, x
++    
     rts
 
 GetEnemyState:

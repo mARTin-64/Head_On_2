@@ -44,13 +44,8 @@ CheckScorePoints:
     cmp #108
     beq ++
     cmp #100
-    bne +
-    ldx #$00 
--    
-    inc Enemy_Speed, x
-    inx
-    cpx ACTIVE_ENEMIES
-    bne -
+    bcc +
+    jsr ETurbo
 +
     rts
 ++

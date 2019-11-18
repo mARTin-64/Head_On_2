@@ -53,12 +53,15 @@ PlayerUpdate:
     sta ENTITY_TO_UPDATE
 
     jsr GetPlayerState 
-    lda PLAYER_STATE
-    clc 
-    adc #10
-    sta SCREEN_RAM + 2
-    lda #$01
-    sta COLOR_RAM + 2 
+
+;;-----DEBUG---------------    
+;    lda PLAYER_STATE
+;    clc 
+;    adc #10
+;    sta SCREEN_RAM + 2
+;    lda #$01
+;    sta COLOR_RAM + 2 
+;;-------------------------
 
     lda Speed_Flag
     bne +
@@ -129,15 +132,6 @@ GoDown:
     clc
     adc Speed
     sta Player_Y 
-
-;    inc Player_Y
-;    lda PL_TURBO
-;    cmp .Turbo 
-;    bne GoLeft 
-;    
-;    inc Player_Y
-;    inc Player_Y
-
     jmp End
 
 C_DN:
@@ -182,23 +176,6 @@ GoLeft:
     
     jmp End 
 
-;    lda PL_TURBO
-;    cmp .Turbo 
-;    bne NoTurbo0
-;    
-;    lda Player_X
-;    sec
-;    sbc #03
-;    sta Player_X
-;    bcs GoRight
-;    jmp SetMSB0
-;
-;NoTurbo0:
-;    lda Player_X
-;    sec
-;    sbc #$01
-;    sta Player_X
-    
 C_LT:
     jsr SnapLeftRight
     bne GoLeft
@@ -233,23 +210,6 @@ GoRight:
     adc Speed
     sta Player_X
     bcc End
-;    lda PL_TURBO
-;    cmp .Turbo 
-;    bne NoTurbo1 
-;    
-;    lda Player_X
-;    adc #$02
-;    sta Player_X
-;    bcc End 
-;    jmp SetMSB1
-;
-;NoTurbo1:
-;    lda Player_X
-;    adc #$01
-;    sta Player_X
-;    bcc End 
-;
-;SetMSB1:    
     lda #%00000001
     sta Player_MSB
     ora Enemy_MSB

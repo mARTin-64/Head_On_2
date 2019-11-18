@@ -181,7 +181,7 @@ ESnapLeftRight:
     ldx CurrentEnemy
     lda Enemy_X, x
     sec
-    sbc #$02
+    sbc #$03
     and #$f8
     clc
     adc #$08
