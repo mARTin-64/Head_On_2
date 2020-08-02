@@ -139,9 +139,9 @@ IfWin:
 +
 ;-----Reset player lives if above 6
     lda PlayerLives
-    cmp #$07
+    cmp #$08
     bne +
-    ldx #$06
+    ldx #$07
     stx PlayerLives
 +
 ;-----Disable sprite rendering
@@ -361,6 +361,20 @@ ReadKey:
     bne +
     lda #BONUS_SCR
     sta GAME_STATE
+
+    lda #$00
+    sta COUNTER
+    sta MILISEC
+    sta SECONDS
+-
+    lda CODE_FLAG
+    beq -
+    dec CODE_FLAG
+    
+    jsr Timer
+    lda MILISEC
+    cmp #$03
+    bne -
 +
     rts
 

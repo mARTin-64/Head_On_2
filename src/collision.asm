@@ -38,14 +38,22 @@ CheckScorePoints:
     sta (COLLISION_LOOKUP), y
     
     jsr UpdateScore 
-    
+    sec 
     inc POINT_COUNTER 
     lda POINT_COUNTER
     cmp #108
     beq ++
+    
+    lda POINT_COUNTER
     cmp #100
     bcc +
-    jsr ETurbo
+    ldx #$00
+-    
+    lda #$03
+    sta Enemy_Speed, x
+    inx 
+    cpx ACTIVE_ENEMIES
+    bne -
 +
     rts
 ++

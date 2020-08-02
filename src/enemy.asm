@@ -1,4 +1,4 @@
-!zone Enemy {
+!zone Enemy {M
 
 .Turbo: !byte $01
 .Temp_X = TEMP1
@@ -9,9 +9,7 @@ EnemyInit:
     ldx #$00
 
 .Loop   
-    lda #$46
-    sta SPRITE_POINTERS + 1, x
-    
+   
     lda ENABLE_SPRITES
     ora ENEMY_MSB_SET, x
     sta ENABLE_SPRITES
@@ -24,6 +22,8 @@ EnemyInit:
     sta .Temp_Y
     lda MV_LT
     sta .Temp_Dir
+    lda #$46
+    sta SPRITE_POINTERS + 1, x
     jmp .Set
 +
     cpx #$01
@@ -36,6 +36,8 @@ EnemyInit:
     sta .Temp_Y
     lda MV_RT
     sta .Temp_Dir
+    lda #$47
+    sta SPRITE_POINTERS + 1, x
     jmp .Set
 +
     cpx #$02
@@ -46,6 +48,8 @@ EnemyInit:
     sta .Temp_Y
     lda MV_UP
     sta .Temp_Dir
+    lda #$44
+    sta SPRITE_POINTERS + 1, x
     jmp .Set
 +   
     cpx #$03
@@ -54,8 +58,10 @@ EnemyInit:
     sta .Temp_X
     lda #146
     sta .Temp_Y
-    lda MV_LT
+    lda MV_DN
     sta .Temp_Dir
+    lda #$45
+    sta SPRITE_POINTERS + 1, x
 
 .Set:    
     txa 
@@ -368,7 +374,11 @@ GetBehaviour:
 
 ;-----Go change rotation if same as player
 .on_rotation    
+    lda POINT_COUNTER
+    cmp #100
+    bcs +
     jsr ETurboOff
++
     lda ENEMY_STATE, x
     cmp PLAYER_STATE
     bne .on_position 
@@ -507,6 +517,7 @@ ERight:
     rts
 
 ETurbo: 
+    ldx CurrentEnemy
     lda Enemy_Speed, x
     cmp #$03
     beq +
@@ -515,6 +526,7 @@ ETurbo:
     rts
 
 ETurboOff:
+    ldx CurrentEnemy
     lda Enemy_Speed, x
     cmp #$01
     beq +
