@@ -56,7 +56,7 @@ GameLoop:
     lda CODE_FLAG
     beq GameLoop
     dec CODE_FLAG
-    ;inc $D020 
+    inc $D020 
    
     jsr Timer
     
@@ -84,7 +84,7 @@ GameLoop:
     jsr IfCrashed
     rts   
 +
-    ;dec $d020
+    dec $d020
     
     jmp GameLoop
 ;----------LOAD ASSETS----------;

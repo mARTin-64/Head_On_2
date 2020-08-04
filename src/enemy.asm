@@ -312,6 +312,7 @@ GetBehaviour:
 ;;--------------------------
 
     jsr GetEnemyState
+    jsr ChangePointsValue
 
 .check_behind:
     lda Enemy_Dir, x
@@ -600,5 +601,37 @@ GetEnemyState:
 +    
     rts
 
+;--------------------------------------------------------
+;--Enemy change point value
+;--------------------------------------------------------
+ChangePointsValue:
+    ldx #OFFSET_XL - 4
+    ldy #OFFSET_YU - 4
 
+    jsr GetCollisionPoint
+
+    lda ColorRowLSB, y
+    sta COLOR_LOOKUP
+    lda ColorRowMSB, y
+    sta COLOR_LOOKUP + 1
+    
+    jsr GetCharacter
+    tax
+    lda CHAR_COLORS, x
+    and #$f0
+    and #POINT_SMALL
+    bne +
+    rts
++
+    ldy COLLISION_X
+    lda #$09
+    sta(COLLISION_LOOKUP), y
+    
+    tax
+    lda CHAR_COLORS, x
+    sta (COLOR_LOOKUP), y
+
+    rts
+    
 }
+

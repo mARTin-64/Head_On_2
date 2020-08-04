@@ -61,7 +61,6 @@ CheckScorePoints:
     sta GAME_STATE
     
     rts
-
 ;--------------------------------------------------------
 ;--Check forward collision for each direction
 ;--------------------------------------------------------

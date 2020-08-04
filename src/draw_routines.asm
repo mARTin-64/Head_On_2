@@ -493,7 +493,6 @@ Explosion_1:
     ldy #OFFSET_YU 
     jsr GetCollisionPoint
 
-    ldy COLLISION_Y 
     dey
 
 ;-----Store coordinates
@@ -647,9 +646,8 @@ Explosion_2:
 
 .done2:
     jsr GetCollisionPoint
-
-    ldy COLLISION_Y 
     dey
+
 ;-----Store coordinates
     lda ScreenRowLSB, y
     sta COLLISION_LOOKUP
@@ -666,7 +664,6 @@ Explosion_2:
     ldy #(OFFSET_YU - 40) 
     
     jsr GetCollisionPoint
-    ldy COLLISION_Y
     dey
 
 ;-----Store 2nd coordinates
@@ -879,9 +876,8 @@ Explosion_3:
     dec Expl_Extend_Flag
 .done3:
     jsr GetCollisionPoint
-
-    ldy COLLISION_Y 
     dey
+
 ;-----Store coordinates
     lda ScreenRowLSB, y
     sta COLLISION_LOOKUP
@@ -898,7 +894,6 @@ Explosion_3:
     ldy #(OFFSET_YU - 40) 
     
     jsr GetCollisionPoint
-    ldy COLLISION_Y
     dey
 
 ;-----Store 2nd coordinates
@@ -1037,9 +1032,8 @@ Explosion_4:
 
 .done4:
     jsr GetCollisionPoint
-
-    ldy COLLISION_Y 
     dey
+
 ;-----Store coordinates
     lda ScreenRowLSB, y
     sta COLLISION_LOOKUP
@@ -1056,7 +1050,6 @@ Explosion_4:
     ldy #(OFFSET_YU - 40) 
     
     jsr GetCollisionPoint
-    ldy COLLISION_Y
     dey
 
 ;-----Store 2nd coordinates
@@ -1280,9 +1273,8 @@ Explosion_5:
 
 .done5:
     jsr GetCollisionPoint
-
-    ldy COLLISION_Y 
     dey
+
 ;-----Store coordinates
     lda ScreenRowLSB, y
     sta COLLISION_LOOKUP
@@ -1299,7 +1291,6 @@ Explosion_5:
     ldy #(OFFSET_YU - 40) 
     
     jsr GetCollisionPoint
-    ldy COLLISION_Y
     dey
 
 ;-----Store 2nd coordinates
