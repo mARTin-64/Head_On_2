@@ -190,12 +190,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 71 - ((46 * winheight(0) + 31) / 63)
+let s:l = 18 - ((17 * winheight(0) + 31) / 63)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-71
-normal! 0
+18
+normal! 04|
 wincmd w
 argglobal
 if bufexists("game_utils.asm") | buffer game_utils.asm | else | edit game_utils.asm | endif
@@ -328,12 +328,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 44 - ((43 * winheight(0) + 31) / 63)
+let s:l = 338 - ((62 * winheight(0) + 31) / 63)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-44
-normal! 021|
+338
+normal! 05|
 wincmd w
 argglobal
 if bufexists("labels.asm") | buffer labels.asm | else | edit labels.asm | endif
@@ -466,11 +466,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 15) / 31)
+let s:l = 31 - ((30 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+31
 normal! 0
 wincmd w
 argglobal
@@ -604,14 +604,13 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 35 - ((19 * winheight(0) + 15) / 31)
+let s:l = 51 - ((5 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-35
+51
 normal! 0
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 105 + 158) / 316)
 exe 'vert 2resize ' . ((&columns * 105 + 158) / 316)
 exe '3resize ' . ((&lines * 31 + 32) / 65)
@@ -620,10 +619,15 @@ exe '4resize ' . ((&lines * 31 + 32) / 65)
 exe 'vert 4resize ' . ((&columns * 104 + 158) / 316)
 tabnext 1
 badd +1 macros.asm
-badd +0 main.asm
-badd +0 game_utils.asm
-badd +0 labels.asm
-badd +100 tables.asm
+badd +1 main.asm
+badd +1 game_utils.asm
+badd +31 labels.asm
+badd +1 tables.asm
+badd +1 ma
+badd +192 snap.asm
+badd +144 score.asm
+badd +4 assets.asm
+badd +19 zero_page.asm
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif

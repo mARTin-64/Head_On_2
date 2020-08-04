@@ -187,12 +187,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 31) / 63)
+let s:l = 63 - ((0 * winheight(0) + 31) / 63)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+63
+normal! 06|
 wincmd w
 argglobal
 if bufexists("collision.asm") | buffer collision.asm | else | edit collision.asm | endif
@@ -325,11 +325,11 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 31) / 63)
+let s:l = 295 - ((0 * winheight(0) + 31) / 63)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+295
 normal! 0
 wincmd w
 argglobal
@@ -463,12 +463,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 31) / 63)
+let s:l = 713 - ((0 * winheight(0) + 31) / 63)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+713
+normal! 06|
 wincmd w
 argglobal
 if bufexists("player.asm") | buffer player.asm | else | edit player.asm | endif
@@ -601,23 +601,22 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 31) / 63)
+let s:l = 29 - ((28 * winheight(0) + 31) / 63)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+29
+normal! 04|
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 78 + 158) / 316)
 exe 'vert 2resize ' . ((&columns * 79 + 158) / 316)
 exe 'vert 3resize ' . ((&columns * 78 + 158) / 316)
 exe 'vert 4resize ' . ((&columns * 78 + 158) / 316)
 tabnext 1
-badd +0 player.asm
-badd +0 enemy.asm
-badd +0 draw_routines.asm
+badd +1 enemy.asm
+badd +1 player.asm
 badd +0 collision.asm
+badd +1 draw_routines.asm
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0
   silent exe 'bwipe ' . s:wipebuf
 endif
