@@ -8,3 +8,5 @@
   Tested with VICE emulator on Arch-Linux operating system.   
   Code was written by Martin Živica.
   Date: October/November, 2019.
+
+  Game AI is not yes finished.
